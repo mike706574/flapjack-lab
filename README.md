@@ -24,25 +24,24 @@ snake,0,small
 
 ```java
 Format inputFormat =
-    DelimitedFormat.unframed("delimited-animals",
-                             "Delimited animals format.",
+    DelimitedFormat.unframed("animals",
+                             "A bunch of animals.",
                              ',',
                              Arrays.asList(Column.string("name"),
-                                           Column.integer("legs"),
-                                           Column.string("size")));
+                                           Column.integer("legs")));
 
 Format outputFormat =
-    FixedWidthFormat("delimited-animals",
-                     "Delimited animals format.",
+    FixedWidthFormat("medium-sized-animals",
+                     "A bunch of medium-sized animals.",
                      Arrays.asList(Field.string("name", 10),
                                    Field.string("size", 10)));
 String inputPath = base + "animals.csv";
 String outputPath = base + "animals.dat";
 
 Pipeline pipeline = Pipeline.from("animals.csv", inputFormat)
-    .map(x -> x.updateString("size", String::toUpperCase))
     .filter(x -> x.getString("size").equals("MEDIUM"))
-    .to("medium-sized-animals", outputFormat)
+    .map(x -> x.updateString("name", String::toUpperCase))
+    .to("medium-sized-animals.csv", outputFormat)
     .build();
 
 PipelineResult result = pipeline.run();
@@ -60,9 +59,9 @@ result.getErrorCount();
 `medium-sized-animals.csv`
 
 ```
-DOG       MEDIUM    
-FOX       MEDIUM    
-OSTRICH   MEDIUM    
+DOG       4         
+FOX       4         
+OSTRICH   2         
 ```
 
 ## Build
