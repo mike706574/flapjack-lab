@@ -23,6 +23,7 @@ snake,0,small
 `Example.java`
 
 ```java
+// Define an input format
 Format inputFormat =
     DelimitedFormat.unframed("animals",
                              "A bunch of animals.",
@@ -30,30 +31,37 @@ Format inputFormat =
                              Arrays.asList(Column.string("name"),
                                            Column.integer("legs")));
 
+// Define an output format
 Format outputFormat =
     FixedWidthFormat("medium-sized-animals",
                      "A bunch of medium-sized animals.",
                      Arrays.asList(Field.string("name", 10),
                                    Field.string("size", 10)));
-String inputPath = base + "animals.csv";
-String outputPath = base + "animals.dat";
-
+                                   
+// Build a pipeline
 Pipeline pipeline = Pipeline.from("animals.csv", inputFormat)
     .filter(x -> x.getString("size").equals("MEDIUM"))
     .map(x -> x.updateString("name", String::toUpperCase))
     .to("medium-sized-animals.csv", outputFormat)
     .build();
 
+// Run it
 PipelineResult result = pipeline.run();
 
+// Check for errors
 result.isOk();
 // => true
 
+result.getErrorCount();
+// => 0
+
+// See how many animals went in
 result.getInputCount();
 // => 6
 
-result.getErrorCount();
-// => 0
+// See how many medium-sized animals came out
+result.getOutputCount();
+// => 3
 ```
 
 `medium-sized-animals.csv`
