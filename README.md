@@ -1,4 +1,4 @@
-# flapjack
+# flapjack-lab
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/fun.mike/flapjack-lab/badge.svg)](https://maven-badges.herokuapp.com/maven-central/fun.mike/flapjack-lab)
 [![Javadocs](https://www.javadoc.io/badge/fun.mike/flapjack-lab.svg)](https://www.javadoc.io/doc/fun.mike/flapjack-lab)
