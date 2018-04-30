@@ -5,6 +5,65 @@
 
 Experimental `flapjack` functionality.
 
+## Usage
+
+### Pipeline
+
+`animals.csv`
+
+```
+dog,4,medium
+elephant,4,huge
+fox,4,medium
+ostrich,2,medium
+whale,0,gigantic
+snake,0,small
+```
+
+`Example.java`
+
+```java
+Format inputFormat =
+    DelimitedFormat.unframed("delimited-animals",
+                             "Delimited animals format.",
+                             ',',
+                             Arrays.asList(Column.string("name"),
+                                           Column.integer("legs"),
+                                           Column.string("size")));
+
+Format outputFormat =
+    FixedWidthFormat("delimited-animals",
+                     "Delimited animals format.",
+                     Arrays.asList(Field.string("name", 10),
+                                   Field.string("size", 10)));
+String inputPath = base + "animals.csv";
+String outputPath = base + "animals.dat";
+
+Pipeline pipeline = Pipeline.from("animals.csv", inputFormat)
+    .map(x -> x.updateString("size", String::toUpperCase))
+    .filter(x -> x.getString("size").equals("MEDIUM"))
+    .to("medium-sized-animals", outputFormat)
+    .build();
+
+PipelineResult result = pipeline.run();
+
+result.isOk();
+// => true
+
+result.getInputCount();
+// => 6
+
+result.getErrorCount();
+// => 0
+```
+
+`medium-sized-animals.csv`
+
+```
+DOG       MEDIUM    
+FOX       MEDIUM    
+OSTRICH   MEDIUM    
+```
 
 ## Build
 
