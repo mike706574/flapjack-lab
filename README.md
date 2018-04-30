@@ -23,46 +23,53 @@ snake,0,small
 `Example.java`
 
 ```java
+// Define an input format
 Format inputFormat =
-    DelimitedFormat.unframed("delimited-animals",
-                             "Delimited animals format.",
+    DelimitedFormat.unframed("animals",
+                             "A bunch of animals.",
                              ',',
                              Arrays.asList(Column.string("name"),
-                                           Column.integer("legs"),
-                                           Column.string("size")));
+                                           Column.integer("legs")));
 
+// Define an output format
 Format outputFormat =
-    FixedWidthFormat("delimited-animals",
-                     "Delimited animals format.",
+    FixedWidthFormat("medium-sized-animals",
+                     "A bunch of medium-sized animals.",
                      Arrays.asList(Field.string("name", 10),
                                    Field.string("size", 10)));
-String inputPath = base + "animals.csv";
-String outputPath = base + "animals.dat";
-
+                                   
+// Build a pipeline
 Pipeline pipeline = Pipeline.from("animals.csv", inputFormat)
-    .map(x -> x.updateString("size", String::toUpperCase))
     .filter(x -> x.getString("size").equals("MEDIUM"))
-    .to("medium-sized-animals", outputFormat)
+    .map(x -> x.updateString("name", String::toUpperCase))
+    .to("medium-sized-animals.csv", outputFormat)
     .build();
 
+// Run it
 PipelineResult result = pipeline.run();
 
+// Check for errors
 result.isOk();
 // => true
 
+result.getErrorCount();
+// => 0
+
+// See how many animals went in
 result.getInputCount();
 // => 6
 
-result.getErrorCount();
-// => 0
+// See how many medium-sized animals came out
+result.getOutputCount();
+// => 3
 ```
 
 `medium-sized-animals.csv`
 
 ```
-DOG       MEDIUM    
-FOX       MEDIUM    
-OSTRICH   MEDIUM    
+DOG       4         
+FOX       4         
+OSTRICH   2         
 ```
 
 ## Build
