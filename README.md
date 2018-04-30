@@ -42,7 +42,7 @@ Format outputFormat =
 Pipeline pipeline = Pipeline.from("animals.csv", inputFormat)
     .filter(x -> x.getString("size").equals("MEDIUM"))
     .map(x -> x.updateString("name", String::toUpperCase))
-    .to("medium-sized-animals.csv", outputFormat)
+    .to("medium-sized-animals.txt", outputFormat)
     .build();
 
 // Run it
@@ -64,7 +64,7 @@ result.getOutputCount();
 // => 3
 ```
 
-`medium-sized-animals.csv`
+`medium-sized-animals.txt`
 
 ```
 DOG       4         
