@@ -12,12 +12,12 @@ public class FileOutputChannel implements OutputChannel {
     private final Spitter spitter;
     private final Format format;
 
-    private final List<PipelineError> serializationErrors;
+    private final List<PipelineError> errors;
 
     public FileOutputChannel(String path, Format format) {
         this.spitter = new Spitter(path);
         this.format = format;
-        this.serializationErrors = new LinkedList<>();
+        this.errors = new LinkedList<>();
     }
 
     @Override
@@ -30,12 +30,12 @@ public class FileOutputChannel implements OutputChannel {
             return true;
         }
 
-        serializationErrors.add(PipelineError.serialization(number, line, serializationResult));
+        errors.add(SerializationPipelineError.fromResult(number, line, serializationResult));
         return false;
     }
 
-    public List<PipelineError> getSerializationErrors() {
-        return serializationErrors;
+    public List<PipelineError> getErrors() {
+        return errors;
     }
 
     @Override

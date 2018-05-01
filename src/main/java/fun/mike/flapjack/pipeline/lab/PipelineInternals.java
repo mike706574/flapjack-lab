@@ -70,7 +70,7 @@ public class PipelineInternals {
 
                 if (parseResult.hasProblems()) {
                     parseErrorCount++;
-                    errors.add(PipelineError.parse(number, inputLine, parseResult));
+                    errors.add(ParsePipelineError.fromResult(number, inputLine, parseResult));
                 } else {
                     Record inputRecord = parseResult.getValue();
 
@@ -79,20 +79,19 @@ public class PipelineInternals {
                     if (transformResult.isOk()) {
                         Record value = transformResult.getRecord();
 
-                        if (returnValues) {
-                            values.add(value);
-                        }
-
                         boolean ok = outputChannel.receive(number, inputLine, value);
 
                         if (ok) {
+                            if (returnValues) {
+                                values.add(value);
+                            }
                             outputCount++;
                         }
                     }
 
                     if (transformResult.isNotOk() && transformResult.isPresent()) {
                         transformErrorCount++;
-                        errors.add(PipelineError.transform(number, inputLine, transformResult));
+                        errors.add(TransformPipelineError.fromResult(number, inputLine, transformResult));
                     }
                 }
             }
@@ -101,34 +100,49 @@ public class PipelineInternals {
             throw new UncheckedIOException(ex);
         }
 
+        List<PipelineError> outputErrors = outputChannel.getErrors();
+
         log.debug("Input count: " + inputCount);
         log.debug("Output count: " + outputCount);
         log.debug("Parse errors: " + parseErrorCount);
         log.debug("Transform errors: " + transformErrorCount);
+        log.debug("Output errors: " + outputErrors.size());
+
+        errors.addAll(outputErrors);
 
         Optional<List<Record>> value = returnValues ? Optional.of(values) : Optional.empty();
-        return PipelineResult.of(value, inputCount, outputCount, errors);
+
+        PipelineResult<Optional<List<Record>>> result = PipelineResult.of(value, inputCount, outputCount, errors);
+
+        if (result.isOk()) {
+            log.debug("Pipeline completed with no errors.");
+        } else {
+            log.debug(String.format("Pipeline completed with %d errors.", result.getErrorCount()));
+        }
+
+        return result;
     }
 
     private static TransformResult process(List<Operation> operations, Long number, String line, Record inputRecord) {
         Record outputRecord = inputRecord;
         String operationId = null;
-        int operationIndex = 0;
+        Long operationNumber = 1L;
         try {
             for (Operation operation : operations) {
-                operationIndex++;
+
                 operationId = operation.getId();
                 Optional<Record> result = operation.run(outputRecord);
 
                 if (!result.isPresent()) {
-                    return TransformResult.empty(number, operationId, operationIndex, line, outputRecord);
+                    return TransformResult.empty(number, operationId, operationNumber, line, outputRecord);
                 }
 
                 outputRecord = result.get();
+                operationNumber++;
             }
             return TransformResult.ok(number, line, outputRecord);
         } catch (Exception ex) {
-            return TransformResult.error(number, operationId, operationIndex, line, outputRecord, ex);
+            return TransformResult.error(number, operationId, operationNumber, line, outputRecord, ex);
         }
     }
 

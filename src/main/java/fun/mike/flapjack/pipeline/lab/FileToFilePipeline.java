@@ -38,18 +38,6 @@ public class FileToFilePipeline implements Pipeline<Nothing> {
                                                                               operations,
                                                                               outputChannel,
                                                                               false);
-
-            List<PipelineError> errors = outputChannel.getSerializationErrors();
-            result = result.withErrors(outputChannel.getSerializationErrors());
-
-            log.debug("Serialization errors: " + errors.size());
-
-            if (result.isOk()) {
-                log.debug("Pipeline completed with no errors.");
-            } else {
-                log.debug(String.format("Pipeline completed with %d errors.", result.getErrorCount()));
-            }
-
             return result.withValue(Nothing.value());
         }
     }

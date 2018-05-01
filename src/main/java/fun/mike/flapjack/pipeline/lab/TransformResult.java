@@ -8,18 +8,18 @@ public class TransformResult {
     private final boolean error;
     private final Long number;
     private final String operationId;
-    private final Integer operationIndex;
+    private final Long operationNumber;
     private final String line;
     private final Record record;
     private final Exception exception;
 
-    public TransformResult(boolean ok, boolean none, boolean error, Long number, String operationId, Integer operationIndex, String line, Record record, Exception exception) {
+    public TransformResult(boolean ok, boolean none, boolean error, Long number, String operationId, Long operationNumber, String line, Record record, Exception exception) {
         this.ok = ok;
         this.none = none;
         this.error = error;
         this.number = number;
         this.operationId = operationId;
-        this.operationIndex = operationIndex;
+        this.operationNumber = operationNumber;
         this.line = line;
         this.record = record;
         this.exception = exception;
@@ -29,12 +29,12 @@ public class TransformResult {
         return new TransformResult(true, false, false, index, null, null, line, record, null);
     }
 
-    public static TransformResult empty(Long index, String operationId, Integer operationIndex, String line, Record record) {
-        return new TransformResult(false, true, false, index, operationId, operationIndex, line, record, null);
+    public static TransformResult empty(Long index, String operationId, Long operationNumber, String line, Record record) {
+        return new TransformResult(false, true, false, index, operationId, operationNumber, line, record, null);
     }
 
-    public static TransformResult error(Long index, String operationId, Integer operationIndex, String line, Record record, Exception exception) {
-        return new TransformResult(false, false, true, index, operationId, operationIndex, line, record, exception);
+    public static TransformResult error(Long index, String operationId, Long operationNumber, String line, Record record, Exception exception) {
+        return new TransformResult(false, false, true, index, operationId, operationNumber, line, record, exception);
     }
 
     public boolean isOk() {
@@ -69,18 +69,15 @@ public class TransformResult {
         return exception;
     }
 
-    @Override
-    public String toString() {
-        return "TransformResult{" +
-                "ok=" + ok +
-                ", none=" + none +
-                ", error=" + error +
-                ", number=" + number +
-                ", operationId='" + operationId + '\'' +
-                ", operationIndex=" + operationIndex +
-                ", line='" + line + '\'' +
-                ", record=" + record +
-                ", exception=" + exception +
-                '}';
+    public Long getNumber() {
+        return number;
+    }
+
+    public String getOperationId() {
+        return operationId;
+    }
+
+    public Long getOperationNumber() {
+        return operationNumber;
     }
 }
