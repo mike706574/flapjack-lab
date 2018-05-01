@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 import fun.mike.record.alpha.Record;
 
-public class GroupingOutputChannel<G> implements OutputChannel{
+public class GroupingOutputChannel<G> implements OutputChannel {
     private final Function<Record, G> groupBy;
     private final Map<G, List<Record>> values;
 
@@ -18,12 +18,11 @@ public class GroupingOutputChannel<G> implements OutputChannel{
     }
 
     @Override
-    public boolean receive(Record value) {
+    public boolean receive(Long number, String line, Record value) {
         G group = groupBy.apply(value);
-        if(values.containsKey(group)) {
+        if (values.containsKey(group)) {
             values.get(group).add(value);
-        }
-        else {
+        } else {
             List<Record> groupValues = new LinkedList<>();
             groupValues.add(value);
             values.put(group, groupValues);
@@ -32,9 +31,10 @@ public class GroupingOutputChannel<G> implements OutputChannel{
     }
 
     public Map<G, List<Record>> getValues() {
-        return new HashMap<>(values);
+        return new Group<>(values);
     }
 
     @Override
-    public void close() {}
+    public void close() {
+    }
 }

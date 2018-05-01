@@ -18,6 +18,18 @@ import static org.junit.Assert.assertTrue;
 
 public class FileToFilePipelineTest {
     private static final String base = "src/test/resources/pipeline/";
+    private static final Format inputFormat =
+            DelimitedFormat.unframed("delimited-animals",
+                                     "Delimited animals format.",
+                                     ',',
+                                     Arrays.asList(Column.string("name"),
+                                                   Column.integer("legs"),
+                                                   Column.string("size")));
+    private static final Format outputFormat =
+            new FixedWidthFormat("delimited-animals",
+                                 "Delimited animals format.",
+                                 Arrays.asList(Field.string("name", 10),
+                                               Field.string("size", 10)));
 
     @Before
     public void setUp() {
@@ -31,20 +43,6 @@ public class FileToFilePipelineTest {
         IO.nuke(base + "bad-animals.dat");
     }
 
-    private static final Format inputFormat =
-            DelimitedFormat.unframed("delimited-animals",
-                                     "Delimited animals format.",
-                                     ',',
-                                     Arrays.asList(Column.string("name"),
-                                                   Column.integer("legs"),
-                                                   Column.string("size")));
-
-    private static final Format outputFormat =
-            new FixedWidthFormat("delimited-animals",
-                                 "Delimited animals format.",
-                                 Arrays.asList(Field.string("name", 10),
-                                               Field.string("size", 10)));
-
     @Test
     public void success() {
         String inputPath = base + "animals.csv";
@@ -55,15 +53,14 @@ public class FileToFilePipelineTest {
                 .filter(x -> x.getString("size").equals("MEDIUM"))
                 .toFile(outputPath, outputFormat);
 
-        FilePipelineResult result = pipeline.run();
+        PipelineResult<Nothing> result = pipeline.run();
 
         assertTrue(result.isOk());
         assertEquals(new Long(6), result.getInputCount());
         assertEquals(new Long(3), result.getOutputCount());
         assertEquals(new Long(0), result.getErrorCount());
-        assertTrue(result.getParseErrors().isEmpty());
-        assertTrue(result.getTransformErrors().isEmpty());
-        assertTrue(result.getSerializationErrors().isEmpty());
+        assertEquals(0, result.getErrors().size());
+        assertTrue(result.getErrors().isEmpty());
 
         assertEquals(IO.slurp(base + "expected-animals.dat"),
                      IO.slurp(base + "animals.dat"));
@@ -79,15 +76,12 @@ public class FileToFilePipelineTest {
                 .filter(x -> x.getString("size").equals("MEDIUM"))
                 .toFile(outputPath, outputFormat);
 
-        FilePipelineResult result = pipeline.run();
+        PipelineResult<Nothing> result = pipeline.run();
 
         assertFalse(result.isOk());
         assertEquals(new Long(6), result.getInputCount());
         assertEquals(new Long(2), result.getOutputCount());
         assertEquals(new Long(2), result.getErrorCount());
-        assertEquals(2, result.getParseErrors().size());
-        assertTrue(result.getTransformErrors().isEmpty());
-        assertTrue(result.getSerializationErrors().isEmpty());
 
         assertEquals(IO.slurp(base + "expected-bad-animals.dat"),
                      IO.slurp(base + "bad-animals.dat"));

@@ -19,9 +19,10 @@ import org.slf4j.LoggerFactory;
 public class PipelineInternals {
     private static final Logger log = LoggerFactory.getLogger(PipelineInternals.class);
 
-    public static CommonPipelineResult runWithOutputChannel(InputFile inputFile,
+    public static PipelineResult<Optional<List<Record>>> runWithOutputChannel(InputFile inputFile,
             List<Operation> operations,
-            OutputChannel outputChannel) {
+            OutputChannel outputChannel,
+            Boolean returnValues) {
         String inputPath = inputFile.getPath();
         Format inputFormat = inputFile.getFormat();
         int skip = inputFile.getSkip();
@@ -40,8 +41,12 @@ public class PipelineInternals {
 
         log.debug("Total line count: " + lineCount);
 
-        List<ParseResult> parseErrors = new LinkedList<>();
-        List<TransformResult> transformErrors = new LinkedList<>();
+        long parseErrorCount = 0;
+        long transformErrorCount = 0;
+
+        List<PipelineError> errors = new LinkedList<>();
+
+        List<Record> values = new LinkedList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(inputPath))) {
 
@@ -64,7 +69,8 @@ public class PipelineInternals {
                 ParseResult parseResult = inputFormat.parse(inputLine);
 
                 if (parseResult.hasProblems()) {
-                    parseErrors.add(parseResult);
+                    parseErrorCount++;
+                    errors.add(PipelineError.parse(number, inputLine, parseResult));
                 } else {
                     Record inputRecord = parseResult.getValue();
 
@@ -73,11 +79,20 @@ public class PipelineInternals {
                     if (transformResult.isOk()) {
                         Record value = transformResult.getRecord();
 
-                        boolean ok = outputChannel.receive(value);
+                        if (returnValues) {
+                            values.add(value);
+                        }
+
+                        boolean ok = outputChannel.receive(number, inputLine, value);
 
                         if (ok) {
                             outputCount++;
                         }
+                    }
+
+                    if (transformResult.isNotOk() && transformResult.isPresent()) {
+                        transformErrorCount++;
+                        errors.add(PipelineError.transform(number, inputLine, transformResult));
                     }
                 }
             }
@@ -88,13 +103,11 @@ public class PipelineInternals {
 
         log.debug("Input count: " + inputCount);
         log.debug("Output count: " + outputCount);
-        log.debug("Parse errors: " + parseErrors.size());
-        log.debug("Transform errors: " + transformErrors.size());
+        log.debug("Parse errors: " + parseErrorCount);
+        log.debug("Transform errors: " + transformErrorCount);
 
-        return new CommonPipelineResult(inputCount,
-                                        outputCount,
-                                        parseErrors,
-                                        transformErrors);
+        Optional<List<Record>> value = returnValues ? Optional.of(values) : Optional.empty();
+        return PipelineResult.of(value, inputCount, outputCount, errors);
     }
 
     private static TransformResult process(List<Operation> operations, Long number, String line, Record inputRecord) {

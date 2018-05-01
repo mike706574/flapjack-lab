@@ -12,7 +12,7 @@ public class FileOutputChannel implements OutputChannel {
     private final Spitter spitter;
     private final Format format;
 
-    private final List<SerializationResult> serializationErrors;
+    private final List<PipelineError> serializationErrors;
 
     public FileOutputChannel(String path, Format format) {
         this.spitter = new Spitter(path);
@@ -21,20 +21,20 @@ public class FileOutputChannel implements OutputChannel {
     }
 
     @Override
-    public boolean receive(Record value) {
+    public boolean receive(Long number, String line, Record value) {
         SerializationResult serializationResult = format.serialize(value);
 
-        if(serializationResult.isOk()) {
+        if (serializationResult.isOk()) {
             String outputLine = serializationResult.getValue();
             spitter.spit(outputLine);
             return true;
         }
 
-        serializationErrors.add(serializationResult);
+        serializationErrors.add(PipelineError.serialization(number, line, serializationResult));
         return false;
     }
 
-    public List<SerializationResult> getSerializationErrors() {
+    public List<PipelineError> getSerializationErrors() {
         return serializationErrors;
     }
 

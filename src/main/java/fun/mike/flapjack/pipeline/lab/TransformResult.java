@@ -26,7 +26,7 @@ public class TransformResult {
     }
 
     public static TransformResult ok(Long index, String line, Record record) {
-        return new TransformResult(true, false, false, index, null, null, line, record,null);
+        return new TransformResult(true, false, false, index, null, null, line, record, null);
     }
 
     public static TransformResult empty(Long index, String operationId, Integer operationIndex, String line, Record record) {
@@ -67,5 +67,20 @@ public class TransformResult {
 
     public Exception getException() {
         return exception;
+    }
+
+    @Override
+    public String toString() {
+        return "TransformResult{" +
+                "ok=" + ok +
+                ", none=" + none +
+                ", error=" + error +
+                ", number=" + number +
+                ", operationId='" + operationId + '\'' +
+                ", operationIndex=" + operationIndex +
+                ", line='" + line + '\'' +
+                ", record=" + record +
+                ", exception=" + exception +
+                '}';
     }
 }

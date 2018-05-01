@@ -17,7 +17,7 @@ public class DelimitedFormatExplainer {
         Character delimiter = format.getDelimiter();
         Framing framing = format.getFraming();
         Character frameDelimiter = format.getFrameDelimiter()
-            .orElse(null);
+                .orElse(null);
         boolean endingDelimiter = format.hasEndingDelimiter();
         int offset = format.getOffset();
         List<Column> columns = format.getColumns();

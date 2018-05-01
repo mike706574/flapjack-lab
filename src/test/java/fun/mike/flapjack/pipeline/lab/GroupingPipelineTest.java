@@ -34,15 +34,14 @@ public class GroupingPipelineTest {
                 .map(x -> x.updateString("size", String::toUpperCase))
                 .toGrouping(x -> x.getString("size"));
 
-        GroupingPipelineResult<String> result = pipeline.run();
+        PipelineResult<Map<String, List<Record>>> result = pipeline.run();
 
         assertTrue(result.isOk());
         assertEquals(new Long(6), result.getInputCount());
         assertEquals(new Long(6), result.getOutputCount());
-        assertTrue(result.getParseErrors().isEmpty());
-        assertTrue(result.getTransformErrors().isEmpty());
+        assertEquals(new Long(0), result.getErrorCount());
 
-        Map<String, List<Record>> values = result.getValues();
+        Map<String, List<Record>> values = result.getValue();
 
         assertEquals(4, values.size());
 
@@ -92,16 +91,16 @@ public class GroupingPipelineTest {
                 .map(x -> x.updateString("size", String::toUpperCase))
                 .toGrouping(x -> x.getString("size"));
 
-        GroupingPipelineResult<String> result = pipeline.run();
+        PipelineResult<Map<String, List<Record>>> result = pipeline.run();
 
         assertFalse(result.isOk());
 
         assertEquals(new Long(6), result.getInputCount());
         assertEquals(new Long(4), result.getOutputCount());
         assertEquals(new Long(2), result.getErrorCount());
-        assertEquals(2, result.getParseErrors().size());
+        assertEquals(new Long(2), result.getErrorCount());
 
-        Map<String, List<Record>> values = result.getValues();
+        Map<String, List<Record>> values = result.getValue();
 
         assertEquals(3, values.size());
 

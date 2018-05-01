@@ -34,16 +34,14 @@ public class SequentialPipelineTest {
                 .filter(x -> x.getString("size").equals("MEDIUM"))
                 .toSequence();
 
-        SequentialPipelineResult result = pipeline.run();
-
+        PipelineResult<List<Record>> result = pipeline.run();
 
         assertTrue(result.isOk());
         assertEquals(new Long(6), result.getInputCount());
         assertEquals(new Long(3), result.getOutputCount());
-        assertTrue(result.getParseErrors().isEmpty());
-        assertTrue(result.getTransformErrors().isEmpty());
 
-        List<Record> values = result.getValues();
+
+        List<Record> values = result.orElseThrow();
 
         assertEquals(3, values.size());
 
@@ -73,16 +71,16 @@ public class SequentialPipelineTest {
                 .filter(x -> x.getString("size").equals("MEDIUM"))
                 .toSequence();
 
-        SequentialPipelineResult result = pipeline.run();
+        PipelineResult<List<Record>> result = pipeline.run();
 
         assertFalse(result.isOk());
 
         assertEquals(new Long(6), result.getInputCount());
         assertEquals(new Long(2), result.getOutputCount());
         assertEquals(new Long(2), result.getErrorCount());
-        assertEquals(2, result.getParseErrors().size());
+        assertEquals(new Long(2), result.getErrorCount());
 
-        List<Record> values = result.getValues();
+        List<Record> values = result.getValue();
         assertEquals(2, values.size());
 
         assertEquals(Record.of("name", "dog",

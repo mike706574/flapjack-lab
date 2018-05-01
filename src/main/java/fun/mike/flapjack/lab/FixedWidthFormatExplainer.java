@@ -22,10 +22,10 @@ public class FixedWidthFormatExplainer {
             String type = field.getType();
             Map<String, Object> props = field.getProps();
             fieldTable.addRow(field.getId(),
-                               field.getLength(),
-                               field.getType(),
-                               AttributeExplainer.explainType(type),
-                               AttributeExplainer.explainProps(props));
+                              field.getLength(),
+                              field.getType(),
+                              AttributeExplainer.explainType(type),
+                              AttributeExplainer.explainProps(props));
             fieldTable.addRule();
         }
 

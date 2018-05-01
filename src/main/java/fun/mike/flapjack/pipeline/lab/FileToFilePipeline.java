@@ -3,11 +3,10 @@ package fun.mike.flapjack.pipeline.lab;
 import java.util.List;
 
 import fun.mike.flapjack.alpha.Format;
-import fun.mike.flapjack.alpha.SerializationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FileToFilePipeline {
+public class FileToFilePipeline implements Pipeline<Nothing> {
     private static final Logger log = LoggerFactory.getLogger(FileToFilePipeline.class);
     private final InputFile inputFile;
     private final List<Operation> operations;
@@ -19,17 +18,12 @@ public class FileToFilePipeline {
         this.outputFile = outputFile;
     }
 
-    private static final class Result {
-        public int inputCount;
-        public int outputCount;
-
-        public Result() {
-            this.inputCount = 0;
-            this.outputCount = 0;
-        }
+    @Override
+    public PipelineResult<Nothing> execute() {
+        return run();
     }
 
-    public FilePipelineResult run() {
+    public PipelineResult<Nothing> run() {
         log.debug("Running flow.");
 
         String outputPath = outputFile.getPath();
@@ -40,15 +34,15 @@ public class FileToFilePipeline {
 
         try (FileOutputChannel outputChannel = new FileOutputChannel(outputFile.getPath(),
                                                                      outputFile.getFormat())) {
-            CommonPipelineResult commonResult = PipelineInternals.runWithOutputChannel(inputFile,
-                                                                                 operations,
-                                                                                 outputChannel);
+            PipelineResult<?> result = PipelineInternals.runWithOutputChannel(inputFile,
+                                                                              operations,
+                                                                              outputChannel,
+                                                                              false);
 
-            List<SerializationResult> serializationErrors = outputChannel.getSerializationErrors();
+            List<PipelineError> errors = outputChannel.getSerializationErrors();
+            result = result.withErrors(outputChannel.getSerializationErrors());
 
-            FilePipelineResult result = new FilePipelineResult(commonResult, serializationErrors);
-
-            log.debug("Serialization errors: " + serializationErrors.size());
+            log.debug("Serialization errors: " + errors.size());
 
             if (result.isOk()) {
                 log.debug("Pipeline completed with no errors.");
@@ -56,7 +50,17 @@ public class FileToFilePipeline {
                 log.debug(String.format("Pipeline completed with %d errors.", result.getErrorCount()));
             }
 
-            return result;
+            return result.withValue(Nothing.value());
+        }
+    }
+
+    private static final class Result {
+        public int inputCount;
+        public int outputCount;
+
+        public Result() {
+            this.inputCount = 0;
+            this.outputCount = 0;
         }
     }
 }

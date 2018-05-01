@@ -45,7 +45,7 @@ FileToFilePipeline pipeline = Pipeline.fromFile("animals.csv", inputFormat)
     .toFile("medium-sized-animals.txt", outputFormat);
 
 // Run it
-FilePipelineResult result = pipeline.run();
+FilePipelineResult<Nothing> result = pipeline.run();
 
 // Check for errors
 result.isOk();
