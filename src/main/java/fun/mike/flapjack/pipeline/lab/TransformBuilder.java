@@ -64,7 +64,16 @@ public class TransformBuilder {
         return new TransformBuilder(inputFile, steps);
     }
 
-    public OutputFileBuilder to(String path, Format format) {
-        return new OutputFileBuilder(inputFile, steps, path, format);
+    public FileToFilePipeline toFile(String path, Format format) {
+        OutputFile outputFile = new OutputFile(path, format);
+        return new FileToFilePipeline(inputFile, steps, outputFile);
+    }
+
+    public SequentialPipeline toSequence() {
+        return new SequentialPipeline(inputFile, steps);
+    }
+
+    public <G> GroupingPipeline<G> toGrouping(Function<Record, G> groupBy) {
+        return new GroupingPipeline<>(inputFile, steps, groupBy);
     }
 }

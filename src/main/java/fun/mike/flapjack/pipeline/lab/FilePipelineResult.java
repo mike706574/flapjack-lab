@@ -10,19 +10,31 @@ import fun.mike.flapjack.alpha.ParseResult;
 import fun.mike.flapjack.alpha.Problem;
 import fun.mike.flapjack.alpha.SerializationResult;
 
-public class PipelineResult {
+public class FilePipelineResult {
     private final Long inputCount;
     private final Long outputCount;
     private final List<ParseResult> parseErrors;
     private final List<TransformResult> transformErrors;
     private final List<SerializationResult> serializationErrors;
 
-    public PipelineResult(Long inputCount, Long outputCount, List<ParseResult> parseErrors, List<TransformResult> transformErrors, List<SerializationResult> serializationErrors) {
+    public FilePipelineResult(Long inputCount, Long outputCount, List<ParseResult> parseErrors, List<TransformResult> transformErrors, List<SerializationResult> serializationErrors) {
         this.inputCount = inputCount;
         this.outputCount = outputCount;
         this.parseErrors = parseErrors;
         this.transformErrors = transformErrors;
         this.serializationErrors = serializationErrors;
+    }
+
+    public FilePipelineResult(CommonPipelineResult result, List<SerializationResult> serializationErrors) {
+        this.inputCount = result.getInputCount();
+        this.outputCount = result.getOutputCount();
+        this.parseErrors = result.getParseErrors();
+        this.transformErrors = result.getTransformErrors();
+        this.serializationErrors = serializationErrors;
+    }
+
+    public FilePipelineResult withSerializationErrors(List<SerializationResult> serializationErrors) {
+        return new FilePipelineResult(inputCount, outputCount, parseErrors, transformErrors, serializationErrors);
     }
 
     public boolean isOk() {
@@ -38,8 +50,7 @@ public class PipelineResult {
     }
 
     public Long getErrorCount() {
-        long errorCount = parseErrors.size() + transformErrors.size() + serializationErrors.size();
-        return errorCount;
+        return (long) (parseErrors.size() + transformErrors.size() + serializationErrors.size());
     }
 
     public List<ParseResult> getParseErrors() {
@@ -56,7 +67,7 @@ public class PipelineResult {
 
     @Override
     public String toString() {
-        return "PipelineResult{" +
+        return "FilePipelineResult{" +
                 "inputCount=" + inputCount +
                 ", outputCount=" + outputCount +
                 ", parseErrors=" + parseErrors +

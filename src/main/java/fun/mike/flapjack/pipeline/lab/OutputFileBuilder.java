@@ -17,8 +17,8 @@ public class OutputFileBuilder {
         this.outputFormat = outputFormat;
     }
 
-    public Pipeline build() {
+    public FileToFilePipeline build() {
         OutputFile outputFile = new OutputFile(outputPath, outputFormat);
-        return new Pipeline(inputFile, steps, outputFile);
+        return new FileToFilePipeline(inputFile, steps, outputFile);
     }
 }

@@ -5,7 +5,6 @@ import java.util.List;
 
 import fun.mike.flapjack.alpha.Field;
 import fun.mike.flapjack.alpha.FixedWidthFormat;
-import fun.mike.flapjack.lab.FixedWidthFormatExplainer;
 import org.junit.Test;
 
 

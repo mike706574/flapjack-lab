@@ -3,8 +3,8 @@ package fun.mike.flapjack.pipeline.lab;
 import fun.mike.flapjack.alpha.Format;
 
 public class OutputFile {
-    public final String path;
-    public final Format format;
+    private final String path;
+    private final Format format;
 
     public OutputFile(String path, Format format) {
         this.path = path;
@@ -14,8 +14,16 @@ public class OutputFile {
     @Override
     public String toString() {
         return "OutputFile{" +
-                "path='" + path + '\'' +
-                ", format=" + format +
+                "path='" + getPath() + '\'' +
+                ", format=" + getFormat() +
                 '}';
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public Format getFormat() {
+        return format;
     }
 }

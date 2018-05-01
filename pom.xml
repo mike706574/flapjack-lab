@@ -58,13 +58,22 @@
     <dependency>
       <groupId>fun.mike</groupId>
       <artifactId>flapjack-alpha</artifactId>
-      <version>0.0.43</version>
+      <version>0.0.44</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.8.0-beta2</version>
+    </dependency>
     <dependency>
       <groupId>fun.mike</groupId>
       <artifactId>io-support-alpha</artifactId>
       <version>0.0.8</version>
+    </dependency>
+    <dependency>
+      <groupId>fun.mike</groupId>
+      <artifactId>record-alpha</artifactId>
+      <version>0.0.24</version>
     </dependency>
 
     <dependency>

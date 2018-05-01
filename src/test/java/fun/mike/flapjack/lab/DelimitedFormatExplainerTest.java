@@ -5,7 +5,6 @@ import java.util.List;
 
 import fun.mike.flapjack.alpha.Column;
 import fun.mike.flapjack.alpha.DelimitedFormat;
-import fun.mike.flapjack.lab.DelimitedFormatExplainer;
 import org.junit.Test;
 
 
