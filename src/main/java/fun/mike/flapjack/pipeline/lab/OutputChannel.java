@@ -7,6 +7,7 @@ import fun.mike.record.alpha.Record;
 
 public interface OutputChannel extends AutoCloseable {
     boolean receive(Long number, String line, Record value);
+
     default List<PipelineError> getErrors() {
         return Collections.emptyList();
     }

@@ -11,23 +11,34 @@ import fun.mike.record.alpha.Record;
 public class GroupingOutputChannel<G> implements OutputChannel {
     private final Function<Record, G> groupBy;
     private final Map<G, List<Record>> values;
+    private final List<PipelineError> errors;
 
     public GroupingOutputChannel(Function<Record, G> groupBy) {
         this.values = new HashMap<>();
         this.groupBy = groupBy;
+        this.errors = new LinkedList<>();
     }
 
     @Override
     public boolean receive(Long number, String line, Record value) {
-        G group = groupBy.apply(value);
-        if (values.containsKey(group)) {
-            values.get(group).add(value);
-        } else {
-            List<Record> groupValues = new LinkedList<>();
-            groupValues.add(value);
-            values.put(group, groupValues);
+        try {
+            G group = groupBy.apply(value);
+            if (values.containsKey(group)) {
+                values.get(group).add(value);
+            } else {
+                List<Record> groupValues = new LinkedList<>();
+                groupValues.add(value);
+                values.put(group, groupValues);
+            }
+            return true;
+        } catch (Exception ex) {
+            errors.add(OutputPipelineError.build(number, line, value, ex));
+            return false;
         }
-        return true;
+    }
+
+    public List<PipelineError> getErrors() {
+        return errors;
     }
 
     public Map<G, List<Record>> getValues() {

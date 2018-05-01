@@ -1,11 +1,8 @@
 package fun.mike.flapjack.pipeline.lab;
 
-import java.util.List;
-
-import fun.mike.flapjack.alpha.Problem;
 import fun.mike.record.alpha.Record;
 
-public class TransformPipelineError implements PipelineError{
+public class TransformPipelineError implements PipelineError {
     private final Long number;
     private final String line;
     private final Record record;
@@ -24,6 +21,10 @@ public class TransformPipelineError implements PipelineError{
 
     public static TransformPipelineError fromResult(Long number, String line, TransformResult result) {
         return new TransformPipelineError(number, line, result.getRecord(), result.getOperationId(), result.getOperationNumber(), result.getException());
+    }
+
+    public Exception getException() {
+        return exception;
     }
 
     @Override

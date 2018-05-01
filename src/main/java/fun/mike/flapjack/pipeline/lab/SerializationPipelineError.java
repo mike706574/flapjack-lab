@@ -2,7 +2,6 @@ package fun.mike.flapjack.pipeline.lab;
 
 import java.util.List;
 
-import fun.mike.flapjack.alpha.ParseResult;
 import fun.mike.flapjack.alpha.Problem;
 import fun.mike.flapjack.alpha.SerializationResult;
 import fun.mike.record.alpha.Record;

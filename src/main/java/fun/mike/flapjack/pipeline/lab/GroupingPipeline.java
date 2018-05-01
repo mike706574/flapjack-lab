@@ -15,8 +15,8 @@ public class GroupingPipeline<G> implements Pipeline<Map<G, List<Record>>> {
     private final Function<Record, G> groupBy;
 
     public GroupingPipeline(InputFile inputFile,
-            List<Operation> operations,
-            Function<Record, G> groupBy) {
+                            List<Operation> operations,
+                            Function<Record, G> groupBy) {
         this.inputFile = inputFile;
         this.operations = operations;
         this.groupBy = groupBy;

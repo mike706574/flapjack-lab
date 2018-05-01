@@ -20,9 +20,9 @@ public class PipelineInternals {
     private static final Logger log = LoggerFactory.getLogger(PipelineInternals.class);
 
     public static PipelineResult<Optional<List<Record>>> runWithOutputChannel(InputFile inputFile,
-            List<Operation> operations,
-            OutputChannel outputChannel,
-            Boolean returnValues) {
+                                                                              List<Operation> operations,
+                                                                              OutputChannel outputChannel,
+                                                                              Boolean returnValues) {
         String inputPath = inputFile.getPath();
         Format inputFormat = inputFile.getFormat();
         int skip = inputFile.getSkip();

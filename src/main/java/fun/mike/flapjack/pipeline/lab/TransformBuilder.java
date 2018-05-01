@@ -2,6 +2,7 @@ package fun.mike.flapjack.pipeline.lab;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -9,8 +10,8 @@ import fun.mike.flapjack.alpha.Format;
 import fun.mike.record.alpha.Record;
 
 public class TransformBuilder {
-    private InputFile inputFile;
-    private List<Operation> steps;
+    private final InputFile inputFile;
+    private final List<Operation> steps;
 
     public TransformBuilder(InputFile inputFile, List<Operation> steps) {
         this.inputFile = inputFile;
@@ -18,11 +19,11 @@ public class TransformBuilder {
     }
 
     public static TransformBuilder first(InputFile inputFile, Function<Record, Record> mapper) {
-        return first("unlabeled", inputFile, mapper);
+        return first(null, inputFile, mapper);
     }
 
-    public static TransformBuilder first(String label, InputFile inputFile, Function<Record, Record> mapper) {
-        MapOperation operation = new MapOperation(label, mapper);
+    public static TransformBuilder first(String id, InputFile inputFile, Function<Record, Record> mapper) {
+        MapOperation operation = new MapOperation(id, mapper);
         List<Operation> steps = new LinkedList<>();
         steps.add(operation);
         return new TransformBuilder(inputFile, steps);
@@ -35,8 +36,8 @@ public class TransformBuilder {
         return new TransformBuilder(inputFile, steps);
     }
 
-    public static TransformBuilder first(String label, InputFile inputFile, Predicate<Record> predicate) {
-        FilterOperation operation = new FilterOperation(label, predicate);
+    public static TransformBuilder first(String id, InputFile inputFile, Predicate<Record> predicate) {
+        FilterOperation operation = new FilterOperation(id, predicate);
         List<Operation> steps = new LinkedList<>();
         steps.add(operation);
         return new TransformBuilder(inputFile, steps);
@@ -46,20 +47,18 @@ public class TransformBuilder {
         return map(null, mapper);
     }
 
-    public TransformBuilder map(String label, Function<Record, Record> mapper) {
-        MapOperation operation = new MapOperation(label, mapper);
+    public TransformBuilder map(String id, Function<Record, Record> mapper) {
+        MapOperation operation = new MapOperation(null, mapper);
         steps.add(operation);
         return new TransformBuilder(inputFile, steps);
     }
 
     public TransformBuilder filter(Predicate<Record> predicate) {
-        FilterOperation operation = new FilterOperation(null, predicate);
-        steps.add(operation);
-        return new TransformBuilder(inputFile, steps);
+        return filter(null, predicate);
     }
 
-    public TransformBuilder filter(String label, Predicate<Record> predicate) {
-        FilterOperation operation = new FilterOperation(label, predicate);
+    public TransformBuilder filter(String id, Predicate<Record> predicate) {
+        FilterOperation operation = new FilterOperation(null, predicate);
         steps.add(operation);
         return new TransformBuilder(inputFile, steps);
     }
@@ -75,5 +74,9 @@ public class TransformBuilder {
 
     public <G> GroupingPipeline<G> toGrouping(Function<Record, G> groupBy) {
         return new GroupingPipeline<>(inputFile, steps, groupBy);
+    }
+
+    public <T> ReducingPipeline<T> toReduction(T identityValue, BiFunction<T, Record, T> reducer) {
+        return new ReducingPipeline<>(inputFile, steps, identityValue, reducer);
     }
 }

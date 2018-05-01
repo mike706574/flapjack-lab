@@ -43,8 +43,8 @@ public class FileToFilePipeline implements Pipeline<Nothing> {
     }
 
     private static final class Result {
-        public int inputCount;
-        public int outputCount;
+        public final int inputCount;
+        public final int outputCount;
 
         public Result() {
             this.inputCount = 0;

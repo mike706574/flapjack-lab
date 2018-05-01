@@ -5,10 +5,10 @@ import java.util.List;
 import fun.mike.flapjack.alpha.Format;
 
 public class OutputFileBuilder {
-    private InputFile inputFile;
-    private List<Operation> steps;
-    private String outputPath;
-    private Format outputFormat;
+    private final InputFile inputFile;
+    private final List<Operation> steps;
+    private final String outputPath;
+    private final Format outputFormat;
 
     public OutputFileBuilder(InputFile inputFile, List<Operation> steps, String outputPath, Format outputFormat) {
         this.inputFile = inputFile;
