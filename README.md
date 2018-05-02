@@ -29,7 +29,8 @@ Format inputFormat =
                              "A bunch of animals.",
                              ',',
                              Arrays.asList(Column.string("name"),
-                                           Column.integer("legs")));
+                                           Column.integer("legs"),
+                                           Column.string("size")));
 
 // Define an output format
 Format outputFormat =
