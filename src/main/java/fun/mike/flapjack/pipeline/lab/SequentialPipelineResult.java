@@ -5,11 +5,7 @@ import java.util.List;
 import fun.mike.record.alpha.Record;
 
 public class SequentialPipelineResult extends PipelineResult<List<Record>> {
-    private SequentialPipelineResult(List<Record> value, Long inputCount, Long outputCount, List<PipelineError> errors) {
-        super(value, inputCount, outputCount, errors);
-    }
-
-    public static SequentialPipelineResult build(PipelineResult<List<Record>> result) {
-        return new SequentialPipelineResult(result.getValue(), result.getInputCount(), result.getOutputCount(), result.getErrors());
+    public SequentialPipelineResult(PipelineResult<List<Record>> result) {
+        super(result.getValue(), result.getInputFile(), result.getOutputContext(), result.getInputCount(), result.getOutputCount(), result.getErrors());
     }
 }

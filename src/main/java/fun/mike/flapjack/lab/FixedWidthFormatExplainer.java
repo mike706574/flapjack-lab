@@ -13,6 +13,18 @@ public class FixedWidthFormatExplainer {
         String id = format.getId();
         String description = format.getDescription();
         List<Field> fields = format.getFields();
+
+        AsciiTable summaryTable = new AsciiTable();
+        summaryTable.addRule();
+        summaryTable.addRow("Identifier", id);
+        summaryTable.addRule();
+        summaryTable.addRow("Type", "Fixed-width");
+        summaryTable.addRule();
+        summaryTable.addRow("Description", whenNull(description, "A fixed-width format."));
+        summaryTable.addRule();
+        summaryTable.addRow("Number of FIelds", fields.size());
+        summaryTable.addRule();
+
         AsciiTable fieldTable = new AsciiTable();
         fieldTable.addRule();
         fieldTable.addRow("Name", "Length", "Type", "Type Desc", "Props");
@@ -33,12 +45,17 @@ public class FixedWidthFormatExplainer {
                 .sum();
 
         return String.join("\n",
-                           "ID: " + id,
-                           "Type: Delimited",
-                           "Description: " + description,
-                           "Record Size: " + recordSize,
-                           "Number of Fields: " + fields.size(),
-                           "Fields:",
+                           "Summary:",
+                           summaryTable.render(),
+                           "Fields (" + fields.size() + " total):",
                            fieldTable.render());
     }
+
+    private static String whenNull(Object value, String defaultValue) {
+        if(value == null) {
+            return defaultValue;
+        }
+        return value.toString();
+    }
+
 }

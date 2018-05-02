@@ -11,7 +11,6 @@ import fun.mike.flapjack.alpha.Framing;
 public class DelimitedFormatExplainer {
 
     public static String explain(DelimitedFormat format) {
-
         String id = format.getId();
         String description = format.getDescription();
         Character delimiter = format.getDelimiter();
@@ -24,9 +23,13 @@ public class DelimitedFormatExplainer {
 
         AsciiTable summary = new AsciiTable();
         summary.addRule();
+        summary.addRow("Identifier", id);
+        summary.addRule();
         summary.addRow("Type", "Delimited");
         summary.addRule();
         summary.addRow("Description", whenNull(description, "A delimited format."));
+        summary.addRule();
+        summary.addRow("Number of Columns", columns.size());
         summary.addRule();
         summary.addRow("Delimiter", explainDelimiter(delimiter));
         summary.addRule();
@@ -56,6 +59,7 @@ public class DelimitedFormatExplainer {
         columnTable.addRule();
         columnTable.addRow("Name", "Type", "Type Desc", "Props");
         columnTable.addRule();
+
         for (Column column : columns) {
             String type = column.getType();
             Map<String, Object> props = column.getProps();
@@ -66,13 +70,7 @@ public class DelimitedFormatExplainer {
             columnTable.addRule();
         }
 
-        AsciiTable idTable = new AsciiTable();
-        idTable.addRule();
-        idTable.addRow(id);
-        idTable.addRule();
-
         return String.join("\n",
-                           idTable.render(40),
                            "Summary:",
                            summary.render(),
                            "Options:",

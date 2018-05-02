@@ -32,6 +32,6 @@ public class GroupingPipeline<G> implements Pipeline<Map<G, List<Record>>> {
         PipelineResult<Map<G, List<Record>>> result = PipelineInternals.runWithOutputChannel(flatInputFile,
                                                                                              operations,
                                                                                              outputContext);
-        return GroupingPipelineResult.build(result);
+        return new GroupingPipelineResult<>(result);
     }
 }

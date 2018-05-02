@@ -107,7 +107,7 @@ public class PipelineInternals {
 
             T value = outputChannel.getValue();
 
-            PipelineResult<T> result = PipelineResult.of(value, inputCount, outputCount, errors);
+            PipelineResult<T> result = PipelineResult.of(value, flatInputFile, outputContext, inputCount, outputCount, errors);
 
             if (result.isOk()) {
                 log.debug("Pipeline completed with no errors.");

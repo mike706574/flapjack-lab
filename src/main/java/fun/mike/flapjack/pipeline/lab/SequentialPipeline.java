@@ -21,7 +21,7 @@ public class SequentialPipeline implements Pipeline<List<Record>> {
         PipelineResult<List<Record>> result = PipelineInternals.runWithOutputChannel(flatInputFile,
                                                                                      operations,
                                                                                      outputContext);
-        return SequentialPipelineResult.build(result);
+        return new SequentialPipelineResult(result);
     }
 
     @Override
