@@ -5,12 +5,14 @@ import java.util.List;
 
 import fun.mike.record.alpha.Record;
 
-public interface OutputChannel extends AutoCloseable {
+public interface OutputChannel<T> extends AutoCloseable {
     boolean receive(Long number, String line, Record value);
 
     default List<PipelineError> getErrors() {
         return Collections.emptyList();
     }
+
+    T getValue();
 
     void close();
 }

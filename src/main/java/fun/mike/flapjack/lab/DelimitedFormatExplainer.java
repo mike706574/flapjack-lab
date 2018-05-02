@@ -24,13 +24,17 @@ public class DelimitedFormatExplainer {
 
         AsciiTable summary = new AsciiTable();
         summary.addRule();
-        summary.addRow(explainDelimiter(delimiter));
+        summary.addRow("Type", "Delimited");
         summary.addRule();
-        summary.addRow(explainFraming(framing, frameDelimiter));
+        summary.addRow("Description", whenNull(description, "A delimited format."));
         summary.addRule();
-        summary.addRow(explainEndingDelimiter(endingDelimiter));
+        summary.addRow("Delimiter", explainDelimiter(delimiter));
         summary.addRule();
-        summary.addRow(explainOffset(offset));
+        summary.addRow("Framing", explainFraming(framing, frameDelimiter));
+        summary.addRule();
+        summary.addRow("Ending Delimiter", explainEndingDelimiter(endingDelimiter));
+        summary.addRule();
+        summary.addRow("Offset", explainOffset(offset));
         summary.addRule();
 
         AsciiTable options = new AsciiTable();
@@ -41,11 +45,11 @@ public class DelimitedFormatExplainer {
         options.addRule();
         options.addRow("endingDelimiter", "Whether or not an ending delimiter is required", endingDelimiter);
         options.addRule();
-        options.addRow("framing", "Whether or not values are framed", framing);
+        options.addRow("framing", "Whether or not values are framed", whenNull(framing, "null"));
         options.addRule();
-        options.addRow("frameDelimiter", "Frame delimiter", frameDelimiter);
+        options.addRow("frameDelimiter", "Frame delimiter", whenNull(frameDelimiter, "N/A"));
         options.addRule();
-        options.addRow("offset", "Number of columns to skip", offset);
+        options.addRow("offset", "Number of columns to skip", whenNull(offset, "null"));
         options.addRule();
 
         AsciiTable columnTable = new AsciiTable();
@@ -62,17 +66,26 @@ public class DelimitedFormatExplainer {
             columnTable.addRule();
         }
 
+        AsciiTable idTable = new AsciiTable();
+        idTable.addRule();
+        idTable.addRow(id);
+        idTable.addRule();
+
         return String.join("\n",
-                           "ID: " + id,
-                           "Type: Delimited",
-                           "Description: " + description,
-                           "Number of Columns: " + columns.size(),
+                           idTable.render(40),
                            "Summary:",
                            summary.render(),
                            "Options:",
                            options.render(),
                            "Columns (" + columns.size() + " total):",
                            columnTable.render());
+    }
+
+    private static String whenNull(Object value, String defaultValue) {
+        if(value == null) {
+            return defaultValue;
+        }
+        return value.toString();
     }
 
     private static String explainOffset(int offset) {

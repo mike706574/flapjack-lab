@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 public class FileToFilePipelineTest {
     private static final String base = "src/test/resources/pipeline/";
+
     private static final Format inputFormat =
             DelimitedFormat.unframed("delimited-animals",
                                      "Delimited animals format.",
@@ -25,6 +26,14 @@ public class FileToFilePipelineTest {
                                      Arrays.asList(Column.string("name"),
                                                    Column.integer("legs"),
                                                    Column.string("size")));
+
+    private static final Format anotherFormat =
+            DelimitedFormat.unframed("delimited-animals-2",
+                                     "Another delimited animals format.",
+                                     ',',
+                                     Arrays.asList(Column.string("name"),
+                                                   Column.string("size"),
+                                                   Column.integer("legs")));
     private static final Format outputFormat =
             new FixedWidthFormat("delimited-animals",
                                  "Delimited animals format.",
@@ -34,12 +43,14 @@ public class FileToFilePipelineTest {
     @Before
     public void setUp() {
         IO.nuke(base + "animals.dat");
+        IO.nuke(base + "animals-with-header.csv");
         IO.nuke(base + "bad-animals.dat");
     }
 
     @After
     public void tearDown() {
         IO.nuke(base + "animals.dat");
+        IO.nuke(base + "animals-with-header.csv");
         IO.nuke(base + "bad-animals.dat");
     }
 
@@ -51,7 +62,8 @@ public class FileToFilePipelineTest {
         FileToFilePipeline pipeline = Pipeline.fromFile(inputPath, inputFormat)
                 .map(x -> x.updateString("size", String::toUpperCase))
                 .filter(x -> x.getString("size").equals("MEDIUM"))
-                .toFile(outputPath, outputFormat);
+                .toFile(outputPath, outputFormat)
+                .build();
 
         PipelineResult<Nothing> result = pipeline.run();
 
@@ -67,6 +79,31 @@ public class FileToFilePipelineTest {
     }
 
     @Test
+    public void successWithHeader() {
+        String inputPath = base + "animals.csv";
+        String outputPath = base + "animals-with-header.csv";
+
+        FileToFilePipeline pipeline = Pipeline.fromFile(inputPath, inputFormat)
+                .map(x -> x.updateString("size", String::toUpperCase))
+                .filter(x -> x.getString("size").equals("MEDIUM"))
+                .toFile(outputPath, anotherFormat)
+                .includeHeader()
+                .build();
+
+        PipelineResult<Nothing> result = pipeline.run();
+
+        assertTrue(result.isOk());
+        assertEquals(new Long(6), result.getInputCount());
+        assertEquals(new Long(3), result.getOutputCount());
+        assertEquals(new Long(0), result.getErrorCount());
+        assertEquals(0, result.getErrors().size());
+        assertTrue(result.getErrors().isEmpty());
+
+        assertEquals(IO.slurp(base + "expected-animals-with-header.csv"),
+                     IO.slurp(base + "animals-with-header.csv"));
+    }
+
+    @Test
     public void failure() {
         String inputPath = base + "bad-animals.csv";
         String outputPath = base + "bad-animals.dat";
@@ -74,7 +111,8 @@ public class FileToFilePipelineTest {
         FileToFilePipeline pipeline = Pipeline.fromFile(inputPath, inputFormat)
                 .map(x -> x.updateString("size", String::toUpperCase))
                 .filter(x -> x.getString("size").equals("MEDIUM"))
-                .toFile(outputPath, outputFormat);
+                .toFile(outputPath, outputFormat)
+                .build();
 
         PipelineResult<Nothing> result = pipeline.run();
 

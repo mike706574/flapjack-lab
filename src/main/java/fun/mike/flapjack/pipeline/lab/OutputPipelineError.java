@@ -28,4 +28,17 @@ public class OutputPipelineError implements PipelineError {
     public String getLine() {
         return line;
     }
+
+    @Override
+    public void accept(PipelineErrorVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    public Record getRecord() {
+        return record;
+    }
+
+    public Exception getException() {
+        return exception;
+    }
 }

@@ -19,14 +19,13 @@ import org.slf4j.LoggerFactory;
 public class PipelineInternals {
     private static final Logger log = LoggerFactory.getLogger(PipelineInternals.class);
 
-    public static PipelineResult<Optional<List<Record>>> runWithOutputChannel(InputFile inputFile,
-                                                                              List<Operation> operations,
-                                                                              OutputChannel outputChannel,
-                                                                              Boolean returnValues) {
-        String inputPath = inputFile.getPath();
-        Format inputFormat = inputFile.getFormat();
-        int skip = inputFile.getSkip();
-        int skipLast = inputFile.getSkipLast();
+    public static <T> PipelineResult<T> runWithOutputChannel(FlatInputFile flatInputFile,
+                                                             List<Operation> operations,
+                                                             OutputContext<T> outputContext) {
+        String inputPath = flatInputFile.getPath();
+        Format inputFormat = flatInputFile.getFormat();
+        int skip = flatInputFile.getSkip();
+        int skipLast = flatInputFile.getSkipLast();
 
         log.debug("Input path: " + inputPath);
         log.debug("Input format: " + inputFormat);
@@ -45,10 +44,13 @@ public class PipelineInternals {
         long transformErrorCount = 0;
 
         List<PipelineError> errors = new LinkedList<>();
-
         List<Record> values = new LinkedList<>();
+        List<PipelineError> outputErrors;
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(inputPath))) {
+        List<CompiledOperation> compiledOperations = Operations.compile(operations);
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputPath));
+             OutputChannel<T> outputChannel = outputContext.buildChannel()) {
 
             log.debug("Skipping " + skip + " lines.");
             while (lineIndex < skip && lineIndex < lineCount) {
@@ -74,7 +76,7 @@ public class PipelineInternals {
                 } else {
                     Record inputRecord = parseResult.getValue();
 
-                    TransformResult transformResult = process(operations, number, inputLine, inputRecord);
+                    TransformResult transformResult = process(compiledOperations, number, inputLine, inputRecord);
 
                     if (transformResult.isOk()) {
                         Record value = transformResult.getRecord();
@@ -82,9 +84,6 @@ public class PipelineInternals {
                         boolean ok = outputChannel.receive(number, inputLine, value);
 
                         if (ok) {
-                            if (returnValues) {
-                                values.add(value);
-                            }
                             outputCount++;
                         }
                     }
@@ -95,55 +94,52 @@ public class PipelineInternals {
                     }
                 }
             }
+
+            outputErrors = outputChannel.getErrors();
+
+            log.debug("Input count: " + inputCount);
+            log.debug("Output count: " + outputCount);
+            log.debug("Parse errors: " + parseErrorCount);
+            log.debug("Transform errors: " + transformErrorCount);
+            log.debug("Output errors: " + outputErrors.size());
+
+            errors.addAll(outputErrors);
+
+            T value = outputChannel.getValue();
+
+            PipelineResult<T> result = PipelineResult.of(value, inputCount, outputCount, errors);
+
+            if (result.isOk()) {
+                log.debug("Pipeline completed with no errors.");
+            } else {
+                log.debug(String.format("Pipeline completed with %d errors.", result.getErrorCount()));
+            }
+
+            return result;
         } catch (IOException ex) {
-            // TODO
-            throw new UncheckedIOException(ex);
+            throw new UncheckedIOException("I/O error while running pipeline.", ex);
         }
-
-        List<PipelineError> outputErrors = outputChannel.getErrors();
-
-        log.debug("Input count: " + inputCount);
-        log.debug("Output count: " + outputCount);
-        log.debug("Parse errors: " + parseErrorCount);
-        log.debug("Transform errors: " + transformErrorCount);
-        log.debug("Output errors: " + outputErrors.size());
-
-        errors.addAll(outputErrors);
-
-        Optional<List<Record>> value = returnValues ? Optional.of(values) : Optional.empty();
-
-        PipelineResult<Optional<List<Record>>> result = PipelineResult.of(value, inputCount, outputCount, errors);
-
-        if (result.isOk()) {
-            log.debug("Pipeline completed with no errors.");
-        } else {
-            log.debug(String.format("Pipeline completed with %d errors.", result.getErrorCount()));
-        }
-
-        return result;
     }
 
-    private static TransformResult process(List<Operation> operations, Long number, String line, Record inputRecord) {
+    private static TransformResult process(List<CompiledOperation> compiledOperations, Long number, String line, Record inputRecord) {
         Record outputRecord = inputRecord;
         String operationId = null;
         Long operationNumber = 1L;
-        try {
-            for (Operation operation : operations) {
-
-                operationId = operation.getId();
-                Optional<Record> result = operation.run(outputRecord);
+        for (CompiledOperation compiledOperation : compiledOperations) {
+            try {
+                Optional<Record> result = compiledOperation.getOperation().run(outputRecord);
 
                 if (!result.isPresent()) {
-                    return TransformResult.empty(number, operationId, operationNumber, line, outputRecord);
+                    return TransformResult.empty(number, line, outputRecord, compiledOperation.getInfo());
                 }
 
                 outputRecord = result.get();
                 operationNumber++;
+            } catch (Exception ex) {
+                return TransformResult.error(number, line, outputRecord, compiledOperation.getInfo(), ex);
             }
-            return TransformResult.ok(number, line, outputRecord);
-        } catch (Exception ex) {
-            return TransformResult.error(number, operationId, operationNumber, line, outputRecord, ex);
         }
+        return TransformResult.ok(number, line, outputRecord);
     }
 
     private static long countLines(String path) {

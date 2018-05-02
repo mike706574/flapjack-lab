@@ -6,16 +6,16 @@ import java.util.function.BiFunction;
 
 import fun.mike.record.alpha.Record;
 
-public class ReducingOutputChannel<T> implements OutputChannel {
-    private final BiFunction<T, Record, T> reducer;
+public class ReducingOutputChannel<T> implements OutputChannel<T> {
     private final T identityValue;
+    private final BiFunction<T, Record, T> reducer;
     private T reducedValue;
     private List<PipelineError> errors;
 
     public ReducingOutputChannel(T identityValue, BiFunction<T, Record, T> reducer) {
         this.identityValue = identityValue;
-        this.reducedValue = identityValue;
         this.reducer = reducer;
+        this.reducedValue = identityValue;
         this.errors = new LinkedList<>();
     }
 
@@ -40,6 +40,5 @@ public class ReducingOutputChannel<T> implements OutputChannel {
     }
 
     @Override
-    public void close() {
-    }
+    public void close() {}
 }

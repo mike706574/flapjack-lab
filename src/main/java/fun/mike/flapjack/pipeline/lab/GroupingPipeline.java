@@ -10,14 +10,14 @@ import org.slf4j.LoggerFactory;
 
 public class GroupingPipeline<G> implements Pipeline<Map<G, List<Record>>> {
     private static final Logger log = LoggerFactory.getLogger(SequentialPipeline.class);
-    private final InputFile inputFile;
+    private final FlatInputFile flatInputFile;
     private final List<Operation> operations;
     private final Function<Record, G> groupBy;
 
-    public GroupingPipeline(InputFile inputFile,
+    public GroupingPipeline(FlatInputFile flatInputFile,
                             List<Operation> operations,
                             Function<Record, G> groupBy) {
-        this.inputFile = inputFile;
+        this.flatInputFile = flatInputFile;
         this.operations = operations;
         this.groupBy = groupBy;
     }
@@ -28,11 +28,10 @@ public class GroupingPipeline<G> implements Pipeline<Map<G, List<Record>>> {
     }
 
     public GroupingPipelineResult<G> run() {
-        GroupingOutputChannel<G> outputChannel = new GroupingOutputChannel<>(groupBy);
-        PipelineResult<?> result = PipelineInternals.runWithOutputChannel(inputFile,
-                                                                          operations,
-                                                                          outputChannel,
-                                                                          false);
-        return GroupingPipelineResult.build(result.withValue(outputChannel.getValues()));
+        OutputContext<Map<G, List<Record>>> outputContext = new GroupingOutputContext<>(groupBy);
+        PipelineResult<Map<G, List<Record>>> result = PipelineInternals.runWithOutputChannel(flatInputFile,
+                                                                                             operations,
+                                                                                             outputContext);
+        return GroupingPipelineResult.build(result);
     }
 }

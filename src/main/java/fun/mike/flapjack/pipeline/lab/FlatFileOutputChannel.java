@@ -3,20 +3,27 @@ package fun.mike.flapjack.pipeline.lab;
 import java.util.LinkedList;
 import java.util.List;
 
+import fun.mike.flapjack.alpha.DelimitedFormat;
 import fun.mike.flapjack.alpha.Format;
 import fun.mike.flapjack.alpha.SerializationResult;
 import fun.mike.io.alpha.Spitter;
 import fun.mike.record.alpha.Record;
 
-public class FileOutputChannel implements OutputChannel {
+public class FlatFileOutputChannel implements OutputChannel<Nothing> {
     private final Spitter spitter;
     private final Format format;
 
     private final List<PipelineError> errors;
 
-    public FileOutputChannel(String path, Format format) {
-        this.spitter = new Spitter(path);
+    public FlatFileOutputChannel(String path, Format format, Boolean includeHeader) {
         this.format = format;
+
+        this.spitter = new Spitter(path);
+
+        if(includeHeader && format instanceof DelimitedFormat) {
+            spitter.spit(HeaderBuilder.build((DelimitedFormat) format));
+        }
+
         this.errors = new LinkedList<>();
     }
 
@@ -36,6 +43,11 @@ public class FileOutputChannel implements OutputChannel {
 
     public List<PipelineError> getErrors() {
         return errors;
+    }
+
+    @Override
+    public Nothing getValue() {
+        return Nothing.value();
     }
 
     @Override

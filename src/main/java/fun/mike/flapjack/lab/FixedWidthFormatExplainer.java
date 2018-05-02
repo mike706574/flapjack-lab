@@ -10,7 +10,6 @@ import fun.mike.flapjack.alpha.FixedWidthFormat;
 public class FixedWidthFormatExplainer {
 
     public static String explain(FixedWidthFormat format) {
-
         String id = format.getId();
         String description = format.getDescription();
         List<Field> fields = format.getFields();

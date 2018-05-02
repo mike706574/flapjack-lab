@@ -37,8 +37,7 @@ public class ReducingPipelineTest {
                                  Integer count = tally.getOrDefault(size, 0);
                                  tally.put(size, count + 1);
                                  return tally;
-                             }
-                );
+                             });
 
         PipelineResult<Map<String, Integer>> result = pipeline.run();
 
@@ -70,8 +69,7 @@ public class ReducingPipelineTest {
                                  Integer count = tally.getOrDefault(size, 0);
                                  tally.put(size, count + 1);
                                  return tally;
-                             }
-                );
+                             });
 
         PipelineResult<Map<String, Integer>> result = pipeline.run();
 

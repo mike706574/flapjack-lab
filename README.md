@@ -37,12 +37,13 @@ Format outputFormat =
                      "A bunch of medium-sized animals.",
                      Arrays.asList(Field.string("name", 10),
                                    Field.string("size", 10)));
-                                   
+
 // Build a pipeline
-FileToFilePipeline pipeline = Pipeline.fromFile("animals.csv", inputFormat)
+result = Pipeline.fromFile("animals.csv", inputFormat)
     .filter(x -> x.getString("size").equals("MEDIUM"))
     .map(x -> x.updateString("name", String::toUpperCase))
-    .toFile("medium-sized-animals.txt", outputFormat);
+    .toFile("medium-sized-animals.txt", outputFormat)
+    .build();
 
 // Run it
 PipelineResult<Nothing> result = pipeline.run();
@@ -66,9 +67,9 @@ result.getOutputCount();
 `medium-sized-animals.txt`
 
 ```
-DOG       4         
-FOX       4         
-OSTRICH   2         
+DOG       4
+FOX       4
+OSTRICH   2
 ```
 
 ## Build

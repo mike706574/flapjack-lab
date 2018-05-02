@@ -22,6 +22,7 @@ public class InputFileBuilder {
         this.skipLast = 0;
     }
 
+    // Options
     public InputFileBuilder skipFirst(int count) {
         this.skipFirst = count;
         return this;
@@ -32,33 +33,39 @@ public class InputFileBuilder {
         return this;
     }
 
+    // Map
     public TransformBuilder map(Function<Record, Record> mapper) {
-        return TransformBuilder.first(buildInputFile(), mapper);
+        return TransformBuilder.mapFirst(null, null, buildInputFile(), mapper);
     }
 
-    public TransformBuilder map(String label, Function<Record, Record> mapper) {
-        return TransformBuilder.first(label, buildInputFile(), mapper);
+    public TransformBuilder map(String id, Function<Record, Record> mapper) {
+        return TransformBuilder.mapFirst(id, null, buildInputFile(), mapper);
     }
 
+    public TransformBuilder map(String id, String description, Function<Record, Record> mapper) {
+        return TransformBuilder.mapFirst(id, description, buildInputFile(), mapper);
+    }
+
+    // Filter
     public TransformBuilder filter(Predicate<Record> predicate) {
-        return TransformBuilder.first(buildInputFile(), predicate);
+        return TransformBuilder.filterFirst(null, null, buildInputFile(), predicate);
     }
 
-    public TransformBuilder filter(String label, Predicate<Record> predicate) {
-        return TransformBuilder.first(label, buildInputFile(), predicate);
+    public TransformBuilder filter(String id, Predicate<Record> predicate) {
+        return TransformBuilder.filterFirst(id, null, buildInputFile(), predicate);
     }
 
-    private InputFile buildInputFile() {
-        return new InputFile(inputPath, inputFormat, skipFirst, skipLast);
+    public TransformBuilder filter(String id, String description, Predicate<Record> predicate) {
+        return TransformBuilder.filterFirst(id, description, buildInputFile(), predicate);
     }
 
-    public FileToFilePipeline toFile(String path, Format format) {
-        OutputFile outputFile = new OutputFile(path, format);
-        return new FileToFilePipeline(buildInputFile(), emptyList(), outputFile);
+    // Next
+    public FlatOutputFileBuilder toFile(String path, Format format) {
+        return new FlatOutputFileBuilder(buildInputFile(), emptyList(), path, format, false);
     }
 
     public SequentialPipeline toSequence() {
-        InputFile inputFile = new InputFile(inputPath, inputFormat, skipFirst, skipLast);
+        FlatInputFile flatInputFile = new FlatInputFile(inputPath, inputFormat, skipFirst, skipLast);
         return new SequentialPipeline(buildInputFile(), emptyList());
     }
 
@@ -67,10 +74,16 @@ public class InputFileBuilder {
     }
 
     public <T> ReducingPipeline<T> toReduction(T identityValue, BiFunction<T, Record, T> reducer) {
-        return new ReducingPipeline<>(buildInputFile(), emptyList(), identityValue, reducer);
+        Reduction<T> reduction = new Reduction<>(identityValue, reducer);
+        return new ReducingPipeline<>(buildInputFile(), emptyList(), reduction);
     }
 
+    // Private
     private <T> List<T> emptyList() {
         return Collections.emptyList();
+    }
+
+    private FlatInputFile buildInputFile() {
+        return new FlatInputFile(inputPath, inputFormat, skipFirst, skipLast);
     }
 }

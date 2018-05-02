@@ -1,7 +1,6 @@
 package fun.mike.flapjack.pipeline.lab;
 
 import java.util.List;
-import java.util.Optional;
 
 import fun.mike.record.alpha.Record;
 import org.slf4j.Logger;
@@ -9,21 +8,19 @@ import org.slf4j.LoggerFactory;
 
 public class SequentialPipeline implements Pipeline<List<Record>> {
     private static final Logger log = LoggerFactory.getLogger(SequentialPipeline.class);
-    private final InputFile inputFile;
+    private final FlatInputFile flatInputFile;
     private final List<Operation> operations;
 
-    public SequentialPipeline(InputFile inputFile, List<Operation> operations) {
-        this.inputFile = inputFile;
+    public SequentialPipeline(FlatInputFile flatInputFile, List<Operation> operations) {
+        this.flatInputFile = flatInputFile;
         this.operations = operations;
     }
 
     public SequentialPipelineResult run() {
-        OutputChannel outputChannel = NoOpOutputChannel.build();
-        PipelineResult<List<Record>> result = PipelineInternals.runWithOutputChannel(inputFile,
+        SequentialOutputContext outputContext = new SequentialOutputContext();
+        PipelineResult<List<Record>> result = PipelineInternals.runWithOutputChannel(flatInputFile,
                                                                                      operations,
-                                                                                     outputChannel,
-                                                                                     true)
-                .map(Optional::get);
+                                                                                     outputContext);
         return SequentialPipelineResult.build(result);
     }
 
