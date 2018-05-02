@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class GroupingPipelineTest {
+public class GroupPipelineTest {
     private static final String base = "src/test/resources/pipeline/";
 
     private static final Format inputFormat =
@@ -30,9 +30,9 @@ public class GroupingPipelineTest {
         String inputPath = base + "animals.csv";
         String outputPath = base + "animals.dat";
 
-        GroupingPipeline<String> pipeline = Pipeline.fromFile(inputPath, inputFormat)
+        GroupPipeline<String> pipeline = Pipeline.fromFile(inputPath, inputFormat)
                 .map(x -> x.updateString("size", String::toUpperCase))
-                .toGrouping(x -> x.getString("size"));
+                .groupBy(x -> x.getString("size"));
 
         PipelineResult<Map<String, List<Record>>> result = pipeline.run();
 
@@ -87,9 +87,9 @@ public class GroupingPipelineTest {
         String inputPath = base + "bad-animals.csv";
         String outputPath = base + "animals.dat";
 
-        GroupingPipeline<String> pipeline = Pipeline.fromFile(inputPath, inputFormat)
+        GroupPipeline<String> pipeline = Pipeline.fromFile(inputPath, inputFormat)
                 .map(x -> x.updateString("size", String::toUpperCase))
-                .toGrouping(x -> x.getString("size"));
+                .groupBy(x -> x.getString("size"));
 
         PipelineResult<Map<String, List<Record>>> result = pipeline.run();
 

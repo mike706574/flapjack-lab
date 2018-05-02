@@ -4,10 +4,10 @@ import java.util.List;
 
 import fun.mike.record.alpha.Record;
 
-public class SequentialOutputContext implements OutputContext<List<Record>> {
+public class ListOutputContext implements OutputContext<List<Record>> {
     @Override
     public OutputChannel<List<Record>> buildChannel() {
-        return new SequentialOutputChannel();
+        return new ListOutputChannel();
     }
 
     @Override

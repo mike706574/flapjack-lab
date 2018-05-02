@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class ReducingPipelineTest {
+public class ReducePipelineTest {
     private static final String base = "src/test/resources/pipeline/";
 
     private static final Format inputFormat =
@@ -29,10 +29,10 @@ public class ReducingPipelineTest {
         String inputPath = base + "animals.csv";
         String outputPath = base + "animals.dat";
 
-        ReducingPipeline<Map<String, Integer>> pipeline = Pipeline.fromFile(inputPath, inputFormat)
+        ReducePipeline<Map<String, Integer>> pipeline = Pipeline.fromFile(inputPath, inputFormat)
                 .map(record -> record.updateString("size", String::toUpperCase))
-                .toReduction(new HashMap<>(),
-                             (tally, record) -> {
+                .reduce(new HashMap<>(),
+                        (tally, record) -> {
                                  String size = record.getString("size");
                                  Integer count = tally.getOrDefault(size, 0);
                                  tally.put(size, count + 1);
@@ -61,10 +61,10 @@ public class ReducingPipelineTest {
         String inputPath = base + "bad-animals.csv";
         String outputPath = base + "animals.dat";
 
-        ReducingPipeline<Map<String, Integer>> pipeline = Pipeline.fromFile(inputPath, inputFormat)
+        ReducePipeline<Map<String, Integer>> pipeline = Pipeline.fromFile(inputPath, inputFormat)
                 .map(x -> x.updateString("size", String::toUpperCase))
-                .toReduction(new HashMap<>(),
-                             (tally, record) -> {
+                .reduce(new HashMap<>(),
+                        (tally, record) -> {
                                  String size = record.getString("size");
                                  Integer count = tally.getOrDefault(size, 0);
                                  tally.put(size, count + 1);

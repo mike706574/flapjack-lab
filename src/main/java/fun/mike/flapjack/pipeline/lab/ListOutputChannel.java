@@ -5,15 +5,15 @@ import java.util.List;
 
 import fun.mike.record.alpha.Record;
 
-public class SequentialOutputChannel implements OutputChannel<List<Record>> {
+public class ListOutputChannel implements OutputChannel<List<Record>> {
     private final List<Record> records;
 
-    public SequentialOutputChannel() {
+    public ListOutputChannel() {
         records = new LinkedList<>();
     }
 
-    public static SequentialOutputChannel build() {
-        return new SequentialOutputChannel();
+    public static ListOutputChannel build() {
+        return new ListOutputChannel();
     }
 
     @Override

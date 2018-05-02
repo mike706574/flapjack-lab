@@ -83,14 +83,12 @@ public class FileToFilePipelineTest {
         String inputPath = base + "animals.csv";
         String outputPath = base + "animals-with-header.csv";
 
-        FileToFilePipeline pipeline = Pipeline.fromFile(inputPath, inputFormat)
+        PipelineResult<Nothing> result= Pipeline.fromFile(inputPath, inputFormat)
                 .map(x -> x.updateString("size", String::toUpperCase))
                 .filter(x -> x.getString("size").equals("MEDIUM"))
                 .toFile(outputPath, anotherFormat)
                 .includeHeader()
-                .build();
-
-        PipelineResult<Nothing> result = pipeline.run();
+                .run();
 
         assertTrue(result.isOk());
         assertEquals(new Long(6), result.getInputCount());

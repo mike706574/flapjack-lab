@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class SequentialPipelineTest {
+public class ListPipelineTest {
     private static final String base = "src/test/resources/pipeline/";
 
     private static final Format inputFormat =
@@ -29,10 +29,10 @@ public class SequentialPipelineTest {
         String inputPath = base + "animals.csv";
         String outputPath = base + "animals.dat";
 
-        SequentialPipeline pipeline = Pipeline.fromFile(inputPath, inputFormat)
+        ListPipeline pipeline = Pipeline.fromFile(inputPath, inputFormat)
                 .map(x -> x.updateString("size", String::toUpperCase))
                 .filter(x -> x.getString("size").equals("MEDIUM"))
-                .toSequence();
+                .toList();
 
         PipelineResult<List<Record>> result = pipeline.run();
 
@@ -66,10 +66,10 @@ public class SequentialPipelineTest {
         String inputPath = base + "bad-animals.csv";
         String outputPath = base + "animals.dat";
 
-        SequentialPipeline pipeline = Pipeline.fromFile(inputPath, inputFormat)
+        ListPipeline pipeline = Pipeline.fromFile(inputPath, inputFormat)
                 .map(x -> x.updateString("size", String::toUpperCase))
                 .filter(x -> x.getString("size").equals("MEDIUM"))
-                .toSequence();
+                .toList();
 
         PipelineResult<List<Record>> result = pipeline.run();
 

@@ -8,12 +8,12 @@ import java.util.function.Function;
 
 import fun.mike.record.alpha.Record;
 
-public class GroupingOutputChannel<G> implements OutputChannel<Map<G, List<Record>>> {
+public class GroupOutputChannel<G> implements OutputChannel<Map<G, List<Record>>> {
     private final Function<Record, G> groupBy;
     private final Map<G, List<Record>> values;
     private final List<PipelineError> errors;
 
-    public GroupingOutputChannel(Function<Record, G> groupBy) {
+    public GroupOutputChannel(Function<Record, G> groupBy) {
         this.values = new HashMap<>();
         this.groupBy = groupBy;
         this.errors = new LinkedList<>();
@@ -44,10 +44,6 @@ public class GroupingOutputChannel<G> implements OutputChannel<Map<G, List<Recor
     @Override
     public Map<G, List<Record>> getValue() {
         return values;
-    }
-
-    public Map<G, List<Record>> getValues() {
-        return new Group<>(values);
     }
 
     @Override

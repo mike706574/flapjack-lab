@@ -22,11 +22,11 @@ public class ExampleTest {
                                                    Column.string("size")));
 
         // Build a pipeline
-        SequentialPipelineResult result =
+        ListPipelineResult result =
             Pipeline.fromFile("src/test/resources/pipeline/animals.csv", inputFormat)
             .map(x -> x.updateString("size", String::toUpperCase))
             .filter(x -> x.getString("size").equals("MEDIUM"))
-            .toSequence()
+            .toList()
             .run();
 
         System.out.println(result);

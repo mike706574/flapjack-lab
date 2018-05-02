@@ -2,6 +2,7 @@ package fun.mike.flapjack.pipeline.lab;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -68,16 +69,18 @@ public class TransformBuilder {
         return new FlatOutputFileBuilder(flatInputFile, steps, path, format, false);
     }
 
-    public SequentialPipeline toSequence() {
-        return new SequentialPipeline(flatInputFile, steps);
+    public ListPipeline toList() {
+        OutputContext<List<Record>> outputContext = new ListOutputContext();
+        return new ListPipeline(flatInputFile, steps, outputContext);
     }
 
-    public <G> GroupingPipeline<G> toGrouping(Function<Record, G> groupBy) {
-        return new GroupingPipeline<>(flatInputFile, steps, groupBy);
+    public <G> GroupPipeline<G> groupBy(Function<Record, G> groupBy) {
+        OutputContext<Map<G, List<Record>>> outputContext = new GroupOutputContext<>(groupBy);
+        return new GroupPipeline<>(flatInputFile, steps, outputContext);
     }
 
-    public <T> ReducingPipeline<T> toReduction(T identityValue, BiFunction<T, Record, T> reducer) {
-        Reduction<T> reduction = new Reduction<>(identityValue, reducer);
-        return new ReducingPipeline<>(flatInputFile, steps, reduction);
+    public <T> ReducePipeline<T> reduce(T identityValue, BiFunction<T, Record, T> reducer) {
+        ReduceOutputContext<T> outputContext = new ReduceOutputContext<>(identityValue, reducer);
+        return new ReducePipeline<>(flatInputFile, steps, outputContext);
     }
 }

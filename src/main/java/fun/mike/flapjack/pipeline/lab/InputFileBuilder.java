@@ -1,6 +1,7 @@
 package fun.mike.flapjack.pipeline.lab;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -64,18 +65,20 @@ public class InputFileBuilder {
         return new FlatOutputFileBuilder(buildInputFile(), emptyList(), path, format, false);
     }
 
-    public SequentialPipeline toSequence() {
+    public ListPipeline toList() {
         FlatInputFile flatInputFile = new FlatInputFile(inputPath, inputFormat, skipFirst, skipLast);
-        return new SequentialPipeline(buildInputFile(), emptyList());
+        OutputContext<List<Record>> outputContext = new ListOutputContext();
+        return new ListPipeline(buildInputFile(), emptyList(), outputContext);
     }
 
-    public <G> GroupingPipeline<G> toGrouping(Function<Record, G> groupBy) {
-        return new GroupingPipeline<>(buildInputFile(), emptyList(), groupBy);
+    public <G> GroupPipeline<G> groupBy(Function<Record, G> groupBy) {
+        GroupOutputContext<G> outputContext = new GroupOutputContext<>(groupBy);
+        return new GroupPipeline<>(buildInputFile(), new LinkedList<>(), outputContext);
     }
 
-    public <T> ReducingPipeline<T> toReduction(T identityValue, BiFunction<T, Record, T> reducer) {
-        Reduction<T> reduction = new Reduction<>(identityValue, reducer);
-        return new ReducingPipeline<>(buildInputFile(), emptyList(), reduction);
+    public <T> ReducePipeline<T> reduce(T identityValue, BiFunction<T, Record, T> reducer) {
+        ReduceOutputContext<T> reduction = new ReduceOutputContext<>(identityValue, reducer);
+        return new ReducePipeline<>(buildInputFile(), emptyList(), reduction);
     }
 
     // Private
