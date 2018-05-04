@@ -40,7 +40,7 @@ Format outputFormat =
                                    Field.string("size", 10)));
 
 // Build a pipeline
-result = Pipeline.fromFile("animals.csv", inputFormat)
+Pipeline pipeline = Pipeline.fromFile("animals.csv", inputFormat)
     .filter(x -> x.getString("size").equals("MEDIUM"))
     .map(x -> x.updateString("name", String::toUpperCase))
     .toFile("medium-sized-animals.txt", outputFormat)

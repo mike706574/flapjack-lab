@@ -2,11 +2,11 @@ package fun.mike.flapjack.pipeline.lab;
 
 public class GenericPipeline<V> implements Pipeline<V> {
     private final FlatInputFile flatInputFile;
-    private final GenericTransform transform;
+    private final Transform transform;
     private final OutputContext<V> outputContext;
 
     public GenericPipeline(FlatInputFile flatInputFile,
-                           GenericTransform transform,
+                           Transform transform,
                            OutputContext<V> outputContext) {
         this.flatInputFile = flatInputFile;
         this.transform = transform;

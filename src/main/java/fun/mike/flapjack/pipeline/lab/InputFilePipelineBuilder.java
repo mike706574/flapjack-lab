@@ -59,34 +59,35 @@ public class InputFilePipelineBuilder {
         return TransformPipelineBuilder.filterFirst(id, description, buildInputFile(), predicate);
     }
 
-    // Next
+    // Transform
     public FlatOutputFilePipelineBuilder toFile(String path, Format format) {
-        return new FlatOutputFilePipelineBuilder(buildInputFile(), emptyList(), path, format, false);
+        return new FlatOutputFilePipelineBuilder(buildInputFile(), emptyTransform(), path, format, false);
     }
 
+    // Next
     public ListPipeline toList() {
         FlatInputFile flatInputFile = new FlatInputFile(inputPath, inputFormat, skipFirst, skipLast);
         OutputContext<List<Record>> outputContext = new ListOutputContext();
-        return new ListPipeline(buildInputFile(), emptyList(), outputContext);
+        return new ListPipeline(buildInputFile(), emptyTransform(), outputContext);
     }
 
     public <G> GroupPipeline<G> groupBy(Function<Record, G> groupBy) {
         GroupOutputContext<G> outputContext = new GroupOutputContext<>(groupBy);
-        return new GroupPipeline<>(buildInputFile(), emptyList(), outputContext);
+        return new GroupPipeline<>(buildInputFile(), emptyTransform(), outputContext);
     }
 
     public <T> ReducePipeline<T> reduce(T identityValue, BiFunction<T, Record, T> reducer) {
         ReduceOutputContext<T> reduction = new ReduceOutputContext<>(identityValue, reducer);
-        return new ReducePipeline<>(buildInputFile(), emptyList(), reduction);
+        return new ReducePipeline<>(buildInputFile(), emptyTransform(), reduction);
     }
 
     public <T> ProcessPipeline<T> process(Function<Record, T> processor) {
         OutputContext<List<T>> outputContext = new ProcessOutputContext<>(processor);
-        return new ProcessPipeline<>(buildInputFile(), emptyList(), outputContext);
+        return new ProcessPipeline<>(buildInputFile(), emptyTransform(), outputContext);
     }
 
     // Private
-    private GenericTransform emptyList() {
+    private Transform emptyTransform() {
         return new GenericTransform(new LinkedList<>());
     }
 

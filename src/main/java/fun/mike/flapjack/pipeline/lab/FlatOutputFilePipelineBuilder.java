@@ -4,13 +4,13 @@ import fun.mike.flapjack.alpha.Format;
 
 public class FlatOutputFilePipelineBuilder {
     private final FlatInputFile inputFile;
-    private final GenericTransform transform;
+    private final Transform transform;
 
     private final String outputPath;
     private final Format outputFormat;
     private Boolean includeHeader;
 
-    public FlatOutputFilePipelineBuilder(FlatInputFile inputFile, GenericTransform transform, String outputPath, Format outputFormat, Boolean includeHeader) {
+    public FlatOutputFilePipelineBuilder(FlatInputFile inputFile, Transform transform, String outputPath, Format outputFormat, Boolean includeHeader) {
         this.inputFile = inputFile;
         this.transform = transform;
         this.outputPath = outputPath;

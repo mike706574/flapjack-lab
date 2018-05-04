@@ -23,15 +23,15 @@ public class GenericTransform implements Transform {
                 Optional<Record> result = compiledOperation.getOperation().run(outputRecord);
 
                 if (!result.isPresent()) {
-                    return TransformResult.empty(outputRecord, compiledOperation.getInfo());
+                    return TransformResult.empty(outputRecord, record, compiledOperation.getInfo());
                 }
 
                 outputRecord = result.get();
                 operationNumber++;
             } catch (Exception ex) {
-                return TransformResult.error(outputRecord, compiledOperation.getInfo(), ex);
+                return TransformResult.error(outputRecord, record, compiledOperation.getInfo(), ex);
             }
         }
-        return TransformResult.ok(outputRecord);
+        return TransformResult.ok(outputRecord, record);
     }
 }

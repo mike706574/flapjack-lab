@@ -19,7 +19,7 @@ public class PipelineInternals {
     private static final Logger log = LoggerFactory.getLogger(PipelineInternals.class);
 
     public static <T> PipelineResult<T> runWithOutputChannel(FlatInputFile flatInputFile,
-                                                             GenericTransform transform,
+                                                             Transform transform,
                                                              OutputContext<T> outputContext) {
         String inputPath = flatInputFile.getPath();
         Format inputFormat = flatInputFile.getFormat();

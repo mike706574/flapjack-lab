@@ -43,4 +43,12 @@ public class TransformBuilder {
         operations.add(operation);
         return this;
     }
+
+    public Transform build() {
+        return new GenericTransform(operations);
+    }
+
+    public TransformResult run(Record record) {
+        return build().run(record);
+    }
 }
