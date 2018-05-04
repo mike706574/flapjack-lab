@@ -34,37 +34,40 @@ public class InputFilePipelineBuilder {
     }
 
     // Map
-    public TransformPipelineBuilder map(Function<Record, Record> mapper) {
-        return TransformPipelineBuilder.mapFirst(null, null, buildInputFile(), mapper);
+    public OperationPipelineBuilder map(Function<Record, Record> mapper) {
+        return OperationPipelineBuilder.mapFirst(null, null, buildInputFile(), mapper);
     }
 
-    public TransformPipelineBuilder map(String id, Function<Record, Record> mapper) {
-        return TransformPipelineBuilder.mapFirst(id, null, buildInputFile(), mapper);
+    public OperationPipelineBuilder map(String id, Function<Record, Record> mapper) {
+        return OperationPipelineBuilder.mapFirst(id, null, buildInputFile(), mapper);
     }
 
-    public TransformPipelineBuilder map(String id, String description, Function<Record, Record> mapper) {
-        return TransformPipelineBuilder.mapFirst(id, description, buildInputFile(), mapper);
+    public OperationPipelineBuilder map(String id, String description, Function<Record, Record> mapper) {
+        return OperationPipelineBuilder.mapFirst(id, description, buildInputFile(), mapper);
     }
 
     // Filter
-    public TransformPipelineBuilder filter(Predicate<Record> predicate) {
-        return TransformPipelineBuilder.filterFirst(null, null, buildInputFile(), predicate);
+    public OperationPipelineBuilder filter(Predicate<Record> predicate) {
+        return OperationPipelineBuilder.filterFirst(null, null, buildInputFile(), predicate);
     }
 
-    public TransformPipelineBuilder filter(String id, Predicate<Record> predicate) {
-        return TransformPipelineBuilder.filterFirst(id, null, buildInputFile(), predicate);
+    public OperationPipelineBuilder filter(String id, Predicate<Record> predicate) {
+        return OperationPipelineBuilder.filterFirst(id, null, buildInputFile(), predicate);
     }
 
-    public TransformPipelineBuilder filter(String id, String description, Predicate<Record> predicate) {
-        return TransformPipelineBuilder.filterFirst(id, description, buildInputFile(), predicate);
+    public OperationPipelineBuilder filter(String id, String description, Predicate<Record> predicate) {
+        return OperationPipelineBuilder.filterFirst(id, description, buildInputFile(), predicate);
     }
 
-    // Transform
+    public TransformPipelineBuilder transform(Transform transform) {
+        return new TransformPipelineBuilder(buildInputFile(), transform);
+    }
+
+    // Next
     public FlatOutputFilePipelineBuilder toFile(String path, Format format) {
         return new FlatOutputFilePipelineBuilder(buildInputFile(), emptyTransform(), path, format, false);
     }
 
-    // Next
     public ListPipeline toList() {
         FlatInputFile flatInputFile = new FlatInputFile(inputPath, inputFormat, skipFirst, skipLast);
         OutputContext<List<Record>> outputContext = new ListOutputContext();
