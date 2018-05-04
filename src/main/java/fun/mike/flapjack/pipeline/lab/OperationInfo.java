@@ -28,4 +28,14 @@ public class OperationInfo {
     public String getType() {
         return type;
     }
+
+    @Override
+    public String toString() {
+        return "OperationInfo{" +
+                "number=" + number +
+                ", id='" + id + '\'' +
+                ", description='" + description + '\'' +
+                ", type='" + type + '\'' +
+                '}';
+    }
 }

@@ -1,10 +1,8 @@
 package fun.mike.flapjack.pipeline.lab;
 
-import java.util.List;
-
 public class ReducePipeline<T> extends GenericPipeline<T> {
-    public ReducePipeline(FlatInputFile flatInputFile, List<Operation> operations, OutputContext<T> outputContext) {
-        super(flatInputFile, operations, outputContext);
+    public ReducePipeline(FlatInputFile flatInputFile, GenericTransform transform, OutputContext<T> outputContext) {
+        super(flatInputFile, transform, outputContext);
     }
 
     public PipelineResult<T> run() {

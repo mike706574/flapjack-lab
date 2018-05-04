@@ -1,7 +1,6 @@
 package fun.mike.flapjack.pipeline.lab;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import fun.mike.flapjack.alpha.ParseResult;
 import fun.mike.flapjack.alpha.Problem;

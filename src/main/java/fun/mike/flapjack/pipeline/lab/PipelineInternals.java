@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import fun.mike.flapjack.alpha.Format;
@@ -20,7 +19,7 @@ public class PipelineInternals {
     private static final Logger log = LoggerFactory.getLogger(PipelineInternals.class);
 
     public static <T> PipelineResult<T> runWithOutputChannel(FlatInputFile flatInputFile,
-                                                             List<Operation> operations,
+                                                             GenericTransform transform,
                                                              OutputContext<T> outputContext) {
         String inputPath = flatInputFile.getPath();
         Format inputFormat = flatInputFile.getFormat();
@@ -46,8 +45,6 @@ public class PipelineInternals {
         List<PipelineError> errors = new LinkedList<>();
         List<Record> values = new LinkedList<>();
         List<PipelineError> outputErrors;
-
-        List<CompiledOperation> compiledOperations = Operations.compile(operations);
 
         try (BufferedReader reader = new BufferedReader(new FileReader(inputPath));
              OutputChannel<T> outputChannel = outputContext.buildChannel()) {
@@ -76,7 +73,7 @@ public class PipelineInternals {
                 } else {
                     Record inputRecord = parseResult.getValue();
 
-                    TransformResult transformResult = process(compiledOperations, number, inputLine, inputRecord);
+                    TransformResult transformResult = transform.run(inputRecord);
 
                     if (transformResult.isOk()) {
                         Record value = transformResult.getRecord();
@@ -119,27 +116,6 @@ public class PipelineInternals {
         } catch (IOException ex) {
             throw new UncheckedIOException("I/O error while running pipeline.", ex);
         }
-    }
-
-    private static TransformResult process(List<CompiledOperation> compiledOperations, Long number, String line, Record inputRecord) {
-        Record outputRecord = inputRecord;
-        String operationId = null;
-        Long operationNumber = 1L;
-        for (CompiledOperation compiledOperation : compiledOperations) {
-            try {
-                Optional<Record> result = compiledOperation.getOperation().run(outputRecord);
-
-                if (!result.isPresent()) {
-                    return TransformResult.empty(number, line, outputRecord, compiledOperation.getInfo());
-                }
-
-                outputRecord = result.get();
-                operationNumber++;
-            } catch (Exception ex) {
-                return TransformResult.error(number, line, outputRecord, compiledOperation.getInfo(), ex);
-            }
-        }
-        return TransformResult.ok(number, line, outputRecord);
     }
 
     private static long countLines(String path) {

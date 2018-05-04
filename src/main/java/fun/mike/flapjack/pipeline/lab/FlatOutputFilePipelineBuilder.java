@@ -1,33 +1,31 @@
 package fun.mike.flapjack.pipeline.lab;
 
-import java.util.List;
-
 import fun.mike.flapjack.alpha.Format;
 
-public class FlatOutputFileBuilder {
+public class FlatOutputFilePipelineBuilder {
     private final FlatInputFile inputFile;
-    private final List<Operation> operations;
+    private final GenericTransform transform;
 
     private final String outputPath;
     private final Format outputFormat;
     private Boolean includeHeader;
 
-    public FlatOutputFileBuilder(FlatInputFile inputFile, List<Operation> operations, String outputPath, Format outputFormat, Boolean includeHeader) {
+    public FlatOutputFilePipelineBuilder(FlatInputFile inputFile, GenericTransform transform, String outputPath, Format outputFormat, Boolean includeHeader) {
         this.inputFile = inputFile;
-        this.operations = operations;
+        this.transform = transform;
         this.outputPath = outputPath;
         this.outputFormat = outputFormat;
         this.includeHeader = includeHeader;
     }
 
-    public FlatOutputFileBuilder includeHeader() {
+    public FlatOutputFilePipelineBuilder includeHeader() {
         includeHeader = true;
         return this;
     }
 
     public FileToFilePipeline build() {
         FlatFileOutputContext outputFile = new FlatFileOutputContext(outputPath, outputFormat, includeHeader);
-        return FileToFilePipeline.of(inputFile, operations, outputFile);
+        return new FileToFilePipeline(inputFile, transform, outputFile);
     }
 
     public PipelineResult<Nothing> run() {

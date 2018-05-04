@@ -13,7 +13,7 @@ public class PipelineExplainer {
                                  result.getOutputCount());
         }
 
-        return String.format("Failed to process %d of %d records. %d records written to output file.\n\nErrors:\n\n%s",
+        return String.format("Failed to run %d of %d records. %d records written to output file.\n\nErrors:\n\n%s",
                              result.getErrorCount(),
                              result.getInputCount(),
                              result.getOutputCount(),
