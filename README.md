@@ -97,8 +97,8 @@ ListPipeline pipeline = Pipeline.("animals.csv", inputFormat)
 PipelineResult<List<Record>> result = pipeline.run();
 
 assertTrue(result.isOk());
-assertEquals(new Long(6), result.getInputCount());
-assertEquals(new Long(3), result.getOutputCount());
+assertEquals(6, result.getInputCount());
+assertEquals(3, result.getOutputCount());
 
 List<Record> animals = result.orElseThrow();
 // => [{name=dog, legs=4, size=MEDIUM},

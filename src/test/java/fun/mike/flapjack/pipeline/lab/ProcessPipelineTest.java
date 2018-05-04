@@ -82,8 +82,8 @@ public class ProcessPipelineTest {
         ProcessPipelineResult<Animal> result = pipeline.run();
 
         assertTrue(result.isOk());
-        assertEquals(new Long(6), result.getInputCount());
-        assertEquals(new Long(3), result.getOutputCount());
+        assertEquals(6, result.getInputCount());
+        assertEquals(3, result.getOutputCount());
 
         List<Animal> values = result.orElseThrow();
 

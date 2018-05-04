@@ -20,7 +20,7 @@ public class GroupOutputChannel<G> implements OutputChannel<Map<G, List<Record>>
     }
 
     @Override
-    public boolean receive(Long number, String line, Record value) {
+    public boolean receive(int number, String line, Record value) {
         try {
             G group = groupBy.apply(value);
             if (values.containsKey(group)) {

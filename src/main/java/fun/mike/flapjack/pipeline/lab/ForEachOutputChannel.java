@@ -12,7 +12,7 @@ public class ForEachOutputChannel implements OutputChannel<Nothing> {
     }
 
     @Override
-    public boolean receive(Long number, String line, Record value) {
+    public boolean receive(int number, String line, Record value) {
         consumer.accept(value);
         return true;
     }

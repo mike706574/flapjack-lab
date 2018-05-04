@@ -14,12 +14,14 @@ public class InputFilePipelineBuilder {
     private final Format inputFormat;
     private int skipFirst;
     private int skipLast;
+    private boolean logLines;
 
     public InputFilePipelineBuilder(String inputPath, Format format) {
         this.inputPath = inputPath;
         this.inputFormat = format;
         this.skipFirst = 0;
         this.skipLast = 0;
+        this.logLines = true;
     }
 
     // Options
@@ -30,6 +32,11 @@ public class InputFilePipelineBuilder {
 
     public InputFilePipelineBuilder skipLast(int count) {
         this.skipLast = count;
+        return this;
+    }
+
+    public InputFilePipelineBuilder disableLineLogging() {
+        this.logLines = false;
         return this;
     }
 
@@ -69,7 +76,6 @@ public class InputFilePipelineBuilder {
     }
 
     public ListPipeline toList() {
-        FlatInputFile flatInputFile = new FlatInputFile(inputPath, inputFormat, skipFirst, skipLast);
         OutputContext<List<Record>> outputContext = new ListOutputContext();
         return new ListPipeline(buildInputFile(), emptyTransform(), outputContext);
     }
@@ -95,6 +101,6 @@ public class InputFilePipelineBuilder {
     }
 
     private FlatInputFile buildInputFile() {
-        return new FlatInputFile(inputPath, inputFormat, skipFirst, skipLast);
+        return new FlatInputFile(inputPath, inputFormat, skipFirst, skipLast, logLines);
     }
 }

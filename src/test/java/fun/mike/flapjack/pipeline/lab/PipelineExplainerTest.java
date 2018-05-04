@@ -14,22 +14,22 @@ public class PipelineExplainerTest {
     @Test
     public void foo() {
         PipelineError parseError =
-                ParsePipelineError.of(1L,
+                ParsePipelineError.of(1,
                                       "ABCDEFG",
                                       null,
                                       Arrays.asList(new MissingValueProblem("a", "string")));
 
         PipelineError serializationError =
-                SerializationPipelineError.of(2L,
+                SerializationPipelineError.of(2,
                                               "ABCDEFG",
                                               null,
                                               Arrays.asList(new MissingValueProblem("b", "integer")));
 
         PipelineError transformError =
-                TransformPipelineError.of(3L,
+                TransformPipelineError.of(3,
                                           "BEWFWF",
                                           null,
-                                          new OperationInfo(1L, "map-vals", "Mapping values", "map"),
+                                          new OperationInfo(1, "map-vals", "Mapping values", "map"),
                                           new RuntimeException("coo coo"));
 
 
@@ -46,15 +46,15 @@ public class PipelineExplainerTest {
                                      Arrays.asList(Field.string("name", 10),
                                                    Field.string("size", 10)));
 
-        FlatInputFile inputFile = new FlatInputFile("in.csv", inputFormat, 0, 0);
+        FlatInputFile inputFile = new FlatInputFile("in.csv", inputFormat, 0, 0, true);
         OutputContext<Nothing> outputContext = new FlatFileOutputContext("out.dat", outputFormat, false);
 
         PipelineResult<Nothing> x =
                 PipelineResult.of(Nothing.value(),
                                   inputFile,
                                   outputContext,
-                                  5L,
-                                  2L,
+                                  5,
+                                  2,
                                   Arrays.asList(parseError, serializationError, transformError));
 
         System.out.println(PipelineExplainer.explainResult(x));

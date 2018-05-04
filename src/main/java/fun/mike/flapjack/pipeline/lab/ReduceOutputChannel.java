@@ -20,7 +20,7 @@ public class ReduceOutputChannel<T> implements OutputChannel<T> {
     }
 
     @Override
-    public boolean receive(Long number, String line, Record value) {
+    public boolean receive(int number, String line, Record value) {
         try {
             reducedValue = reducer.apply(reducedValue, value);
             return true;

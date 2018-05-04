@@ -28,7 +28,7 @@ public class FlatFileOutputChannel implements OutputChannel<Nothing> {
     }
 
     @Override
-    public boolean receive(Long number, String line, Record value) {
+    public boolean receive(int number, String line, Record value) {
         SerializationResult serializationResult = format.serialize(value);
 
         if (serializationResult.isOk()) {

@@ -3,24 +3,24 @@ package fun.mike.flapjack.pipeline.lab;
 import fun.mike.record.alpha.Record;
 
 public class OutputPipelineError implements PipelineError {
-    private final Long number;
+    private final int number;
     private final String line;
     private final Record record;
     private final Exception exception;
 
-    private OutputPipelineError(Long number, String line, Record record, Exception exception) {
+    private OutputPipelineError(int number, String line, Record record, Exception exception) {
         this.number = number;
         this.line = line;
         this.record = record;
         this.exception = exception;
     }
 
-    public static OutputPipelineError build(Long number, String line, Record record, Exception exception) {
+    public static OutputPipelineError build(int number, String line, Record record, Exception exception) {
         return new OutputPipelineError(number, line, record, exception);
     }
 
     @Override
-    public Long getNumber() {
+    public int getNumber() {
         return number;
     }
 

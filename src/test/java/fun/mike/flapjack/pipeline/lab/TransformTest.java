@@ -91,7 +91,7 @@ public class TransformTest {
         OperationInfo operation = result.getOperationInfo();
 
         assertEquals("filter-2", operation.getId());
-        assertEquals(new Long(2), operation.getNumber());
+        assertEquals(2, operation.getNumber());
     }
 
     @Test
@@ -110,8 +110,8 @@ public class TransformTest {
             PipelineResult<List<Record>> result = pipeline.run();
 
             assertTrue(result.isOk());
-            assertEquals(new Long(6), result.getInputCount());
-            assertEquals(new Long(3), result.getOutputCount());
+            assertEquals(6, result.getInputCount());
+            assertEquals(3, result.getOutputCount());
 
             List<Record> values = result.orElseThrow();
 

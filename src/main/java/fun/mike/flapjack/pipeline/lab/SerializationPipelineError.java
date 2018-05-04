@@ -7,28 +7,28 @@ import fun.mike.flapjack.alpha.SerializationResult;
 import fun.mike.record.alpha.Record;
 
 public class SerializationPipelineError implements PipelineError {
-    private final Long number;
+    private final int number;
     private final String line;
     private final Record record;
     private final List<Problem> problems;
 
-    public SerializationPipelineError(Long number, String line, Record record, List<Problem> problems) {
+    public SerializationPipelineError(int number, String line, Record record, List<Problem> problems) {
         this.number = number;
         this.line = line;
         this.record = record;
         this.problems = problems;
     }
 
-    public static SerializationPipelineError of(Long number, String line, Record record, List<Problem> problems) {
+    public static SerializationPipelineError of(int number, String line, Record record, List<Problem> problems) {
         return new SerializationPipelineError(number, line, record, problems);
     }
 
-    public static SerializationPipelineError fromResult(Long number, String line, SerializationResult result) {
+    public static SerializationPipelineError fromResult(int number, String line, SerializationResult result) {
         return new SerializationPipelineError(number, line, result.getRecord(), result.getProblems());
     }
 
     @Override
-    public Long getNumber() {
+    public int getNumber() {
         return number;
     }
 

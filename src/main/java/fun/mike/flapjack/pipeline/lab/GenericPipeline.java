@@ -15,8 +15,8 @@ public class GenericPipeline<V> implements Pipeline<V> {
 
     @Override
     public PipelineResult<V> execute() {
-        return PipelineInternals.runWithOutputChannel(flatInputFile,
-                                                      transform,
-                                                      outputContext);
+        return runWithOutputChannel(flatInputFile,
+                                    transform,
+                                    outputContext);
     }
 }

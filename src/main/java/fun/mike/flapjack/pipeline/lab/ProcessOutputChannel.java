@@ -16,7 +16,7 @@ public class ProcessOutputChannel<T> implements OutputChannel<List<T>> {
     }
 
     @Override
-    public boolean receive(Long number, String line, Record value) {
+    public boolean receive(int number, String line, Record value) {
         values.add(processor.apply(value));
         return true;
     }

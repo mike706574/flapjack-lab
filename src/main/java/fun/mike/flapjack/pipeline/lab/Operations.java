@@ -25,7 +25,7 @@ public class Operations {
     }
 
     private static OperationInfo buildInfo(Operation operation, int index) {
-        Long number = Long.valueOf(index + 1);
+        int number = index + 1;
         String type = getType(operation);
 
         String id = operation.getId();

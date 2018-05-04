@@ -17,7 +17,7 @@ public class ListOutputChannel implements OutputChannel<List<Record>> {
     }
 
     @Override
-    public boolean receive(Long number, String line, Record value) {
+    public boolean receive(int number, String line, Record value) {
         records.add(value);
         return true;
     }

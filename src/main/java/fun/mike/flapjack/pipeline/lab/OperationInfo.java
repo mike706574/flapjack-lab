@@ -1,19 +1,19 @@
 package fun.mike.flapjack.pipeline.lab;
 
 public class OperationInfo {
-    private final Long number;
+    private final int number;
     private final String id;
     private final String description;
     private final String type;
 
-    public OperationInfo(Long number, String id, String description, String type) {
+    public OperationInfo(int number, String id, String description, String type) {
         this.number = number;
         this.id = id;
         this.description = description;
         this.type = type;
     }
 
-    public Long getNumber() {
+    public int getNumber() {
         return number;
     }
 

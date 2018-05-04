@@ -68,9 +68,9 @@ public class FileToFilePipelineTest {
         PipelineResult<Nothing> result = pipeline.run();
 
         assertTrue(result.isOk());
-        assertEquals(new Long(6), result.getInputCount());
-        assertEquals(new Long(3), result.getOutputCount());
-        assertEquals(new Long(0), result.getErrorCount());
+        assertEquals(6, result.getInputCount());
+        assertEquals(3, result.getOutputCount());
+        assertEquals(0, result.getErrorCount());
         assertEquals(0, result.getErrors().size());
         assertTrue(result.getErrors().isEmpty());
 
@@ -91,9 +91,9 @@ public class FileToFilePipelineTest {
                 .run();
 
         assertTrue(result.isOk());
-        assertEquals(new Long(6), result.getInputCount());
-        assertEquals(new Long(3), result.getOutputCount());
-        assertEquals(new Long(0), result.getErrorCount());
+        assertEquals(6, result.getInputCount());
+        assertEquals(3, result.getOutputCount());
+        assertEquals(0, result.getErrorCount());
         assertEquals(0, result.getErrors().size());
         assertTrue(result.getErrors().isEmpty());
 
@@ -115,9 +115,9 @@ public class FileToFilePipelineTest {
         PipelineResult<Nothing> result = pipeline.run();
 
         assertFalse(result.isOk());
-        assertEquals(new Long(6), result.getInputCount());
-        assertEquals(new Long(2), result.getOutputCount());
-        assertEquals(new Long(2), result.getErrorCount());
+        assertEquals(6, result.getInputCount());
+        assertEquals(2, result.getOutputCount());
+        assertEquals(2, result.getErrorCount());
 
         assertEquals(IO.slurp(base + "expected-bad-animals.dat"),
                      IO.slurp(base + "bad-animals.dat"));

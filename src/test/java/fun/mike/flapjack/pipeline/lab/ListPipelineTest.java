@@ -37,8 +37,8 @@ public class ListPipelineTest {
         PipelineResult<List<Record>> result = pipeline.run();
 
         assertTrue(result.isOk());
-        assertEquals(new Long(6), result.getInputCount());
-        assertEquals(new Long(3), result.getOutputCount());
+        assertEquals(6, result.getInputCount());
+        assertEquals(3, result.getOutputCount());
 
 
         List<Record> values = result.orElseThrow();
@@ -77,10 +77,10 @@ public class ListPipelineTest {
 
         assertFalse(result.isOk());
 
-        assertEquals(new Long(6), result.getInputCount());
-        assertEquals(new Long(2), result.getOutputCount());
-        assertEquals(new Long(2), result.getErrorCount());
-        assertEquals(new Long(2), result.getErrorCount());
+        assertEquals(6, result.getInputCount());
+        assertEquals(2, result.getOutputCount());
+        assertEquals(2, result.getErrorCount());
+        assertEquals(2, result.getErrorCount());
 
         List<Record> values = result.getValue();
         assertEquals(2, values.size());

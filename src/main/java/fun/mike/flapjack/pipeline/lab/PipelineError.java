@@ -1,7 +1,7 @@
 package fun.mike.flapjack.pipeline.lab;
 
 public interface PipelineError {
-    Long getNumber();
+    int getNumber();
 
     String getLine();
 

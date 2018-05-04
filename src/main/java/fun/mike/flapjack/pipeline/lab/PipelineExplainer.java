@@ -7,6 +7,7 @@ import fun.mike.flapjack.lab.FormatExplainer;
 
 public class PipelineExplainer {
     public static <T> String explainResult(PipelineResult<T> result) {
+        result.getInputCount();
         if(result.getErrorCount() == 0) {
             return String.format("Successfully processed all %d records. %d records written to output file.",
                                  result.getInputCount(),

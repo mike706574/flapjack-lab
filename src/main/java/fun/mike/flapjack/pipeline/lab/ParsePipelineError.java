@@ -7,28 +7,28 @@ import fun.mike.flapjack.alpha.Problem;
 import fun.mike.record.alpha.Record;
 
 public class ParsePipelineError implements PipelineError {
-    private final Long number;
+    private final int number;
     private final String line;
     private final Record record;
     private final List<Problem> problems;
 
-    public ParsePipelineError(Long number, String line, Record record, List<Problem> problems) {
+    public ParsePipelineError(int number, String line, Record record, List<Problem> problems) {
         this.number = number;
         this.line = line;
         this.record = record;
         this.problems = problems;
     }
 
-    public static ParsePipelineError of(Long number, String line, Record record, List<Problem> problems) {
+    public static ParsePipelineError of(int number, String line, Record record, List<Problem> problems) {
         return new ParsePipelineError(number, line, record, problems);
     }
 
-    public static ParsePipelineError fromResult(Long number, String line, ParseResult error) {
+    public static ParsePipelineError fromResult(int number, String line, ParseResult error) {
         return new ParsePipelineError(number, line, error.getValue(), error.getProblems());
     }
 
     @Override
-    public Long getNumber() {
+    public int getNumber() {
         return number;
     }
 

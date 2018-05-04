@@ -11,11 +11,11 @@ public class PipelineResult<T> implements Result<T> {
     private final T value;
     private final FlatInputFile inputFile;
     private final OutputContext<?> outputContext;
-    private final Long inputCount;
-    private final Long outputCount;
+    private final int inputCount;
+    private final int outputCount;
     private final List<PipelineError> errors;
 
-    protected PipelineResult(T value, FlatInputFile inputFile, OutputContext<?> outputContext, Long inputCount, Long outputCount, List<PipelineError> errors) {
+    protected PipelineResult(T value, FlatInputFile inputFile, OutputContext<?> outputContext, int inputCount, int outputCount, List<PipelineError> errors) {
         this.value = value;
         this.inputFile = inputFile;
         this.outputContext = outputContext;
@@ -24,7 +24,7 @@ public class PipelineResult<T> implements Result<T> {
         this.errors = errors;
     }
 
-    public static <T> PipelineResult<T> of(T value, FlatInputFile inputFile, OutputContext<T> outputContext, Long inputCount, Long outputCount, List<PipelineError> errors) {
+    public static <T> PipelineResult<T> of(T value, FlatInputFile inputFile, OutputContext<T> outputContext, int inputCount, int outputCount, List<PipelineError> errors) {
         return new PipelineResult<>(value, inputFile, outputContext, inputCount, outputCount, errors);
     }
 
@@ -65,16 +65,16 @@ public class PipelineResult<T> implements Result<T> {
         throw new RuntimeException("TODO");
     }
 
-    public Long getInputCount() {
+    public int getInputCount() {
         return inputCount;
     }
 
-    public Long getOutputCount() {
+    public int getOutputCount() {
         return outputCount;
     }
 
-    public Long getErrorCount() {
-        return (long) errors.size();
+    public int getErrorCount() {
+        return errors.size();
     }
 
     public List<PipelineError> getErrors() {

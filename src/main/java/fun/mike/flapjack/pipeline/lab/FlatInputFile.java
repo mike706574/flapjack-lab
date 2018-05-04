@@ -7,12 +7,14 @@ public class FlatInputFile {
     private final Format format;
     private final int skip;
     private final int skipLast;
+    private final boolean logLines;
 
-    public FlatInputFile(String path, Format format, int skip, int skipLast) {
+    public FlatInputFile(String path, Format format, int skip, int skipLast, boolean logLines) {
         this.path = path;
         this.format = format;
         this.skip = skip;
         this.skipLast = skipLast;
+        this.logLines = logLines;
     }
 
     @Override
@@ -22,6 +24,7 @@ public class FlatInputFile {
                 ", format=" + getFormat() +
                 ", skip=" + getSkip() +
                 ", skipLast=" + getSkipLast() +
+                ", logLines=" + logLines() +
                 '}';
     }
 
@@ -39,5 +42,9 @@ public class FlatInputFile {
 
     public int getSkipLast() {
         return skipLast;
+    }
+
+    public boolean logLines() {
+        return logLines;
     }
 }
