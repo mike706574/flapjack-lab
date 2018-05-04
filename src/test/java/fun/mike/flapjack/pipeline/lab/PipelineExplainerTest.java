@@ -1,6 +1,7 @@
 package fun.mike.flapjack.pipeline.lab;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import fun.mike.flapjack.alpha.Column;
 import fun.mike.flapjack.alpha.DelimitedFormat;
@@ -17,13 +18,13 @@ public class PipelineExplainerTest {
                 ParsePipelineError.of(1,
                                       "ABCDEFG",
                                       null,
-                                      Arrays.asList(new MissingValueProblem("a", "string")));
+                                      Collections.singletonList(new MissingValueProblem("a", "string")));
 
         PipelineError serializationError =
                 SerializationPipelineError.of(2,
                                               "ABCDEFG",
                                               null,
-                                              Arrays.asList(new MissingValueProblem("b", "integer")));
+                                              Collections.singletonList(new MissingValueProblem("b", "integer")));
 
         PipelineError transformError =
                 TransformPipelineError.of(3,

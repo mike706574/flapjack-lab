@@ -47,6 +47,10 @@ public class PipelineResult<T> implements Result<T> {
         return errors.isEmpty();
     }
 
+    public boolean isNotOk() {
+        return !errors.isEmpty();
+    }
+
     public T getValue() {
         return value;
     }

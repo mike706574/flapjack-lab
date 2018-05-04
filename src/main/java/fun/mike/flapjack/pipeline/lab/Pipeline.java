@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import fun.mike.flapjack.alpha.Format;
@@ -25,32 +26,32 @@ public interface Pipeline<V> {
 
     PipelineResult<V> execute();
 
-    default <T> PipelineResult<T> runWithOutputChannel(FlatInputFile flatInputFile,
-                                                             Transform transform,
-                                                             OutputContext<T> outputContext) {
-        String inputPath = flatInputFile.getPath();
-        Format inputFormat = flatInputFile.getFormat();
-        int skip = flatInputFile.getSkip();
-        int skipLast = flatInputFile.getSkipLast();
-        boolean logLines = flatInputFile.logLines();
+    default <T> PipelineResult<T> runWithOutputChannel(FlatInputFile inputFile,
+                                                       Transform transform,
+                                                       OutputContext<T> outputContext) {
+        log.debug("Running pipeline.");
 
-        log.trace("Input path: " + inputPath);
-        log.trace("Input format: " + inputFormat);
-        log.trace("Skip: " + inputPath);
-        log.trace("Skip Last: " + skipLast);
+        String inputPath = inputFile.getPath();
+        Format inputFormat = inputFile.getFormat();
+        int skip = inputFile.getSkip();
+        int skipLast = inputFile.getSkipLast();
+        boolean logLines = inputFile.logLines();
 
         int lineIndex = 0;
         int inputCount = 0;
         int outputCount = 0;
 
-        int  lineCount;
+        int lineCount;
         try (Stream<String> stream = IO.streamLines(inputPath)) {
             lineCount = (int) stream.count();
         }
 
         int finalIndex = lineCount - skipLast;
 
-        log.trace("Total line count: " + lineCount);
+
+        log.debug("Input: " + PipelineExplainer.explainInput(inputFile));
+
+        log.debug("Output: " + PipelineExplainer.explainOutput(outputContext));
 
         int parseErrorCount = 0;
         int transformErrorCount = 0;
@@ -59,10 +60,13 @@ public interface Pipeline<V> {
         List<Record> values = new LinkedList<>();
         List<PipelineError> outputErrors;
 
+        long start = System.nanoTime();
+
+        log.debug("Opening file.");
         try (BufferedReader reader = new BufferedReader(new FileReader(inputPath));
              OutputChannel<T> outputChannel = outputContext.buildChannel()) {
 
-            log.trace("Skipping " + skip + " lines.");
+            log.debug("Skipping " + skip + " lines.");
             while (lineIndex < skip && lineIndex < lineCount) {
                 lineIndex++;
                 reader.readLine();
@@ -77,7 +81,7 @@ public interface Pipeline<V> {
                 lineIndex++;
                 String inputLine = reader.readLine();
 
-                if(logLines) {
+                if (logLines) {
                     log.debug("Processing record #" + number + ":\n" + inputLine);
                 }
 
@@ -108,24 +112,38 @@ public interface Pipeline<V> {
                 }
             }
 
-            outputErrors = outputChannel.getErrors();
+            long ms = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start);
+            long s = TimeUnit.MILLISECONDS.toSeconds(ms);
 
-            log.debug("Input count: " + inputCount);
-            log.debug("Output count: " + outputCount);
-            log.debug("Parse errors: " + parseErrorCount);
-            log.debug("Transform errors: " + transformErrorCount);
-            log.debug("Output errors: " + outputErrors.size());
+            log.debug(String.format("Processed %d records in %dms (%ds).",
+                                    inputCount,
+                                    ms,
+                                    s));
+
+            outputErrors = outputChannel.getErrors();
 
             errors.addAll(outputErrors);
 
+            int errorCount = errors.size();
+
             T value = outputChannel.getValue();
 
-            PipelineResult<T> result = PipelineResult.of(value, flatInputFile, outputContext, inputCount, outputCount, errors);
+            PipelineResult<T> result = PipelineResult.of(value, inputFile, outputContext, inputCount, outputCount, errors);
+
+            log.debug("Input count: " + inputCount);
+            log.debug("Output count: " + outputCount);
+
+            if (result.isNotOk()) {
+                log.debug("Parse errors: " + parseErrorCount);
+                log.debug("Transform errors: " + transformErrorCount);
+                log.debug("Output errors: " + outputErrors.size());
+            }
 
             if (result.isOk()) {
-                log.debug("Pipeline completed with no errors.");
+                log.debug("Pipeline completed successfully with no errors.");
             } else {
-                log.debug(String.format("Pipeline completed with %d errors.", result.getErrorCount()));
+                String noun = errorCount == 1 ? "error" : "errors";
+                log.debug(String.format("Pipeline completed with %d %s.", errorCount, noun));
             }
 
             return result;

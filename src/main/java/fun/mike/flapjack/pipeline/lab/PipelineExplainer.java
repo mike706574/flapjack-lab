@@ -3,6 +3,7 @@ package fun.mike.flapjack.pipeline.lab;
 import java.util.List;
 
 import de.vandermeer.asciitable.AsciiTable;
+import fun.mike.flapjack.alpha.Format;
 import fun.mike.flapjack.lab.FormatExplainer;
 
 public class PipelineExplainer {
@@ -13,9 +14,9 @@ public class PipelineExplainer {
                 ? "1 record" :
                 outputCount + " records";
 
-        if(result.getErrorCount() == 0) {
+        if (result.getErrorCount() == 0) {
             String inputDescription = inputCount == 1 ? "1 of 1 records" : "all " + inputCount + " + records";
-            return String.format("Successfully processed %s. %s written to output file.",
+            return String.format("Successfully processed %s. %s records emitted.",
                                  inputDescription,
                                  outputDescription);
 
@@ -25,7 +26,7 @@ public class PipelineExplainer {
                 outputCount + "of 1 record" :
                 outputCount + " of " + inputCount + " records";
 
-        return String.format("Failed to process %s. %s written to output file.\n\nErrors:\n\n%s",
+        return String.format("Failed to process %s. %s emitted.\n\nErrors:\n\n%s",
                              inputDescription,
                              outputDescription,
                              explainErrors(result.getErrors()));
@@ -33,10 +34,29 @@ public class PipelineExplainer {
 
     public static <T> String explainErrors(List<PipelineError> errors) {
         DefaultPipelineErrorExplainer explainer = new DefaultPipelineErrorExplainer();
-        for(PipelineError error : errors) {
+        for (PipelineError error : errors) {
             error.accept(explainer);
         }
         return explainer.explain();
+    }
+
+    public static String explainInput(FlatInputFile inputFile) {
+        String path = inputFile.getPath();
+        int skip = inputFile.getSkip();
+        int skipLast = inputFile.getSkipLast();
+        Format format = inputFile.getFormat();
+        return String.join("\n",
+                           "Reading from a flat file.",
+                           "File path: " + path,
+                           "Skip: " + skip,
+                           "Skip Last: " + skipLast,
+                           FormatExplainer.explain(format));
+    }
+
+    public static <T> String explainOutput(OutputContext<T> outputContext) {
+        OutputContextExplainer outputExplainer = new OutputContextExplainer();
+        outputContext.accept(outputExplainer);
+        return outputExplainer.explain();
     }
 
     public static String explainProps(FlatInputFile flatInputFile, List<Operation> operations, FlatFileOutputContext outputFile) {
@@ -49,7 +69,7 @@ public class PipelineExplainer {
         inputTable.addRow("Skip Last", flatInputFile.getSkipLast());
         inputTable.addRule();
 
-        AsciiTable outputTable= new AsciiTable();
+        AsciiTable outputTable = new AsciiTable();
         outputTable.addRule();
         outputTable.addRow("Path", outputFile.getPath());
         outputTable.addRule();
@@ -98,7 +118,7 @@ public class PipelineExplainer {
     }
 
     private static String whenNull(Object value, String defaultValue) {
-        if(value == null) {
+        if (value == null) {
             return defaultValue;
         }
         return value.toString();

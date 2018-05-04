@@ -33,6 +33,10 @@ public class FlatFileOutputContext implements OutputContext<Nothing> {
         return format;
     }
 
+    public Boolean includeHeader() {
+        return includeHeader;
+    }
+
     @Override
     public OutputChannel<Nothing> buildChannel() {
         return new FlatFileOutputChannel(path, format, includeHeader);

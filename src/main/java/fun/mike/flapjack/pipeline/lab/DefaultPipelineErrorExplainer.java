@@ -42,7 +42,7 @@ public class DefaultPipelineErrorExplainer implements PipelineErrorVisitor {
     }
 
     public static String explainParse(ParsePipelineError error) {
-        String buffer = "Record #" +
+        return "Record #" +
                 error.getNumber() +
                 ": Failed to parse record\nLine: |" +
                 error.getLine() +
@@ -50,11 +50,10 @@ public class DefaultPipelineErrorExplainer implements PipelineErrorVisitor {
                 error.getRecord() +
                 "\n" +
                 problemList(error.getProblems());
-        return buffer;
     }
 
     public static String explainSerialization(SerializationPipelineError error) {
-        String buffer = "Record #" +
+        return "Record #" +
                 error.getNumber() +
                 ": Failed to serialize record\nLine: |" +
                 error.getLine() +
@@ -62,11 +61,10 @@ public class DefaultPipelineErrorExplainer implements PipelineErrorVisitor {
                 error.getRecord() +
                 "\n" +
                 problemList(error.getProblems());
-        return buffer;
     }
 
     public static String explainTransform(TransformPipelineError error) {
-        String buffer = "Record #" +
+        return "Record #" +
                 error.getNumber() +
                 ": Exception thrown during transform\nLine: |" +
                 error.getLine() +
@@ -76,11 +74,10 @@ public class DefaultPipelineErrorExplainer implements PipelineErrorVisitor {
                 error.getOperationInfo() +
                 "\n" +
                 Exceptions.stackTrace(error.getException());
-        return buffer;
     }
 
     public static String explainOutput(OutputPipelineError error) {
-        String buffer = "Record #" +
+        return "Record #" +
                 error.getNumber() +
                 ": Exception thrown during output process\nLine: |" +
                 error.getLine() +
@@ -88,7 +85,6 @@ public class DefaultPipelineErrorExplainer implements PipelineErrorVisitor {
                 error.getRecord() +
                 "\n" +
                 Exceptions.stackTrace(error.getException());
-        return buffer;
     }
 
     private static String problemList(List<Problem> problems) {

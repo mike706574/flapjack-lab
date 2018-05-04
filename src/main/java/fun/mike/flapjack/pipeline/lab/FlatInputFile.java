@@ -9,6 +9,7 @@ public class FlatInputFile {
     private final int skipLast;
     private final boolean logLines;
 
+
     public FlatInputFile(String path, Format format, int skip, int skipLast, boolean logLines) {
         this.path = path;
         this.format = format;
