@@ -8,6 +8,6 @@ public class ProcessPipeline<T> extends GenericPipeline<List<T>> {
     }
 
     public ProcessPipelineResult<T> run() {
-        return new ProcessPipelineResult<>(run());
+        return new ProcessPipelineResult<>(execute());
     }
 }

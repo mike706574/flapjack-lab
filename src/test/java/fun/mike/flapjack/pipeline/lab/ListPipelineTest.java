@@ -43,6 +43,8 @@ public class ListPipelineTest {
 
         List<Record> values = result.orElseThrow();
 
+        System.out.println(values);
+
         assertEquals(3, values.size());
 
         assertEquals(Record.of("name", "dog",

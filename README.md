@@ -9,7 +9,9 @@ Experimental `flapjack` functionality.
 
 ### Pipeline
 
-`animals.csv`
+Pipelines let you parse, transform, and serialize records flat file records using a functional, data-driven API.
+
+The examples below use this example CSV file, `animals.csv`:
 
 ```
 dog,4,medium
@@ -19,6 +21,8 @@ ostrich,2,medium
 whale,0,gigantic
 snake,0,small
 ```
+
+#### Flat file to flat file
 
 `Example.java`
 
@@ -72,6 +76,36 @@ DOG       4
 FOX       4
 OSTRICH   2
 ```
+
+#### Flat file to list
+
+```java
+// Define an input format
+Format inputFormat =
+    DelimitedFormat.unframed("animals",
+                             "A bunch of animals.",
+                             ',',
+                             Arrays.asList(Column.string("name"),
+                                           Column.integer("legs"),
+                                           Column.string("size")));
+
+ListPipeline pipeline = Pipeline.("animals.csv", inputFormat)
+        .map(x -> x.updateString("size", String::toUpperCase))
+        .filter(x -> x.getString("size").equals("MEDIUM"))
+        .toList();
+
+PipelineResult<List<Record>> result = pipeline.run();
+
+assertTrue(result.isOk());
+assertEquals(new Long(6), result.getInputCount());
+assertEquals(new Long(3), result.getOutputCount());
+
+List<Record> animals = result.orElseThrow();
+// => [{name=dog, legs=4, size=MEDIUM},
+       {name=fox, legs=4, size=MEDIUM},
+       {name=ostrich, legs=2, size=MEDIUM}]
+```
+
 
 ## Build
 
