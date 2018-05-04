@@ -9,7 +9,7 @@
 
   <groupId>fun.mike</groupId>
   <artifactId>flapjack-lab</artifactId>
-  <version>0.0.4-SNAPSHOT</version>
+  <version>0.0.4</version>
   <packaging>jar</packaging>
 
   <url>https://github.com/mike706574/flapjack-lab</url>
