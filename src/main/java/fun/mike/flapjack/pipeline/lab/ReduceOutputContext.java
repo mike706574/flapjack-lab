@@ -15,7 +15,7 @@ public class ReduceOutputContext<T> implements OutputContext<T> {
 
     @Override
     public OutputChannel<T> buildChannel() {
-        return new ReduceOutputChannel<T>(identityValue, reducer);
+        return new ReduceOutputChannel<>(identityValue, reducer);
     }
 
     @Override

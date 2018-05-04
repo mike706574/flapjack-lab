@@ -7,17 +7,27 @@ import fun.mike.flapjack.lab.FormatExplainer;
 
 public class PipelineExplainer {
     public static <T> String explainResult(PipelineResult<T> result) {
-        result.getInputCount();
+        int inputCount = result.getInputCount();
+        int outputCount = result.getOutputCount();
+        String outputDescription = outputCount == 1
+                ? "1 record" :
+                outputCount + " records";
+
         if(result.getErrorCount() == 0) {
-            return String.format("Successfully processed all %d records. %d records written to output file.",
-                                 result.getInputCount(),
-                                 result.getOutputCount());
+            String inputDescription = inputCount == 1 ? "1 of 1 records" : "all " + inputCount + " + records";
+            return String.format("Successfully processed %s. %s written to output file.",
+                                 inputDescription,
+                                 outputDescription);
+
         }
 
-        return String.format("Failed to run %d of %d records. %d records written to output file.\n\nErrors:\n\n%s",
-                             result.getErrorCount(),
-                             result.getInputCount(),
-                             result.getOutputCount(),
+        String inputDescription = inputCount == 1 ?
+                outputCount + "of 1 record" :
+                outputCount + " of " + inputCount + " records";
+
+        return String.format("Failed to process %s. %s written to output file.\n\nErrors:\n\n%s",
+                             inputDescription,
+                             outputDescription,
                              explainErrors(result.getErrors()));
     }
 

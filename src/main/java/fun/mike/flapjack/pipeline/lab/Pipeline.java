@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 
 public interface Pipeline<V> {
-    static final Logger log = LoggerFactory.getLogger(Pipeline.class);
+    Logger log = LoggerFactory.getLogger(Pipeline.class);
 
     static InputFilePipelineBuilder fromFile(String path, Format format) {
         return new InputFilePipelineBuilder(path, format);
@@ -43,7 +43,7 @@ public interface Pipeline<V> {
         int inputCount = 0;
         int outputCount = 0;
 
-        int  lineCount = 0;
+        int  lineCount;
         try (Stream<String> stream = IO.streamLines(inputPath)) {
             lineCount = (int) stream.count();
         }

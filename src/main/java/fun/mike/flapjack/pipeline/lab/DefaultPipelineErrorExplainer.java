@@ -42,57 +42,53 @@ public class DefaultPipelineErrorExplainer implements PipelineErrorVisitor {
     }
 
     public static String explainParse(ParsePipelineError error) {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append("Record #");
-        buffer.append(error.getNumber());
-        buffer.append(": Failed to parse record\nLine: |");
-        buffer.append(error.getLine());
-        buffer.append("|\nRecord: ");
-        buffer.append(error.getRecord());
-        buffer.append("\n");
-        buffer.append(problemList(error.getProblems()));
-        return buffer.toString();
+        String buffer = "Record #" +
+                error.getNumber() +
+                ": Failed to parse record\nLine: |" +
+                error.getLine() +
+                "|\nRecord: " +
+                error.getRecord() +
+                "\n" +
+                problemList(error.getProblems());
+        return buffer;
     }
 
     public static String explainSerialization(SerializationPipelineError error) {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append("Record #");
-        buffer.append(error.getNumber());
-        buffer.append(": Failed to serialize record\nLine: |");
-        buffer.append(error.getLine());
-        buffer.append("|\nRecord: ");
-        buffer.append(error.getRecord());
-        buffer.append("\n");
-        buffer.append(problemList(error.getProblems()));
-        return buffer.toString();
+        String buffer = "Record #" +
+                error.getNumber() +
+                ": Failed to serialize record\nLine: |" +
+                error.getLine() +
+                "|\nRecord: " +
+                error.getRecord() +
+                "\n" +
+                problemList(error.getProblems());
+        return buffer;
     }
 
     public static String explainTransform(TransformPipelineError error) {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append("Record #");
-        buffer.append(error.getNumber());
-        buffer.append(": Exception thrown during transform\nLine: |");
-        buffer.append(error.getLine());
-        buffer.append("|\nRecord: ");
-        buffer.append(error.getRecord());
-        buffer.append("\nOperation: ");
-        buffer.append(error.getOperationInfo());
-        buffer.append("\n");
-        buffer.append(Exceptions.stackTrace(error.getException()));
-        return buffer.toString();
+        String buffer = "Record #" +
+                error.getNumber() +
+                ": Exception thrown during transform\nLine: |" +
+                error.getLine() +
+                "|\nRecord: " +
+                error.getRecord() +
+                "\nOperation: " +
+                error.getOperationInfo() +
+                "\n" +
+                Exceptions.stackTrace(error.getException());
+        return buffer;
     }
 
     public static String explainOutput(OutputPipelineError error) {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append("Record #");
-        buffer.append(error.getNumber());
-        buffer.append(": Exception thrown during output process\nLine: |");
-        buffer.append(error.getLine());
-        buffer.append("|\nRecord: ");
-        buffer.append(error.getRecord());
-        buffer.append("\n");
-        buffer.append(Exceptions.stackTrace(error.getException()));
-        return buffer.toString();
+        String buffer = "Record #" +
+                error.getNumber() +
+                ": Exception thrown during output process\nLine: |" +
+                error.getLine() +
+                "|\nRecord: " +
+                error.getRecord() +
+                "\n" +
+                Exceptions.stackTrace(error.getException());
+        return buffer;
     }
 
     private static String problemList(List<Problem> problems) {

@@ -29,7 +29,7 @@ public class PipelineResult<T> implements Result<T> {
     }
 
     public <U> PipelineResult<U> withValue(U value) {
-        return new PipelineResult<U>(value, inputFile, outputContext, inputCount, outputCount, errors);
+        return new PipelineResult<>(value, inputFile, outputContext, inputCount, outputCount, errors);
     }
 
     public PipelineResult<T> withMoreErrors(List<PipelineError> errors) {
