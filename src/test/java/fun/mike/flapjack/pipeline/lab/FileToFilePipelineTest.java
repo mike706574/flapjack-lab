@@ -125,10 +125,10 @@ public class FileToFilePipelineTest {
         assertEquals(2, errors.size());
 
         PipelineError firstError = errors.get(0);
-        assertEquals(3, firstError.getNumber());
+        assertEquals(2, firstError.getNumber());
 
         PipelineError secondError = errors.get(1);
-        assertEquals(5, secondError.getNumber());
+        assertEquals(4, secondError.getNumber());
 
         assertEquals(IO.slurp(base + "expected-bad-animals.dat"),
                      IO.slurp(base + "bad-animals.dat"));

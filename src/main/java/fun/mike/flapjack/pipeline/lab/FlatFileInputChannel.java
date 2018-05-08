@@ -60,8 +60,8 @@ public class FlatFileInputChannel implements InputChannel {
             }
         }
 
-        lineIndex++;
         int number = lineIndex + 1;
+        lineIndex++;
 
         String line;
         try {
