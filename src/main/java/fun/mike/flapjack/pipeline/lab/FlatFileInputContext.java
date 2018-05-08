@@ -75,6 +75,6 @@ public class FlatFileInputContext implements InputContext {
 
     @Override
     public void accept(InputContextVisitor visitor) {
-
+        visitor.accept(this);
     }
 }

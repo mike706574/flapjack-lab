@@ -40,7 +40,7 @@ public interface Pipeline<V> {
 
         long start = System.nanoTime();
 
-        log.debug("Opening file.");
+        log.debug("Opening channels.");
         try (InputChannel inputChannel = inputContext.buildChannel();
              OutputChannel<T> outputChannel = outputContext.buildChannel()) {
 
