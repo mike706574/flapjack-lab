@@ -1,7 +1,6 @@
 package fun.mike.flapjack.pipeline.lab;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import fun.mike.record.alpha.Record;
 

@@ -3,7 +3,6 @@ package fun.mike.flapjack.pipeline.lab;
 import java.util.Arrays;
 import java.util.List;
 
-import fun.mike.flapjack.alpha.DelimitedFormat;
 import fun.mike.flapjack.alpha.Field;
 import fun.mike.flapjack.alpha.FixedWidthFormat;
 import fun.mike.flapjack.alpha.Format;
