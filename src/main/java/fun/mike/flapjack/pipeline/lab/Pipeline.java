@@ -1,5 +1,6 @@
 package fun.mike.flapjack.pipeline.lab;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -14,8 +15,20 @@ import org.slf4j.LoggerFactory;
 public interface Pipeline<V> {
     Logger log = LoggerFactory.getLogger(Pipeline.class);
 
-    static InputFilePipelineBuilder fromFile(String path, Format format) {
-        return new InputFilePipelineBuilder(path, format);
+    static FlatInputFilePipelineBuilder fromFile(String path, Format format) {
+        return new FlatInputFilePipelineBuilder(path, format);
+    }
+
+    static OperationPipelineBuilder fromIterable(Iterable<Record> list) {
+        return new OperationPipelineBuilder(new IterableInputContext(list), new LinkedList<>());
+    }
+
+    static OperationPipelineBuilder fromCollection(Collection<Record> collection) {
+        return new OperationPipelineBuilder(new CollectionInputContext(collection), new LinkedList<>());
+    }
+
+    static OperationPipelineBuilder fromList(List<Record> list) {
+        return fromCollection(list);
     }
 
     PipelineResult<V> execute();

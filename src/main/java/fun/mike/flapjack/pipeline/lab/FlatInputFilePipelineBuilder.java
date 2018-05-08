@@ -9,14 +9,14 @@ import java.util.function.Predicate;
 import fun.mike.flapjack.alpha.Format;
 import fun.mike.record.alpha.Record;
 
-public class InputFilePipelineBuilder {
+public class FlatInputFilePipelineBuilder {
     private final String inputPath;
     private final Format inputFormat;
     private int skipFirst;
     private int skipLast;
     private boolean logLines;
 
-    public InputFilePipelineBuilder(String inputPath, Format format) {
+    public FlatInputFilePipelineBuilder(String inputPath, Format format) {
         this.inputPath = inputPath;
         this.inputFormat = format;
         this.skipFirst = 0;
@@ -25,17 +25,17 @@ public class InputFilePipelineBuilder {
     }
 
     // Options
-    public InputFilePipelineBuilder skipFirst(int count) {
+    public FlatInputFilePipelineBuilder skipFirst(int count) {
         this.skipFirst = count;
         return this;
     }
 
-    public InputFilePipelineBuilder skipLast(int count) {
+    public FlatInputFilePipelineBuilder skipLast(int count) {
         this.skipLast = count;
         return this;
     }
 
-    public InputFilePipelineBuilder disableLineLogging() {
+    public FlatInputFilePipelineBuilder disableLineLogging() {
         this.logLines = false;
         return this;
     }

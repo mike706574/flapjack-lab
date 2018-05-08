@@ -27,4 +27,14 @@ public class InputContextExplainer implements InputContextVisitor {
                                   "Skip Last: " + skipLast,
                                   FormatExplainer.explain(format));
     }
+
+    @Override
+    public void accept(IterableInputContext inputContext) {
+        explanation = "From an iterable of class " + inputContext.getRecords().getClass().getSimpleName() + ".";
+    }
+
+    @Override
+    public void accept(CollectionInputContext inputContext) {
+        explanation = "From a collection of class " + inputContext.getRecords().getClass().getSimpleName() + " containing " + inputContext.getRecords().size() + " elements.";
+    }
 }
