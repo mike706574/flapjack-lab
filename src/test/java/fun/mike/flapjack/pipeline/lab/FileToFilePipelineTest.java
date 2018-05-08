@@ -1,6 +1,7 @@
 package fun.mike.flapjack.pipeline.lab;
 
 import java.util.Arrays;
+import java.util.List;
 
 import fun.mike.flapjack.alpha.Column;
 import fun.mike.flapjack.alpha.DelimitedFormat;
@@ -118,6 +119,16 @@ public class FileToFilePipelineTest {
         assertEquals(6, result.getInputCount());
         assertEquals(2, result.getOutputCount());
         assertEquals(2, result.getErrorCount());
+
+        List<PipelineError> errors = result.getErrors();
+
+        assertEquals(2, errors.size());
+
+        PipelineError firstError = errors.get(0);
+        assertEquals(3, firstError.getNumber());
+
+        PipelineError secondError = errors.get(1);
+        assertEquals(5, secondError.getNumber());
 
         assertEquals(IO.slurp(base + "expected-bad-animals.dat"),
                      IO.slurp(base + "bad-animals.dat"));

@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 public interface Pipeline<V> {
     Logger log = LoggerFactory.getLogger(Pipeline.class);
 
+    PipelineResult<V> execute();
+
     static FlatInputFilePipelineBuilder fromFile(String path, Format format) {
         return new FlatInputFilePipelineBuilder(path, format);
     }
@@ -30,8 +32,6 @@ public interface Pipeline<V> {
     static OperationPipelineBuilder fromList(List<Record> list) {
         return fromCollection(list);
     }
-
-    PipelineResult<V> execute();
 
     default <T> PipelineResult<T> runWithOutputChannel(InputContext inputContext,
                                                        Transform transform,
@@ -59,7 +59,6 @@ public interface Pipeline<V> {
             log.debug("Reading records.");
             while (inputChannel.hasMore()) {
                 inputCount++;
-                int number = inputCount + 1;
                 InputResult inputValue = inputChannel.take();
 
                 if(inputValue.isOk()) {
@@ -71,7 +70,7 @@ public interface Pipeline<V> {
                     if (transformResult.isOk()) {
                         Record value = transformResult.getRecord();
 
-                        Optional<PipelineError> outputError = outputChannel.put(number, inputLine, value);
+                        Optional<PipelineError> outputError = outputChannel.put(inputCount, inputLine, value);
 
                         if (outputError.isPresent()) {
                             outputErrorCount++;
@@ -83,7 +82,7 @@ public interface Pipeline<V> {
                     }
                     else if(transformResult.hasError()) {
                         transformErrorCount++;
-                        errors.add(TransformPipelineError.fromResult(number, inputLine, transformResult));
+                        errors.add(TransformPipelineError.fromResult(inputCount, inputLine, transformResult));
                     }
                 }
                 else {
