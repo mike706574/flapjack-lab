@@ -32,7 +32,6 @@ public interface Pipeline<V> {
         int inputCount = 0;
         int outputCount = 0;
 
-
         List<PipelineError> errors = new LinkedList<>();
         int inputErrorCount = 0;
         int transformErrorCount = 0;

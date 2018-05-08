@@ -13,8 +13,8 @@ public class PipelineExplainer {
                 outputCount + " records";
 
         if (result.getErrorCount() == 0) {
-            String inputDescription = inputCount == 1 ? "1 of 1 records" : "all " + inputCount + " + records";
-            return String.format("Successfully processed %s. %s records emitted.",
+            String inputDescription = inputCount == 1 ? "1 of 1 records" : "all " + inputCount + " records";
+            return String.format("Successfully processed %s. %s emitted.",
                                  inputDescription,
                                  outputDescription);
 
@@ -24,7 +24,7 @@ public class PipelineExplainer {
                 outputCount + "of 1 record" :
                 outputCount + " of " + inputCount + " records";
 
-        return String.format("Failed to process %s. %s emitted.\n\nErrors:\n\n%s",
+        return String.format("Failed to process %s. %s written to output.\n\nErrors:\n\n%s",
                              inputDescription,
                              outputDescription,
                              explainErrors(result.getErrors()));
