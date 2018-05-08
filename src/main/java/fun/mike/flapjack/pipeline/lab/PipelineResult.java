@@ -9,38 +9,38 @@ import fun.mike.flapjack.alpha.Result;
 
 public class PipelineResult<T> implements Result<T> {
     private final T value;
-    private final FlatInputFile inputFile;
+    private final InputContext inputContext;
     private final OutputContext<?> outputContext;
     private final int inputCount;
     private final int outputCount;
     private final List<PipelineError> errors;
 
-    protected PipelineResult(T value, FlatInputFile inputFile, OutputContext<?> outputContext, int inputCount, int outputCount, List<PipelineError> errors) {
+    protected PipelineResult(T value, InputContext inputContext, OutputContext<?> outputContext, int inputCount, int outputCount, List<PipelineError> errors) {
         this.value = value;
-        this.inputFile = inputFile;
+        this.inputContext = inputContext;
         this.outputContext = outputContext;
         this.inputCount = inputCount;
         this.outputCount = outputCount;
         this.errors = errors;
     }
 
-    public static <T> PipelineResult<T> of(T value, FlatInputFile inputFile, OutputContext<T> outputContext, int inputCount, int outputCount, List<PipelineError> errors) {
-        return new PipelineResult<>(value, inputFile, outputContext, inputCount, outputCount, errors);
+    public static <T> PipelineResult<T> of(T value, InputContext inputContext, OutputContext<T> outputContext, int inputCount, int outputCount, List<PipelineError> errors) {
+        return new PipelineResult<>(value, inputContext, outputContext, inputCount, outputCount, errors);
     }
 
     public <U> PipelineResult<U> withValue(U value) {
-        return new PipelineResult<>(value, inputFile, outputContext, inputCount, outputCount, errors);
+        return new PipelineResult<>(value, inputContext, outputContext, inputCount, outputCount, errors);
     }
 
     public PipelineResult<T> withMoreErrors(List<PipelineError> errors) {
         List<PipelineError> allErrors = new LinkedList<>();
         allErrors.addAll(this.errors);
         allErrors.addAll(errors);
-        return new PipelineResult<>(value, inputFile, outputContext, inputCount, outputCount, allErrors);
+        return new PipelineResult<>(value, inputContext, outputContext, inputCount, outputCount, allErrors);
     }
 
     public PipelineResult<T> withErrors(List<PipelineError> errors) {
-        return new PipelineResult<>(value, inputFile, outputContext, inputCount, outputCount, errors);
+        return new PipelineResult<>(value, inputContext, outputContext, inputCount, outputCount, errors);
     }
 
     public boolean isOk() {
@@ -119,8 +119,8 @@ public class PipelineResult<T> implements Result<T> {
         return withValue(newValue);
     }
 
-    public FlatInputFile getInputFile() {
-        return inputFile;
+    public InputContext getInputContext() {
+        return inputContext;
     }
 
     public OutputContext<?> getOutputContext() {
@@ -131,7 +131,7 @@ public class PipelineResult<T> implements Result<T> {
     public String toString() {
         return "PipelineResult{" +
                 "value=" + value +
-                ", inputFile=" + inputFile +
+                ", inputContext=" + inputContext +
                 ", outputContext=" + outputContext +
                 ", inputCount=" + inputCount +
                 ", outputCount=" + outputCount +

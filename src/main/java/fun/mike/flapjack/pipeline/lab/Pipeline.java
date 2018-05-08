@@ -1,17 +1,11 @@
 package fun.mike.flapjack.pipeline.lab;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 
 import fun.mike.flapjack.alpha.Format;
-import fun.mike.flapjack.alpha.ParseResult;
-import fun.mike.io.alpha.IO;
 import fun.mike.record.alpha.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,89 +20,63 @@ public interface Pipeline<V> {
 
     PipelineResult<V> execute();
 
-    default <T> PipelineResult<T> runWithOutputChannel(FlatInputFile inputFile,
+    default <T> PipelineResult<T> runWithOutputChannel(InputContext inputContext,
                                                        Transform transform,
                                                        OutputContext<T> outputContext) {
         log.debug("Running pipeline.");
 
-        String inputPath = inputFile.getPath();
-        Format inputFormat = inputFile.getFormat();
-        int skip = inputFile.getSkip();
-        int skipLast = inputFile.getSkipLast();
-        boolean logLines = inputFile.logLines();
-
-        int lineIndex = 0;
-        int inputCount = 0;
-        int outputCount = 0;
-
-        int lineCount;
-        try (Stream<String> stream = IO.streamLines(inputPath)) {
-            lineCount = (int) stream.count();
-        }
-
-        int finalIndex = lineCount - skipLast;
-
-
-        log.debug("Input: " + PipelineExplainer.explainInput(inputFile));
+        log.debug("Input: " + PipelineExplainer.explainInput(inputContext));
 
         log.debug("Output: " + PipelineExplainer.explainOutput(outputContext));
 
-        int parseErrorCount = 0;
-        int transformErrorCount = 0;
+        int inputCount = 0;
+        int outputCount = 0;
+
 
         List<PipelineError> errors = new LinkedList<>();
-        List<Record> values = new LinkedList<>();
-        List<PipelineError> outputErrors;
+        int inputErrorCount = 0;
+        int transformErrorCount = 0;
+        int outputErrorCount = 0;
 
         long start = System.nanoTime();
 
         log.debug("Opening file.");
-        try (BufferedReader reader = new BufferedReader(new FileReader(inputPath));
+        try (InputChannel inputChannel = inputContext.buildChannel();
              OutputChannel<T> outputChannel = outputContext.buildChannel()) {
 
-            log.debug("Skipping " + skip + " lines.");
-            while (lineIndex < skip && lineIndex < lineCount) {
-                lineIndex++;
-                reader.readLine();
-            }
-
-            int number = 0;
-
             log.debug("Reading records.");
-            while (lineIndex < finalIndex) {
-                number++;
+            while (inputChannel.hasMore()) {
                 inputCount++;
-                lineIndex++;
-                String inputLine = reader.readLine();
+                int number = inputCount + 1;
+                InputResult inputValue = inputChannel.take();
 
-                if (logLines) {
-                    log.debug("Processing record #" + number + ":\n" + inputLine);
-                }
-
-                ParseResult parseResult = inputFormat.parse(inputLine);
-
-                if (parseResult.hasProblems()) {
-                    parseErrorCount++;
-                    errors.add(ParsePipelineError.fromResult(number, inputLine, parseResult));
-                } else {
-                    Record inputRecord = parseResult.getValue();
+                if(inputValue.isOk()) {
+                    String inputLine = inputValue.getLine();
+                    Record inputRecord = inputValue.getValue();
 
                     TransformResult transformResult = transform.run(inputRecord);
 
                     if (transformResult.isOk()) {
                         Record value = transformResult.getRecord();
 
-                        boolean ok = outputChannel.receive(number, inputLine, value);
+                        Optional<PipelineError> outputError = outputChannel.put(number, inputLine, value);
 
-                        if (ok) {
+                        if (outputError.isPresent()) {
+                            outputErrorCount++;
+                            errors.add(outputError.get());
+                        }
+                        else {
                             outputCount++;
                         }
                     }
-
-                    if (transformResult.isNotOk() && transformResult.isPresent()) {
+                    else if(transformResult.hasError()) {
                         transformErrorCount++;
                         errors.add(TransformPipelineError.fromResult(number, inputLine, transformResult));
                     }
+                }
+                else {
+                    inputErrorCount++;
+                    errors.add(inputValue.getError());
                 }
             }
 
@@ -120,23 +88,20 @@ public interface Pipeline<V> {
                                     ms,
                                     s));
 
-            outputErrors = outputChannel.getErrors();
-
-            errors.addAll(outputErrors);
 
             int errorCount = errors.size();
 
             T value = outputChannel.getValue();
 
-            PipelineResult<T> result = PipelineResult.of(value, inputFile, outputContext, inputCount, outputCount, errors);
+            PipelineResult<T> result = PipelineResult.of(value, inputContext, outputContext, inputCount, outputCount, errors);
 
             log.debug("Input count: " + inputCount);
             log.debug("Output count: " + outputCount);
 
             if (result.isNotOk()) {
-                log.debug("Parse errors: " + parseErrorCount);
+                log.debug("Input errors: " + inputErrorCount);
                 log.debug("Transform errors: " + transformErrorCount);
-                log.debug("Output errors: " + outputErrors.size());
+                log.debug("Output errors: " + outputErrorCount);
             }
 
             if (result.isOk()) {
@@ -147,8 +112,6 @@ public interface Pipeline<V> {
             }
 
             return result;
-        } catch (IOException ex) {
-            throw new UncheckedIOException("I/O error while running pipeline.", ex);
         }
     }
 }

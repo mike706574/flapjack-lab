@@ -1,5 +1,6 @@
 package fun.mike.flapjack.pipeline.lab;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import fun.mike.record.alpha.Record;
@@ -12,9 +13,9 @@ public class ForEachOutputChannel implements OutputChannel<Nothing> {
     }
 
     @Override
-    public boolean receive(int number, String line, Record value) {
+    public Optional<PipelineError> put(int number, String line, Record value) {
         consumer.accept(value);
-        return true;
+        return Optional.empty();
     }
 
     @Override

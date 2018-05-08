@@ -47,12 +47,12 @@ public class PipelineExplainerTest {
                                      Arrays.asList(Field.string("name", 10),
                                                    Field.string("size", 10)));
 
-        FlatInputFile inputFile = new FlatInputFile("in.csv", inputFormat, 0, 0, true);
+        InputContext inputContext = new FlatFileInputContext("in.csv", inputFormat, 0, 0, true);
         OutputContext<Nothing> outputContext = new FlatFileOutputContext("out.dat", outputFormat, false);
 
         PipelineResult<Nothing> x =
                 PipelineResult.of(Nothing.value(),
-                                  inputFile,
+                                  inputContext,
                                   outputContext,
                                   5,
                                   2,

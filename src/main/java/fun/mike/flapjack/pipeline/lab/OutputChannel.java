@@ -1,16 +1,11 @@
 package fun.mike.flapjack.pipeline.lab;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Optional;
 
 import fun.mike.record.alpha.Record;
 
 public interface OutputChannel<T> extends AutoCloseable {
-    boolean receive(int number, String line, Record value);
-
-    default List<PipelineError> getErrors() {
-        return Collections.emptyList();
-    }
+    Optional<PipelineError> put(int number, String line, Record value);
 
     T getValue();
 

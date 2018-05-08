@@ -2,6 +2,7 @@ package fun.mike.flapjack.pipeline.lab;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import fun.mike.flapjack.alpha.DelimitedFormat;
 import fun.mike.flapjack.alpha.Format;
@@ -28,17 +29,16 @@ public class FlatFileOutputChannel implements OutputChannel<Nothing> {
     }
 
     @Override
-    public boolean receive(int number, String line, Record value) {
+    public Optional<PipelineError> put(int number, String line, Record value) {
         SerializationResult serializationResult = format.serialize(value);
 
         if (serializationResult.isOk()) {
             String outputLine = serializationResult.getValue();
             spitter.spit(outputLine);
-            return true;
+            return Optional.empty();
         }
 
-        errors.add(SerializationPipelineError.fromResult(number, line, serializationResult));
-        return false;
+        return Optional.of(SerializationPipelineError.fromResult(number, line, serializationResult));
     }
 
     public List<PipelineError> getErrors() {

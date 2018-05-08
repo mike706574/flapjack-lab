@@ -1,5 +1,7 @@
 package fun.mike.flapjack.pipeline.lab;
 
+import java.util.Objects;
+
 import fun.mike.record.alpha.Record;
 
 public class TransformResult {
@@ -67,5 +69,38 @@ public class TransformResult {
 
     public Exception getException() {
         return exception;
+    }
+
+    @Override
+    public String toString() {
+        return "TransformResult{" +
+                "ok=" + ok +
+                ", none=" + none +
+                ", error=" + error +
+                ", record=" + record +
+                ", originalRecord=" + originalRecord +
+                ", operationInfo=" + operationInfo +
+                ", exception=" + exception +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TransformResult that = (TransformResult) o;
+        return ok == that.ok &&
+                none == that.none &&
+                error == that.error &&
+                Objects.equals(record, that.record) &&
+                Objects.equals(originalRecord, that.originalRecord) &&
+                Objects.equals(operationInfo, that.operationInfo) &&
+                Objects.equals(exception, that.exception);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(ok, none, error, record, originalRecord, operationInfo, exception);
     }
 }

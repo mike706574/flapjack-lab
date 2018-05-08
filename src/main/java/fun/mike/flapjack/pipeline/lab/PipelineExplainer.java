@@ -3,8 +3,6 @@ package fun.mike.flapjack.pipeline.lab;
 import java.util.List;
 
 import de.vandermeer.asciitable.AsciiTable;
-import fun.mike.flapjack.alpha.Format;
-import fun.mike.flapjack.lab.FormatExplainer;
 
 public class PipelineExplainer {
     public static <T> String explainResult(PipelineResult<T> result) {
@@ -40,55 +38,16 @@ public class PipelineExplainer {
         return explainer.explain();
     }
 
-    public static String explainInput(FlatInputFile inputFile) {
-        String path = inputFile.getPath();
-        int skip = inputFile.getSkip();
-        int skipLast = inputFile.getSkipLast();
-        Format format = inputFile.getFormat();
-        return String.join("\n",
-                           "Reading from a flat file.",
-                           "File path: " + path,
-                           "Skip: " + skip,
-                           "Skip Last: " + skipLast,
-                           FormatExplainer.explain(format));
+    public static String explainInput(InputContext inputContext) {
+        InputContextExplainer inputExplainer = new InputContextExplainer();
+        inputContext.accept(inputExplainer);
+        return inputExplainer.explain();
     }
 
     public static <T> String explainOutput(OutputContext<T> outputContext) {
         OutputContextExplainer outputExplainer = new OutputContextExplainer();
         outputContext.accept(outputExplainer);
         return outputExplainer.explain();
-    }
-
-    public static String explainProps(FlatInputFile flatInputFile, List<Operation> operations, FlatFileOutputContext outputFile) {
-        AsciiTable inputTable = new AsciiTable();
-        inputTable.addRule();
-        inputTable.addRow("Path", flatInputFile.getPath());
-        inputTable.addRule();
-        inputTable.addRow("Skip", flatInputFile.getSkip());
-        inputTable.addRule();
-        inputTable.addRow("Skip Last", flatInputFile.getSkipLast());
-        inputTable.addRule();
-
-        AsciiTable outputTable = new AsciiTable();
-        outputTable.addRule();
-        outputTable.addRow("Path", outputFile.getPath());
-        outputTable.addRule();
-
-        return String.join("\n",
-                           heading("INPUT"),
-                           "Properties:",
-                           inputTable.render(),
-                           "Format:",
-                           FormatExplainer.explain(flatInputFile.getFormat()),
-                           heading("TRANSFORM"),
-                           "Operations:",
-                           operationsListing(operations),
-                           heading("OUTPUT"),
-                           "Properties:",
-                           outputTable.render(),
-                           "Format:",
-                           FormatExplainer.explain(outputFile.getFormat())
-        );
     }
 
     private static String heading(String text) {

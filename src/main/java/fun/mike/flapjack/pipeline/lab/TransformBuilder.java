@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 import fun.mike.record.alpha.Record;
 
 public class TransformBuilder {
-    private List<Operation> operations;
+    private final List<Operation> operations;
 
     public TransformBuilder() {
         operations = new LinkedList<>();

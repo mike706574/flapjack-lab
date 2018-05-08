@@ -2,6 +2,7 @@ package fun.mike.flapjack.pipeline.lab;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 import fun.mike.record.alpha.Record;
@@ -16,9 +17,9 @@ public class ProcessOutputChannel<T> implements OutputChannel<List<T>> {
     }
 
     @Override
-    public boolean receive(int number, String line, Record value) {
+    public Optional<PipelineError> put(int number, String line, Record value) {
         values.add(processor.apply(value));
-        return true;
+        return Optional.empty();
     }
 
     @Override

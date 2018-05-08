@@ -3,15 +3,15 @@ package fun.mike.flapjack.pipeline.lab;
 import fun.mike.flapjack.alpha.Format;
 
 public class FlatOutputFilePipelineBuilder {
-    private final FlatInputFile inputFile;
+    private final InputContext inputContext;
     private final Transform transform;
 
     private final String outputPath;
     private final Format outputFormat;
     private Boolean includeHeader;
 
-    public FlatOutputFilePipelineBuilder(FlatInputFile inputFile, Transform transform, String outputPath, Format outputFormat, Boolean includeHeader) {
-        this.inputFile = inputFile;
+    public FlatOutputFilePipelineBuilder(InputContext inputContext, Transform transform, String outputPath, Format outputFormat, Boolean includeHeader) {
+        this.inputContext = inputContext;
         this.transform = transform;
         this.outputPath = outputPath;
         this.outputFormat = outputFormat;
@@ -25,7 +25,7 @@ public class FlatOutputFilePipelineBuilder {
 
     public FileToFilePipeline build() {
         FlatFileOutputContext outputFile = new FlatFileOutputContext(outputPath, outputFormat, includeHeader);
-        return new FileToFilePipeline(inputFile, transform, outputFile);
+        return new FileToFilePipeline(inputContext, transform, outputFile);
     }
 
     public PipelineResult<Nothing> run() {

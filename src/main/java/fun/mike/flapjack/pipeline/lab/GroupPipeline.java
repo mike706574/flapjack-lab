@@ -6,8 +6,8 @@ import java.util.Map;
 import fun.mike.record.alpha.Record;
 
 public class GroupPipeline<G> extends GenericPipeline<Map<G, List<Record>>> {
-    public GroupPipeline(FlatInputFile flatInputFile, Transform transform, OutputContext<Map<G, List<Record>>> outputContext) {
-        super(flatInputFile, transform, outputContext);
+    public GroupPipeline(InputContext inputContext, Transform transform, OutputContext<Map<G, List<Record>>> outputContext) {
+        super(inputContext, transform, outputContext);
     }
 
     public GroupPipelineResult<G> run() {

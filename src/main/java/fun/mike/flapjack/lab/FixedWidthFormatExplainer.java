@@ -22,7 +22,7 @@ public class FixedWidthFormatExplainer {
         summaryTable.addRule();
         summaryTable.addRow("Description", whenNull(description, "A fixed-width format."));
         summaryTable.addRule();
-        summaryTable.addRow("Number of FIelds", fields.size());
+        summaryTable.addRow("Number of Fields", fields.size());
         summaryTable.addRule();
 
         AsciiTable fieldTable = new AsciiTable();
