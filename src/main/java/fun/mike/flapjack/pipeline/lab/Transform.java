@@ -6,8 +6,6 @@ import java.util.function.Predicate;
 import fun.mike.record.alpha.Record;
 
 public interface Transform {
-    TransformResult run(Record record);
-
     // Map
     static TransformBuilder map(Function<Record, Record> mapper) {
         return map(null, null, mapper);
@@ -33,4 +31,6 @@ public interface Transform {
     static TransformBuilder filter(String id, String description, Predicate<Record> predicate) {
         return new TransformBuilder().filter(id, description, predicate);
     }
+
+    TransformResult run(Record record);
 }

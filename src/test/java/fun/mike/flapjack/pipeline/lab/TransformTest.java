@@ -73,8 +73,8 @@ public class TransformTest {
 
         Transform transform = Transform.map(x -> x.updateString("size", String::toUpperCase))
                 .filter(x -> {
-                        throw new RuntimeException("Error!");
-                    })
+                    throw new RuntimeException("Error!");
+                })
                 .build();
 
         TransformResult result = transform.run(inputRecord);
@@ -96,40 +96,40 @@ public class TransformTest {
 
     @Test
     public void pipeline() {
-            String inputPath = base + "animals.csv";
-            String outputPath = base + "animals.dat";
+        String inputPath = base + "animals.csv";
+        String outputPath = base + "animals.dat";
 
-            Transform transform = Transform.map(x -> x.updateString("size", String::toUpperCase))
-                    .filter(x -> x.getString("size").equals("MEDIUM"))
-                    .build();
+        Transform transform = Transform.map(x -> x.updateString("size", String::toUpperCase))
+                .filter(x -> x.getString("size").equals("MEDIUM"))
+                .build();
 
-            ListPipeline pipeline = Pipeline.fromFile(inputPath, inputFormat)
-                    .transform(transform)
-                    .toList();
+        ListPipeline pipeline = Pipeline.fromFile(inputPath, inputFormat)
+                .transform(transform)
+                .toList();
 
-            PipelineResult<List<Record>> result = pipeline.run();
+        PipelineResult<List<Record>> result = pipeline.run();
 
-            assertTrue(result.isOk());
-            assertEquals(6, result.getInputCount());
-            assertEquals(3, result.getOutputCount());
+        assertTrue(result.isOk());
+        assertEquals(6, result.getInputCount());
+        assertEquals(3, result.getOutputCount());
 
-            List<Record> values = result.orElseThrow();
+        List<Record> values = result.orElseThrow();
 
-            assertEquals(3, values.size());
+        assertEquals(3, values.size());
 
-            assertEquals(Record.of("name", "dog",
-                                   "legs", 4,
-                                   "size", "MEDIUM"),
-                         values.get(0));
+        assertEquals(Record.of("name", "dog",
+                               "legs", 4,
+                               "size", "MEDIUM"),
+                     values.get(0));
 
-            assertEquals(Record.of("name", "fox",
-                                   "legs", 4,
-                                   "size", "MEDIUM"),
-                         values.get(1));
+        assertEquals(Record.of("name", "fox",
+                               "legs", 4,
+                               "size", "MEDIUM"),
+                     values.get(1));
 
-            assertEquals(Record.of("name", "ostrich",
-                                   "legs", 2,
-                                   "size", "MEDIUM"),
-                         values.get(2));
+        assertEquals(Record.of("name", "ostrich",
+                               "legs", 2,
+                               "size", "MEDIUM"),
+                     values.get(2));
     }
 }

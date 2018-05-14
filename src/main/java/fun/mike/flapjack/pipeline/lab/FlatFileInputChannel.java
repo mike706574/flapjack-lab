@@ -8,6 +8,8 @@ import java.io.UncheckedIOException;
 import java.util.stream.Stream;
 
 import fun.mike.flapjack.alpha.Format;
+import fun.mike.flapjack.alpha.GetSkipFirstVisitor;
+import fun.mike.flapjack.alpha.GetSkipLastVisitor;
 import fun.mike.flapjack.alpha.ParseResult;
 import fun.mike.io.alpha.IO;
 import org.slf4j.Logger;
@@ -18,20 +20,15 @@ public class FlatFileInputChannel implements InputChannel {
 
     private final String path;
     private final Format format;
-    private final int skip;
-    private final int skipLast;
     private final boolean logLines;
-
-    private int lineIndex;
     private final int lineCount;
     private final int limit;
+    private int lineIndex;
     private BufferedReader reader;
 
-    public FlatFileInputChannel(String path, Format format, int skip, int skipLast, boolean logLines) {
+    public FlatFileInputChannel(String path, Format format, boolean logLines) {
         this.path = path;
         this.format = format;
-        this.skip = skip;
-        this.skipLast = skipLast;
         this.logLines = logLines;
 
         this.lineIndex = 0;
@@ -39,19 +36,21 @@ public class FlatFileInputChannel implements InputChannel {
         try (Stream<String> stream = IO.streamLines(path)) {
             lineCount = (int) stream.count();
         }
-        limit = lineCount - skipLast;
+        int skipLast = GetSkipLastVisitor.visit(format);
+        limit = lineCount - GetSkipLastVisitor.visit(format);
 
         try {
             this.reader = new BufferedReader(new FileReader(this.path));
-        }
-        catch (FileNotFoundException ex) {
+        } catch (FileNotFoundException ex) {
             throw new UncheckedIOException(ex);
         }
     }
 
     @Override
     public InputResult take() {
-        while (lineIndex < skip && lineIndex < lineCount) {
+        int skipFirst = GetSkipFirstVisitor.visit(format);
+
+        while (lineIndex < skipFirst && lineIndex < lineCount) {
             lineIndex++;
             try {
                 reader.readLine();
@@ -79,6 +78,10 @@ public class FlatFileInputChannel implements InputChannel {
         if (parseResult.hasProblems()) {
             return InputResult.error(line, ParsePipelineError.fromResult(number, line, parseResult));
         }
+
+        System.out.println("mdata" + parseResult.getValue().getMetadata());
+        parseResult.getValue().setMetadataProperty("number", number);
+        System.out.println("mdata" + parseResult.getValue().getMetadata());
 
         return InputResult.ok(parseResult.getValue(), line);
     }

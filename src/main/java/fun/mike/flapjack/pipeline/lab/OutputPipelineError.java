@@ -34,6 +34,7 @@ public class OutputPipelineError implements PipelineError {
         visitor.visit(this);
     }
 
+    @Override
     public Record getRecord() {
         return record;
     }

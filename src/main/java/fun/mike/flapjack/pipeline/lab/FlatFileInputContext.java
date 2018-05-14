@@ -7,15 +7,11 @@ import fun.mike.flapjack.alpha.Format;
 public class FlatFileInputContext implements InputContext {
     private final String path;
     private final Format format;
-    private final int skip;
-    private final int skipLast;
     private final boolean logLines;
 
-    public FlatFileInputContext(String path, Format format, int skip, int skipLast, boolean logLines) {
+    public FlatFileInputContext(String path, Format format, boolean logLines) {
         this.path = path;
         this.format = format;
-        this.skip = skip;
-        this.skipLast = skipLast;
         this.logLines = logLines;
     }
 
@@ -24,8 +20,6 @@ public class FlatFileInputContext implements InputContext {
         return "FlatFileInputContext{" +
                 "path='" + path + '\'' +
                 ", format=" + format +
-                ", skip=" + skip +
-                ", skipLast=" + skipLast +
                 ", logLines=" + logLines +
                 '}';
     }
@@ -35,9 +29,7 @@ public class FlatFileInputContext implements InputContext {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         FlatFileInputContext that = (FlatFileInputContext) o;
-        return skip == that.skip &&
-                skipLast == that.skipLast &&
-                logLines == that.logLines &&
+        return logLines == that.logLines &&
                 Objects.equals(path, that.path) &&
                 Objects.equals(format, that.format);
     }
@@ -45,7 +37,7 @@ public class FlatFileInputContext implements InputContext {
     @Override
     public int hashCode() {
 
-        return Objects.hash(path, format, skip, skipLast, logLines);
+        return Objects.hash(path, format, logLines);
     }
 
     public String getPath() {
@@ -56,13 +48,6 @@ public class FlatFileInputContext implements InputContext {
         return format;
     }
 
-    public int getSkip() {
-        return skip;
-    }
-
-    public int getSkipLast() {
-        return skipLast;
-    }
 
     public boolean logLines() {
         return logLines;
@@ -70,7 +55,7 @@ public class FlatFileInputContext implements InputContext {
 
     @Override
     public InputChannel buildChannel() {
-        return new FlatFileInputChannel(path, format, skip, skipLast, logLines);
+        return new FlatFileInputChannel(path, format, logLines);
     }
 
     @Override

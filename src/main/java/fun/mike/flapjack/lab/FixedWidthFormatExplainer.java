@@ -24,6 +24,10 @@ public class FixedWidthFormatExplainer {
         summaryTable.addRule();
         summaryTable.addRow("Number of Fields", fields.size());
         summaryTable.addRule();
+        summaryTable.addRow("Skip First", format.getSkipFirst());
+        summaryTable.addRule();
+        summaryTable.addRow("Skip Last", format.getSkipLast());
+        summaryTable.addRule();
 
         AsciiTable fieldTable = new AsciiTable();
         fieldTable.addRule();
@@ -52,7 +56,7 @@ public class FixedWidthFormatExplainer {
     }
 
     private static String whenNull(Object value, String defaultValue) {
-        if(value == null) {
+        if (value == null) {
             return defaultValue;
         }
         return value.toString();

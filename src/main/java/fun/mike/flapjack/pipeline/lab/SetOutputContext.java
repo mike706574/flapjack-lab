@@ -1,15 +1,15 @@
 package fun.mike.flapjack.pipeline.lab;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import fun.mike.record.alpha.Record;
 
-public class ListOutputContext implements OutputContext<List<Record>> {
+public class SetOutputContext implements OutputContext<Set<Record>> {
     @Override
-    public OutputChannel<List<Record>> buildChannel() {
-        return new ListOutputChannel();
+    public OutputChannel<Set<Record>> buildChannel() {
+        return new SetOutputChannel();
     }
 
     @Override
@@ -17,11 +17,11 @@ public class ListOutputContext implements OutputContext<List<Record>> {
         visitor.accept(this);
     }
 
-    private final class ListOutputChannel implements OutputChannel<List<Record>> {
-        private final List<Record> records;
+    private final class SetOutputChannel implements OutputChannel<Set<Record>> {
+        private final Set<Record> records;
 
-        public ListOutputChannel() {
-            records = new LinkedList<>();
+        public SetOutputChannel() {
+            records = new HashSet<>();
         }
 
         @Override
@@ -31,7 +31,7 @@ public class ListOutputContext implements OutputContext<List<Record>> {
         }
 
         @Override
-        public List<Record> getValue() {
+        public Set<Record> getValue() {
             return records;
         }
 

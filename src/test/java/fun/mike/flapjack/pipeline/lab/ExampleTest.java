@@ -14,20 +14,20 @@ public class ExampleTest {
     public void example() {
         // Define an input format
         Format inputFormat =
-            DelimitedFormat.unframed("animals",
-                                     "A bunch of animals.",
-                                     ',',
-                                     Arrays.asList(Column.string("name"),
-                                                   Column.integer("legs"),
-                                                   Column.string("size")));
+                DelimitedFormat.unframed("animals",
+                                         "A bunch of animals.",
+                                         ',',
+                                         Arrays.asList(Column.string("name"),
+                                                       Column.integer("legs"),
+                                                       Column.string("size")));
 
         // Build a pipeline
         ListPipelineResult result =
-            Pipeline.fromFile("src/test/resources/pipeline/animals.csv", inputFormat)
-            .map(x -> x.updateString("size", String::toUpperCase))
-            .filter(x -> x.getString("size").equals("MEDIUM"))
-            .toList()
-            .run();
+                Pipeline.fromFile("src/test/resources/pipeline/animals.csv", inputFormat)
+                        .map(x -> x.updateString("size", String::toUpperCase))
+                        .filter(x -> x.getString("size").equals("MEDIUM"))
+                        .toList()
+                        .run();
 
         System.out.println(result);
 

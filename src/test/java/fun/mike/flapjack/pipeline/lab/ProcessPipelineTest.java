@@ -24,43 +24,6 @@ public class ProcessPipelineTest {
                                                    Column.integer("legs"),
                                                    Column.string("size")));
 
-    private static final class Animal {
-        public final String name;
-        public final int legs;
-        public final String size;
-
-        public Animal(String name, int legs, String size) {
-            this.name = name;
-            this.legs = legs;
-            this.size = size;
-        }
-
-        @Override
-        public String toString() {
-            return "Animal{" +
-                    "name='" + name + '\'' +
-                    ", legs=" + legs +
-                    ", size='" + size + '\'' +
-                    '}';
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Animal animal = (Animal) o;
-            return legs == animal.legs &&
-                    Objects.equals(name, animal.name) &&
-                    Objects.equals(size, animal.size);
-        }
-
-        @Override
-        public int hashCode() {
-
-            return Objects.hash(name, legs, size);
-        }
-    }
-
     @Test
     public void success() {
         String inputPath = base + "animals.csv";
@@ -99,5 +62,42 @@ public class ProcessPipelineTest {
                      values.get(2));
 
         assertEquals(3, database.size());
+    }
+
+    private static final class Animal {
+        public final String name;
+        public final int legs;
+        public final String size;
+
+        public Animal(String name, int legs, String size) {
+            this.name = name;
+            this.legs = legs;
+            this.size = size;
+        }
+
+        @Override
+        public String toString() {
+            return "Animal{" +
+                    "name='" + name + '\'' +
+                    ", legs=" + legs +
+                    ", size='" + size + '\'' +
+                    '}';
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Animal animal = (Animal) o;
+            return legs == animal.legs &&
+                    Objects.equals(name, animal.name) &&
+                    Objects.equals(size, animal.size);
+        }
+
+        @Override
+        public int hashCode() {
+
+            return Objects.hash(name, legs, size);
+        }
     }
 }

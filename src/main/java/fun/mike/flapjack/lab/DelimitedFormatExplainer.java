@@ -21,39 +21,50 @@ public class DelimitedFormatExplainer {
         int offset = format.getOffset();
         List<Column> columns = format.getColumns();
 
-        AsciiTable summary = new AsciiTable();
-        summary.addRule();
-        summary.addRow("Identifier", id);
-        summary.addRule();
-        summary.addRow("Type", "Delimited");
-        summary.addRule();
-        summary.addRow("Description", whenNull(description, "A delimited format."));
-        summary.addRule();
-        summary.addRow("Number of Columns", columns.size());
-        summary.addRule();
-        summary.addRow("Delimiter", explainDelimiter(delimiter));
-        summary.addRule();
-        summary.addRow("Framing", explainFraming(framing, frameDelimiter));
-        summary.addRule();
-        summary.addRow("Ending Delimiter", explainEndingDelimiter(endingDelimiter));
-        summary.addRule();
-        summary.addRow("Offset", explainOffset(offset));
-        summary.addRule();
+        AsciiTable summaryTable = new AsciiTable();
+        summaryTable.addRule();
+        summaryTable.addRow("Identifier", id);
+        summaryTable.addRule();
+        summaryTable.addRow("Type", "Delimited");
+        summaryTable.addRule();
+        summaryTable.addRow("Description", whenNull(description, "A delimited format."));
+        summaryTable.addRule();
+        summaryTable.addRule();
+        summaryTable.addRow("Skip First", format.getSkipFirst());
+        summaryTable.addRule();
+        summaryTable.addRow("Skip Last", format.getSkipLast());
+        summaryTable.addRule();
+        summaryTable.addRow("Number of Columns", columns.size());
+        summaryTable.addRule();
+        summaryTable.addRow("Delimiter", explainDelimiter(delimiter));
+        summaryTable.addRule();
+        summaryTable.addRow("Framing", explainFraming(framing, frameDelimiter));
+        summaryTable.addRule();
+        summaryTable.addRow("Ending Delimiter", explainEndingDelimiter(endingDelimiter));
+        summaryTable.addRule();
+        summaryTable.addRow("Offset", explainOffset(offset));
+        summaryTable.addRule();
 
-        AsciiTable options = new AsciiTable();
-        options.addRule();
-        options.addRow("Name", "Description", "Value");
-        options.addRule();
-        options.addRow("delimiter", "The column delimiter", delimiter);
-        options.addRule();
-        options.addRow("endingDelimiter", "Whether or not an ending delimiter is required", endingDelimiter);
-        options.addRule();
-        options.addRow("framing", "Whether or not values are framed", whenNull(framing, "null"));
-        options.addRule();
-        options.addRow("frameDelimiter", "Frame delimiter", whenNull(frameDelimiter, "N/A"));
-        options.addRule();
-        options.addRow("offset", "Number of columns to skip", whenNull(offset, "null"));
-        options.addRule();
+        AsciiTable optionsTable = new AsciiTable();
+        optionsTable.addRule();
+        optionsTable.addRow("Name", "Description", "Value");
+        optionsTable.addRule();
+        optionsTable.addRow("delimiter", "The column delimiter", delimiter);
+        optionsTable.addRule();
+        optionsTable.addRow("endingDelimiter", "Whether or not an ending delimiter is required", endingDelimiter);
+        optionsTable.addRule();
+        optionsTable.addRow("framing", "Whether or not values are framed", whenNull(framing, "null"));
+        optionsTable.addRule();
+        optionsTable.addRow("frameDelimiter", "Frame delimiter", whenNull(frameDelimiter, "N/A"));
+        optionsTable.addRule();
+        optionsTable.addRow("offset", "Number of columns to skip", whenNull(offset, "null"));
+        optionsTable.addRule();
+        optionsTable.addRow("hasHeader", "Whether or not to include a header when serializing", format.hasHeader());
+        optionsTable.addRule();
+        optionsTable.addRow("skipFirst", "Number of records to skip when parsing", whenNull(frameDelimiter, "N/A"));
+        optionsTable.addRule();
+        optionsTable.addRow("skipLast", "Number of ending records to skip when parsing", whenNull(offset, "null"));
+        optionsTable.addRule();
 
         AsciiTable columnTable = new AsciiTable();
         columnTable.addRule();
@@ -72,15 +83,15 @@ public class DelimitedFormatExplainer {
 
         return String.join("\n",
                            "Summary:",
-                           summary.render(),
+                           summaryTable.render(),
                            "Options:",
-                           options.render(),
+                           optionsTable.render(),
                            "Columns (" + columns.size() + " total):",
                            columnTable.render());
     }
 
     private static String whenNull(Object value, String defaultValue) {
-        if(value == null) {
+        if (value == null) {
             return defaultValue;
         }
         return value.toString();

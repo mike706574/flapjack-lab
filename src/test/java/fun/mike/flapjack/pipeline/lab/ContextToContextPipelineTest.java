@@ -18,7 +18,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class FileToFilePipelineTest {
+public class ContextToContextPipelineTest {
     private static final String base = "src/test/resources/pipeline/";
 
     private static final Format inputFormat =
@@ -61,13 +61,21 @@ public class FileToFilePipelineTest {
         String inputPath = base + "animals.csv";
         String outputPath = base + "animals.dat";
 
-        FlatFilePipeline pipeline = Pipeline.fromFile(inputPath, inputFormat)
+        InputContext inputContext = new FlatFileInputContext(inputPath, inputFormat, false);
+
+        Transform transform = Transform
                 .map(x -> x.updateString("size", String::toUpperCase))
                 .filter(x -> x.getString("size").equals("MEDIUM"))
-                .toFile(outputPath, outputFormat)
                 .build();
 
-        PipelineResult<Nothing> result = pipeline.run();
+        OutputContext<Nothing> outputContext = new FlatFileOutputContext(outputPath, outputFormat, true);
+
+        Pipeline<Nothing> pipeline = Pipeline.fromContext(inputContext)
+                .transform(transform)
+                .toContext(outputContext);
+
+
+        PipelineResult<Nothing> result = pipeline.execute();
 
         assertTrue(result.isOk());
         assertEquals(6, result.getInputCount());

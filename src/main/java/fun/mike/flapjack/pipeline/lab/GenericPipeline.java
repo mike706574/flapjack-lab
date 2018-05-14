@@ -19,4 +19,8 @@ public class GenericPipeline<V> implements Pipeline<V> {
                                     transform,
                                     outputContext);
     }
+
+    public PipelineResult<V> run() {
+        return execute();
+    }
 }

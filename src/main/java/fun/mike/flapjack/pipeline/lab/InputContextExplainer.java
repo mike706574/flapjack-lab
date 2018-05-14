@@ -17,14 +17,10 @@ public class InputContextExplainer implements InputContextVisitor {
     @Override
     public void accept(FlatFileInputContext inputContext) {
         String path = inputContext.getPath();
-        int skip = inputContext.getSkip();
-        int skipLast = inputContext.getSkipLast();
         Format format = inputContext.getFormat();
         explanation = String.join("\n",
                                   "Reading from a flat file.",
                                   "File path: " + path,
-                                  "Skip: " + skip,
-                                  "Skip Last: " + skipLast,
                                   FormatExplainer.explain(format));
     }
 

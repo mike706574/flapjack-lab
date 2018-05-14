@@ -15,7 +15,9 @@ import org.slf4j.LoggerFactory;
 public interface Pipeline<V> {
     Logger log = LoggerFactory.getLogger(Pipeline.class);
 
-    PipelineResult<V> execute();
+    static InputContextPipelineBuilder fromContext(InputContext context) {
+        return new InputContextPipelineBuilder(context);
+    }
 
     static FlatInputFilePipelineBuilder fromFile(String path, Format format) {
         return new FlatInputFilePipelineBuilder(path, format);
@@ -32,6 +34,8 @@ public interface Pipeline<V> {
     static OperationPipelineBuilder fromList(List<Record> list) {
         return fromCollection(list);
     }
+
+    PipelineResult<V> execute();
 
     default <T> PipelineResult<T> runWithOutputChannel(InputContext inputContext,
                                                        Transform transform,
@@ -61,7 +65,7 @@ public interface Pipeline<V> {
                 inputCount++;
                 InputResult inputValue = inputChannel.take();
 
-                if(inputValue.isOk()) {
+                if (inputValue.isOk()) {
                     String inputLine = inputValue.getLine();
                     Record inputRecord = inputValue.getValue();
 
@@ -75,17 +79,14 @@ public interface Pipeline<V> {
                         if (outputError.isPresent()) {
                             outputErrorCount++;
                             errors.add(outputError.get());
-                        }
-                        else {
+                        } else {
                             outputCount++;
                         }
-                    }
-                    else if(transformResult.hasError()) {
+                    } else if (transformResult.hasError()) {
                         transformErrorCount++;
                         errors.add(TransformPipelineError.fromResult(inputCount, inputLine, transformResult));
                     }
-                }
-                else {
+                } else {
                     inputErrorCount++;
                     errors.add(inputValue.getError());
                 }

@@ -51,4 +51,14 @@ public class OutputContextExplainer implements OutputContextVisitor {
     public void accept(GroupOutputContext outputContext) {
         explanation = "A group.";
     }
+
+    @Override
+    public <T> void accept(ConstantOutputContext<T> outputContext) {
+        explanation = "A value.";
+    }
+
+    @Override
+    public void accept(SetOutputContext setOutputContext) {
+        explanation = "A set.";
+    }
 }

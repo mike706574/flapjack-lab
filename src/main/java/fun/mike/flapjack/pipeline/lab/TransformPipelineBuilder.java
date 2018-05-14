@@ -27,6 +27,10 @@ public class TransformPipelineBuilder {
         return new ListPipeline(inputContext, transform, outputContext);
     }
 
+    public <T> GenericPipeline<T> toContext(OutputContext<T> outputContext) {
+        return new GenericPipeline<T>(inputContext, transform, outputContext);
+    }
+
     public <G> GroupPipeline<G> groupBy(Function<Record, G> groupBy) {
         OutputContext<Map<G, List<Record>>> outputContext = new GroupOutputContext<>(groupBy);
         return new GroupPipeline<>(inputContext, transform, outputContext);

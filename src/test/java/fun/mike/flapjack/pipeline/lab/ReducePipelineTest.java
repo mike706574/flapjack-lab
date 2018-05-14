@@ -33,11 +33,11 @@ public class ReducePipelineTest {
                 .map(record -> record.updateString("size", String::toUpperCase))
                 .reduce(new HashMap<>(),
                         (tally, record) -> {
-                                 String size = record.getString("size");
-                                 Integer count = tally.getOrDefault(size, 0);
-                                 tally.put(size, count + 1);
-                                 return tally;
-                             });
+                            String size = record.getString("size");
+                            Integer count = tally.getOrDefault(size, 0);
+                            tally.put(size, count + 1);
+                            return tally;
+                        });
 
         PipelineResult<Map<String, Integer>> result = pipeline.run();
 
@@ -65,11 +65,11 @@ public class ReducePipelineTest {
                 .map(x -> x.updateString("size", String::toUpperCase))
                 .reduce(new HashMap<>(),
                         (tally, record) -> {
-                                 String size = record.getString("size");
-                                 Integer count = tally.getOrDefault(size, 0);
-                                 tally.put(size, count + 1);
-                                 return tally;
-                             });
+                            String size = record.getString("size");
+                            Integer count = tally.getOrDefault(size, 0);
+                            tally.put(size, count + 1);
+                            return tally;
+                        });
 
         PipelineResult<Map<String, Integer>> result = pipeline.run();
 

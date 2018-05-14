@@ -39,6 +39,7 @@ public class TransformPipelineError implements PipelineError {
         return line;
     }
 
+    @Override
     public Record getRecord() {
         return record;
     }

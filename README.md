@@ -89,7 +89,7 @@ Format inputFormat =
                                            Column.integer("legs"),
                                            Column.string("size")));
 
-ListPipeline pipeline = Pipeline.("animals.csv", inputFormat)
+ListPipeline pipeline = Pipeline.fromFile("animals.csv", inputFormat)
         .map(x -> x.updateString("size", String::toUpperCase))
         .filter(x -> x.getString("size").equals("MEDIUM"))
         .toList();

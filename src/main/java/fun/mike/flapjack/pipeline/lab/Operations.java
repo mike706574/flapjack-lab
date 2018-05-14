@@ -29,12 +29,12 @@ public class Operations {
         String type = getType(operation);
 
         String id = operation.getId();
-        if(id == null) {
+        if (id == null) {
             id = type + "-" + number;
         }
 
         String description = operation.getDescription();
-        if(description == null) {
+        if (description == null) {
             description = uppercaseFirstLetter(type) + " operation";
         }
 
@@ -43,7 +43,7 @@ public class Operations {
 
     public static String getType(Operation operation) {
         String type = lowercaseFirstLetter(operation.getClass().getSimpleName());
-        if(type.endsWith("Operation") && type.length() > 9) {
+        if (type.endsWith("Operation") && type.length() > 9) {
             return type.substring(0, type.length() - 9);
         }
         return type;

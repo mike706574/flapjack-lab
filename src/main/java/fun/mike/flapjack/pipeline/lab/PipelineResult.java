@@ -10,12 +10,12 @@ import fun.mike.flapjack.alpha.Result;
 public class PipelineResult<T> implements Result<T> {
     private final T value;
     private final InputContext inputContext;
-    private final OutputContext<?> outputContext;
+    private final OutputContext<T> outputContext;
     private final int inputCount;
     private final int outputCount;
     private final List<PipelineError> errors;
 
-    protected PipelineResult(T value, InputContext inputContext, OutputContext<?> outputContext, int inputCount, int outputCount, List<PipelineError> errors) {
+    protected PipelineResult(T value, InputContext inputContext, OutputContext<T> outputContext, int inputCount, int outputCount, List<PipelineError> errors) {
         this.value = value;
         this.inputContext = inputContext;
         this.outputContext = outputContext;
@@ -29,6 +29,7 @@ public class PipelineResult<T> implements Result<T> {
     }
 
     public <U> PipelineResult<U> withValue(U value) {
+        OutputContext<U> outputContext = new ConstantOutputContext<>(value);
         return new PipelineResult<>(value, inputContext, outputContext, inputCount, outputCount, errors);
     }
 
@@ -85,6 +86,15 @@ public class PipelineResult<T> implements Result<T> {
         return errors;
     }
 
+    public <U> PipelineResult<U> merge(PipelineResult<U> result) {
+        List<PipelineError> mergedErrors = new LinkedList<>();
+        mergedErrors.addAll(errors);
+        mergedErrors.addAll(result.getErrors());
+        U value = result.getValue();
+        OutputContext<U> outputContext = result.getOutputContext();
+        return PipelineResult.of(value, inputContext, outputContext, inputCount, result.getOutputCount(), mergedErrors);
+    }
+
     public <E extends Exception> PipelineResult<T> withoutException(Class<E> exceptionType) {
         List<PipelineError> filteredErrors = errors.stream()
                 .filter(error -> !hasException(error, exceptionType))
@@ -123,7 +133,7 @@ public class PipelineResult<T> implements Result<T> {
         return inputContext;
     }
 
-    public OutputContext<?> getOutputContext() {
+    public OutputContext<T> getOutputContext() {
         return outputContext;
     }
 

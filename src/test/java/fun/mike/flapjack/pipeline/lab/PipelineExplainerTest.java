@@ -35,11 +35,11 @@ public class PipelineExplainerTest {
 
 
         Format inputFormat = DelimitedFormat.unframed("delimited-animals",
-                                         "Delimited animals format.",
-                                         ',',
-                                         Arrays.asList(Column.string("name"),
-                                                       Column.integer("legs"),
-                                                       Column.string("size")));
+                                                      "Delimited animals format.",
+                                                      ',',
+                                                      Arrays.asList(Column.string("name"),
+                                                                    Column.integer("legs"),
+                                                                    Column.string("size")));
 
         Format outputFormat =
                 new FixedWidthFormat("delimited-animals",
@@ -47,7 +47,7 @@ public class PipelineExplainerTest {
                                      Arrays.asList(Field.string("name", 10),
                                                    Field.string("size", 10)));
 
-        InputContext inputContext = new FlatFileInputContext("in.csv", inputFormat, 0, 0, true);
+        InputContext inputContext = new FlatFileInputContext("in.csv", inputFormat, true);
         OutputContext<Nothing> outputContext = new FlatFileOutputContext("out.dat", outputFormat, false);
 
         PipelineResult<Nothing> x =

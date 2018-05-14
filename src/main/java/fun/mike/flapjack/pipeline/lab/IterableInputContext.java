@@ -43,6 +43,7 @@ public class IterableInputContext implements InputContext {
         }
 
         @Override
-        public void close() {}
+        public void close() {
+        }
     }
 }

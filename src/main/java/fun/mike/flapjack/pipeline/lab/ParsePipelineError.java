@@ -42,6 +42,7 @@ public class ParsePipelineError implements PipelineError {
         visitor.visit(this);
     }
 
+    @Override
     public Record getRecord() {
         return record;
     }
