@@ -9,7 +9,7 @@ public class ListPipeline extends GenericPipeline<List<Record>> {
         super(inputContext, transform, outputContext);
     }
 
-    public ListPipelineResult run() {
-        return new ListPipelineResult(execute());
+    public ListResult run() {
+        return new ListResult(execute());
     }
 }

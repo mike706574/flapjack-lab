@@ -42,7 +42,7 @@ public class ProcessPipelineTest {
                     return animal;
                 });
 
-        ProcessPipelineResult<Animal> result = pipeline.run();
+        ProcessResult<Animal> result = pipeline.run();
 
         assertTrue(result.isOk());
         assertEquals(6, result.getInputCount());

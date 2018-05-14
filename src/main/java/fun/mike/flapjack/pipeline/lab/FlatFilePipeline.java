@@ -5,7 +5,7 @@ public class FlatFilePipeline extends GenericPipeline<Nothing> {
         super(inputContext, transform, outputContext);
     }
 
-    public PipelineResult<Nothing> run() {
-        return execute();
+    public FlatFileResult run() {
+        return new FlatFileResult(execute());
     }
 }

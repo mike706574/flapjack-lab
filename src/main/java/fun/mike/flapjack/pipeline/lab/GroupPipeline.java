@@ -10,7 +10,7 @@ public class GroupPipeline<G> extends GenericPipeline<Map<G, List<Record>>> {
         super(inputContext, transform, outputContext);
     }
 
-    public GroupPipelineResult<G> run() {
-        return new GroupPipelineResult<>(execute());
+    public GroupResult<G> run() {
+        return new GroupResult<>(execute());
     }
 }

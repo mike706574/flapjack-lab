@@ -7,7 +7,7 @@ public class ProcessPipeline<T> extends GenericPipeline<List<T>> {
         super(inputContext, transform, outputContext);
     }
 
-    public ProcessPipelineResult<T> run() {
-        return new ProcessPipelineResult<>(execute());
+    public ProcessResult<T> run() {
+        return new ProcessResult<>(execute());
     }
 }

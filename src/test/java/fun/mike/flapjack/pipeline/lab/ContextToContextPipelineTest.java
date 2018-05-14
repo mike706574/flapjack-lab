@@ -94,7 +94,7 @@ public class ContextToContextPipelineTest {
         String inputPath = base + "bad-animals.csv";
         String outputPath = base + "bad-animals.dat";
 
-        ListPipelineResult inputResult = Pipeline.fromFile(inputPath, inputFormat)
+        ListResult inputResult = Pipeline.fromFile(inputPath, inputFormat)
                 .map(x -> x.updateString("size", String::toUpperCase))
                 .filter(x -> x.getString("size").equals("MEDIUM"))
                 .map(x -> x.dissoc("size"))

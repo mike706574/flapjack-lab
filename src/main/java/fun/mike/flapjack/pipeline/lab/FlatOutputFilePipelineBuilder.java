@@ -28,7 +28,7 @@ public class FlatOutputFilePipelineBuilder {
         return new FlatFilePipeline(inputContext, transform, outputFile);
     }
 
-    public PipelineResult<Nothing> run() {
+    public FlatFileResult run() {
         return build().run();
     }
 }

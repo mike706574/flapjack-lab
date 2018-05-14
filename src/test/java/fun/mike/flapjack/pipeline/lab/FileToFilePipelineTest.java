@@ -86,7 +86,7 @@ public class FileToFilePipelineTest {
         String inputPath = base + "bad-animals.csv";
         String outputPath = base + "bad-animals.dat";
 
-        ListPipelineResult inputResult = Pipeline.fromFile(inputPath, inputFormat)
+        ListResult inputResult = Pipeline.fromFile(inputPath, inputFormat)
                 .map(x -> x.updateString("size", String::toUpperCase))
                 .filter(x -> x.getString("size").equals("MEDIUM"))
                 .map(x -> x.dissoc("size"))
@@ -112,7 +112,7 @@ public class FileToFilePipelineTest {
         String inputPath = base + "animals.csv";
         String outputPath = base + "animals-with-header.csv";
 
-        PipelineResult<Nothing> result = Pipeline.fromFile(inputPath, inputFormat)
+        FlatFileResult result = Pipeline.fromFile(inputPath, inputFormat)
                 .map(x -> x.updateString("size", String::toUpperCase))
                 .filter(x -> x.getString("size").equals("MEDIUM"))
                 .toFile(outputPath, anotherFormat)

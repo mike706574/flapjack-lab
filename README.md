@@ -44,14 +44,14 @@ Format outputFormat =
                                    Field.string("size", 10)));
 
 // Build a pipeline
-Pipeline pipeline = Pipeline.fromFile("animals.csv", inputFormat)
+FlatFilePipeline pipeline = Pipeline.fromFile("animals.csv", inputFormat)
     .filter(x -> x.getString("size").equals("MEDIUM"))
     .map(x -> x.updateString("name", String::toUpperCase))
     .toFile("medium-sized-animals.txt", outputFormat)
     .build();
 
 // Run it
-PipelineResult<Nothing> result = pipeline.run();
+FlatFileResult result = pipeline.run();
 
 // Check for errors
 result.isOk();
@@ -94,7 +94,7 @@ ListPipeline pipeline = Pipeline.fromFile("animals.csv", inputFormat)
         .filter(x -> x.getString("size").equals("MEDIUM"))
         .toList();
 
-PipelineResult<List<Record>> result = pipeline.run();
+ListResult result = pipeline.run();
 
 assertTrue(result.isOk());
 assertEquals(6, result.getInputCount());

@@ -1,9 +1,11 @@
 package fun.mike.flapjack.pipeline.lab;
 
-import java.util.List;
+import java.util.Set;
 
-public class ProcessPipelineResult<T> extends PipelineResult<List<T>> {
-    protected ProcessPipelineResult(PipelineResult<List<T>> result) {
+import fun.mike.record.alpha.Record;
+
+public class SetResult extends PipelineResult<Set<Record>> {
+    public SetResult(PipelineResult<Set<Record>> result) {
         super(result.getValue(), result.getInputContext(), result.getOutputContext(), result.getInputCount(), result.getOutputCount(), result.getErrors());
     }
 }

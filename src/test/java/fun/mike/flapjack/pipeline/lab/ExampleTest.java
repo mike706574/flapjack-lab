@@ -22,7 +22,7 @@ public class ExampleTest {
                                                        Column.string("size")));
 
         // Build a pipeline
-        ListPipelineResult result =
+        ListResult result =
                 Pipeline.fromFile("src/test/resources/pipeline/animals.csv", inputFormat)
                         .map(x -> x.updateString("size", String::toUpperCase))
                         .filter(x -> x.getString("size").equals("MEDIUM"))

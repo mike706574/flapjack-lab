@@ -9,7 +9,7 @@ public class SetPipeline extends GenericPipeline<Set<Record>> {
         super(inputContext, transform, outputContext);
     }
 
-    public SetPipelineResult run() {
-        return new SetPipelineResult(execute());
+    public SetResult run() {
+        return new SetResult(execute());
     }
 }
