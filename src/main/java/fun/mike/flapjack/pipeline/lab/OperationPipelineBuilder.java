@@ -67,7 +67,7 @@ public class OperationPipelineBuilder {
 
     // Next
     public FlatOutputFilePipelineBuilder toFile(String path, Format format) {
-        return new FlatOutputFilePipelineBuilder(inputContext, buildTransform(), path, format, false);
+        return new FlatOutputFilePipelineBuilder(inputContext, buildTransform(), path, format);
     }
 
     public ListPipeline toList() {

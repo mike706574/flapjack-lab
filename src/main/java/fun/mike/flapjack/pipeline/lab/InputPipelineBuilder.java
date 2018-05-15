@@ -45,7 +45,7 @@ public abstract class InputPipelineBuilder {
 
     // Next
     public FlatOutputFilePipelineBuilder toFile(String path, Format format) {
-        return new FlatOutputFilePipelineBuilder(buildInputContext(), emptyTransform(), path, format, false);
+        return new FlatOutputFilePipelineBuilder(buildInputContext(), emptyTransform(), path, format);
     }
 
     public ListPipeline toList() {

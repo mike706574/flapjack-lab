@@ -68,7 +68,7 @@ public class ContextToContextPipelineTest {
                 .filter(x -> x.getString("size").equals("MEDIUM"))
                 .build();
 
-        OutputContext<Nothing> outputContext = new FlatFileOutputContext(outputPath, outputFormat, true);
+        OutputContext<Nothing> outputContext = new FlatFileOutputContext(outputPath, outputFormat);
 
         Pipeline<Nothing> pipeline = Pipeline.fromContext(inputContext)
                 .transform(transform)
@@ -124,7 +124,6 @@ public class ContextToContextPipelineTest {
                 .map(x -> x.updateString("size", String::toUpperCase))
                 .filter(x -> x.getString("size").equals("MEDIUM"))
                 .toFile(outputPath, anotherFormat)
-                .includeHeader()
                 .run();
 
         assertTrue(result.isOk());

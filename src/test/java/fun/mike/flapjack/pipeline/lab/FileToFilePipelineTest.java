@@ -35,7 +35,9 @@ public class FileToFilePipelineTest {
                                      ',',
                                      Arrays.asList(Column.string("name"),
                                                    Column.string("size"),
-                                                   Column.integer("legs")));
+                                                   Column.integer("legs")))
+        .withHeader();
+
     private static final Format outputFormat =
             new FixedWidthFormat("delimited-animals",
                                  "Delimited animals format.",
@@ -116,7 +118,6 @@ public class FileToFilePipelineTest {
                 .map(x -> x.updateString("size", String::toUpperCase))
                 .filter(x -> x.getString("size").equals("MEDIUM"))
                 .toFile(outputPath, anotherFormat)
-                .includeHeader()
                 .run();
 
         assertTrue(result.isOk());

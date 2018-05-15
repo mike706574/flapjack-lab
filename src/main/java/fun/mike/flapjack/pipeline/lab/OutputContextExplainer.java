@@ -17,13 +17,10 @@ public class OutputContextExplainer implements OutputContextVisitor {
     @Override
     public void accept(FlatFileOutputContext outputContext) {
         String path = outputContext.getPath();
-        boolean includeHeader = outputContext.includeHeader();
         Format format = outputContext.getFormat();
-        String headerLabel = includeHeader ? "Yes" : "No";
         explanation = String.join("\n",
                                   "Writing to a flat file.",
                                   "File path: " + path,
-                                  "Include header? " + headerLabel,
                                   FormatExplainer.explain(format));
     }
 

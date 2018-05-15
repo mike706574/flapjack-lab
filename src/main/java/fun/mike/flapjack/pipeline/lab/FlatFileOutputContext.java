@@ -13,16 +13,14 @@ import fun.mike.record.alpha.Record;
 public class FlatFileOutputContext implements OutputContext<Nothing> {
     private final String path;
     private final Format format;
-    private final Boolean includeHeader;
 
-    public FlatFileOutputContext(String path, Format format, Boolean includeHeader) {
+    public FlatFileOutputContext(String path, Format format) {
         this.path = path;
         this.format = format;
-        this.includeHeader = includeHeader;
     }
 
-    public FlatFileOutputContext of(String path, Format format, Boolean includeHeader) {
-        return new FlatFileOutputContext(path, format, includeHeader);
+    public FlatFileOutputContext of(String path, Format format) {
+        return new FlatFileOutputContext(path, format);
     }
 
     @Override
@@ -41,13 +39,9 @@ public class FlatFileOutputContext implements OutputContext<Nothing> {
         return format;
     }
 
-    public Boolean includeHeader() {
-        return includeHeader;
-    }
-
     @Override
     public OutputChannel<Nothing> buildChannel() {
-        return new FlatFileOutputChannel(path, format, includeHeader);
+        return new FlatFileOutputChannel(path, format);
     }
 
     @Override
@@ -61,12 +55,13 @@ public class FlatFileOutputContext implements OutputContext<Nothing> {
 
         private final List<PipelineError> errors;
 
-        public FlatFileOutputChannel(String path, Format format, Boolean includeHeader) {
+        public FlatFileOutputChannel(String path, Format format) {
             this.format = format;
 
             this.spitter = new Spitter(path);
 
-            if (includeHeader && format instanceof DelimitedFormat) {
+            if (format instanceof DelimitedFormat) {
+                boolean includeHeader = ((DelimitedFormat)format).hasHeader();
                 spitter.spit(HeaderBuilder.build((DelimitedFormat) format));
             }
 

@@ -48,7 +48,7 @@ public class PipelineExplainerTest {
                                                    Field.string("size", 10)));
 
         InputContext inputContext = new FlatFileInputContext("in.csv", inputFormat, true);
-        OutputContext<Nothing> outputContext = new FlatFileOutputContext("out.dat", outputFormat, false);
+        OutputContext<Nothing> outputContext = new FlatFileOutputContext("out.dat", outputFormat);
 
         PipelineResult<Nothing> x =
                 PipelineResult.of(Nothing.value(),

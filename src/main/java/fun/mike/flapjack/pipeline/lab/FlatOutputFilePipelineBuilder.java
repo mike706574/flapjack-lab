@@ -8,23 +8,16 @@ public class FlatOutputFilePipelineBuilder {
 
     private final String outputPath;
     private final Format outputFormat;
-    private Boolean includeHeader;
 
-    public FlatOutputFilePipelineBuilder(InputContext inputContext, Transform transform, String outputPath, Format outputFormat, Boolean includeHeader) {
+    public FlatOutputFilePipelineBuilder(InputContext inputContext, Transform transform, String outputPath, Format outputFormat) {
         this.inputContext = inputContext;
         this.transform = transform;
         this.outputPath = outputPath;
         this.outputFormat = outputFormat;
-        this.includeHeader = includeHeader;
-    }
-
-    public FlatOutputFilePipelineBuilder includeHeader() {
-        includeHeader = true;
-        return this;
     }
 
     public FlatFilePipeline build() {
-        FlatFileOutputContext outputFile = new FlatFileOutputContext(outputPath, outputFormat, includeHeader);
+        FlatFileOutputContext outputFile = new FlatFileOutputContext(outputPath, outputFormat);
         return new FlatFilePipeline(inputContext, transform, outputFile);
     }
 

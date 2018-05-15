@@ -19,7 +19,7 @@ public class TransformPipelineBuilder {
     }
 
     public FlatOutputFilePipelineBuilder toFile(String path, Format format) {
-        return new FlatOutputFilePipelineBuilder(inputContext, transform, path, format, false);
+        return new FlatOutputFilePipelineBuilder(inputContext, transform, path, format);
     }
 
     public ListPipeline toList() {
