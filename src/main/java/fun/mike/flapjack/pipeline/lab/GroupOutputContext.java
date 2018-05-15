@@ -36,7 +36,7 @@ public class GroupOutputContext<G> implements OutputContext<Map<G, List<Record>>
         }
 
         @Override
-        public Optional<PipelineError> put(int number, String line, Record value) {
+        public Optional<Failure> put(int number, String line, Record value) {
             try {
                 G group = groupBy.apply(value);
                 if (values.containsKey(group)) {
@@ -48,7 +48,7 @@ public class GroupOutputContext<G> implements OutputContext<Map<G, List<Record>>
                 }
                 return Optional.empty();
             } catch (Exception ex) {
-                return Optional.of(OutputPipelineError.build(number, line, value, ex));
+                return Optional.of(OutputFailure.build(number, line, value, ex));
             }
         }
 

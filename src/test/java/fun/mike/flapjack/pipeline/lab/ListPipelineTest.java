@@ -79,8 +79,8 @@ public class ListPipelineTest {
 
         assertEquals(6, result.getInputCount());
         assertEquals(2, result.getOutputCount());
-        assertEquals(2, result.getErrorCount());
-        assertEquals(2, result.getErrorCount());
+        assertEquals(2, result.getFailureCount());
+        assertEquals(2, result.getFailureCount());
 
         List<Record> values = result.getValue();
         assertEquals(2, values.size());

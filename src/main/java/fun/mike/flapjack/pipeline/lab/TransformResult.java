@@ -7,16 +7,16 @@ import fun.mike.record.alpha.Record;
 public class TransformResult {
     private final boolean ok;
     private final boolean none;
-    private final boolean error;
+    private final boolean failure;
     private final Record record;
     private final Record originalRecord;
     private final OperationInfo operationInfo;
     private final Exception exception;
 
-    public TransformResult(boolean ok, boolean none, boolean error, Record record, Record originalRecord, OperationInfo operationInfo, Exception exception) {
+    public TransformResult(boolean ok, boolean none, boolean failure, Record record, Record originalRecord, OperationInfo operationInfo, Exception exception) {
         this.ok = ok;
         this.none = none;
-        this.error = error;
+        this.failure = failure;
         this.record = record;
         this.originalRecord = originalRecord;
         this.operationInfo = operationInfo;
@@ -31,7 +31,7 @@ public class TransformResult {
         return new TransformResult(false, true, false, record, originalRecord, operationInfo, null);
     }
 
-    public static TransformResult error(Record record, Record originalRecord, OperationInfo operationInfo, Exception exception) {
+    public static TransformResult failure(Record record, Record originalRecord, OperationInfo operationInfo, Exception exception) {
         return new TransformResult(false, false, true, record, originalRecord, operationInfo, exception);
     }
 
@@ -51,8 +51,8 @@ public class TransformResult {
         return !none;
     }
 
-    public boolean hasError() {
-        return error;
+    public boolean hasFailure() {
+        return failure;
     }
 
     public Record getRecord() {
@@ -76,7 +76,7 @@ public class TransformResult {
         return "TransformResult{" +
                 "ok=" + ok +
                 ", none=" + none +
-                ", error=" + error +
+                ", failure=" + failure +
                 ", record=" + record +
                 ", originalRecord=" + originalRecord +
                 ", operationInfo=" + operationInfo +
@@ -91,7 +91,7 @@ public class TransformResult {
         TransformResult that = (TransformResult) o;
         return ok == that.ok &&
                 none == that.none &&
-                error == that.error &&
+                failure == that.failure &&
                 Objects.equals(record, that.record) &&
                 Objects.equals(originalRecord, that.originalRecord) &&
                 Objects.equals(operationInfo, that.operationInfo) &&
@@ -101,6 +101,6 @@ public class TransformResult {
     @Override
     public int hashCode() {
 
-        return Objects.hash(ok, none, error, record, originalRecord, operationInfo, exception);
+        return Objects.hash(ok, none, failure, record, originalRecord, operationInfo, exception);
     }
 }

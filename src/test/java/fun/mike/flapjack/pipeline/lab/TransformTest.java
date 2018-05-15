@@ -73,20 +73,20 @@ public class TransformTest {
 
         Transform transform = Transform.map(x -> x.updateString("size", String::toUpperCase))
                 .filter(x -> {
-                    throw new RuntimeException("Error!");
+                    throw new RuntimeException("Failure!");
                 })
                 .build();
 
         TransformResult result = transform.run(inputRecord);
 
-        assertTrue(result.hasError());
+        assertTrue(result.hasFailure());
 
         assertEquals(inputRecord, result.getOriginalRecord());
 
         Exception exception = result.getException();
 
         assertTrue(exception instanceof RuntimeException);
-        assertEquals("Error!", exception.getMessage());
+        assertEquals("Failure!", exception.getMessage());
 
         OperationInfo operation = result.getOperationInfo();
 

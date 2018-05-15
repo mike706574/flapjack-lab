@@ -74,9 +74,9 @@ public class FileToFilePipelineTest {
         assertTrue(result.isOk());
         assertEquals(6, result.getInputCount());
         assertEquals(3, result.getOutputCount());
-        assertEquals(0, result.getErrorCount());
-        assertEquals(0, result.getErrors().size());
-        assertTrue(result.getErrors().isEmpty());
+        assertEquals(0, result.getFailureCount());
+        assertEquals(0, result.getFailures().size());
+        assertTrue(result.getFailures().isEmpty());
 
         assertEquals(IO.slurp(base + "expected-animals.dat"),
                      IO.slurp(base + "animals.dat"));
@@ -123,9 +123,9 @@ public class FileToFilePipelineTest {
         assertTrue(result.isOk());
         assertEquals(6, result.getInputCount());
         assertEquals(3, result.getOutputCount());
-        assertEquals(0, result.getErrorCount());
-        assertEquals(0, result.getErrors().size());
-        assertTrue(result.getErrors().isEmpty());
+        assertEquals(0, result.getFailureCount());
+        assertEquals(0, result.getFailures().size());
+        assertTrue(result.getFailures().isEmpty());
 
         assertEquals(IO.slurp(base + "expected-animals-with-header.csv"),
                      IO.slurp(base + "animals-with-header.csv"));
@@ -147,17 +147,17 @@ public class FileToFilePipelineTest {
         assertFalse(result.isOk());
         assertEquals(6, result.getInputCount());
         assertEquals(2, result.getOutputCount());
-        assertEquals(2, result.getErrorCount());
+        assertEquals(2, result.getFailureCount());
 
-        List<PipelineError> errors = result.getErrors();
+        List<Failure> failures = result.getFailures();
 
-        assertEquals(2, errors.size());
+        assertEquals(2, failures.size());
 
-        PipelineError firstError = errors.get(0);
-        assertEquals(2, firstError.getNumber());
+        Failure firstFailure = failures.get(0);
+        assertEquals(2, firstFailure.getNumber());
 
-        PipelineError secondError = errors.get(1);
-        assertEquals(4, secondError.getNumber());
+        Failure secondFailure = failures.get(1);
+        assertEquals(4, secondFailure.getNumber());
 
         assertEquals(IO.slurp(base + "expected-bad-animals.dat"),
                      IO.slurp(base + "bad-animals.dat"));

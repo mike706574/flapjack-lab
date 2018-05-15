@@ -13,43 +13,43 @@ public class PipelineResult<T> implements Result<T> {
     private final OutputContext<T> outputContext;
     private final int inputCount;
     private final int outputCount;
-    private final List<PipelineError> errors;
+    private final List<Failure> failures;
 
-    protected PipelineResult(T value, InputContext inputContext, OutputContext<T> outputContext, int inputCount, int outputCount, List<PipelineError> errors) {
+    protected PipelineResult(T value, InputContext inputContext, OutputContext<T> outputContext, int inputCount, int outputCount, List<Failure> failures) {
         this.value = value;
         this.inputContext = inputContext;
         this.outputContext = outputContext;
         this.inputCount = inputCount;
         this.outputCount = outputCount;
-        this.errors = errors;
+        this.failures = failures;
     }
 
-    public static <T> PipelineResult<T> of(T value, InputContext inputContext, OutputContext<T> outputContext, int inputCount, int outputCount, List<PipelineError> errors) {
-        return new PipelineResult<>(value, inputContext, outputContext, inputCount, outputCount, errors);
+    public static <T> PipelineResult<T> of(T value, InputContext inputContext, OutputContext<T> outputContext, int inputCount, int outputCount, List<Failure> failures) {
+        return new PipelineResult<>(value, inputContext, outputContext, inputCount, outputCount, failures);
     }
 
     public <U> PipelineResult<U> withValue(U value) {
         OutputContext<U> outputContext = new ConstantOutputContext<>(value);
-        return new PipelineResult<>(value, inputContext, outputContext, inputCount, outputCount, errors);
+        return new PipelineResult<>(value, inputContext, outputContext, inputCount, outputCount, failures);
     }
 
-    public PipelineResult<T> withMoreErrors(List<PipelineError> errors) {
-        List<PipelineError> allErrors = new LinkedList<>();
-        allErrors.addAll(this.errors);
-        allErrors.addAll(errors);
-        return new PipelineResult<>(value, inputContext, outputContext, inputCount, outputCount, allErrors);
+    public PipelineResult<T> withMoreFailures(List<Failure> failures) {
+        List<Failure> allFailures = new LinkedList<>();
+        allFailures.addAll(this.failures);
+        allFailures.addAll(failures);
+        return new PipelineResult<>(value, inputContext, outputContext, inputCount, outputCount, allFailures);
     }
 
-    public PipelineResult<T> withErrors(List<PipelineError> errors) {
-        return new PipelineResult<>(value, inputContext, outputContext, inputCount, outputCount, errors);
+    public PipelineResult<T> withFailures(List<Failure> failures) {
+        return new PipelineResult<>(value, inputContext, outputContext, inputCount, outputCount, failures);
     }
 
     public boolean isOk() {
-        return errors.isEmpty();
+        return failures.isEmpty();
     }
 
     public boolean isNotOk() {
-        return !errors.isEmpty();
+        return !failures.isEmpty();
     }
 
     public T getValue() {
@@ -78,47 +78,47 @@ public class PipelineResult<T> implements Result<T> {
         return outputCount;
     }
 
-    public int getErrorCount() {
-        return errors.size();
+    public int getFailureCount() {
+        return failures.size();
     }
 
-    public List<PipelineError> getErrors() {
-        return errors;
+    public List<Failure> getFailures() {
+        return failures;
     }
 
     public <U> PipelineResult<U> merge(PipelineResult<U> result) {
-        List<PipelineError> mergedErrors = new LinkedList<>();
-        mergedErrors.addAll(errors);
-        mergedErrors.addAll(result.getErrors());
+        List<Failure> mergedFailures = new LinkedList<>();
+        mergedFailures.addAll(failures);
+        mergedFailures.addAll(result.getFailures());
         U value = result.getValue();
         OutputContext<U> outputContext = result.getOutputContext();
-        return PipelineResult.of(value, inputContext, outputContext, inputCount, result.getOutputCount(), mergedErrors);
+        return PipelineResult.of(value, inputContext, outputContext, inputCount, result.getOutputCount(), mergedFailures);
     }
 
     public <E extends Exception> PipelineResult<T> withoutException(Class<E> exceptionType) {
-        List<PipelineError> filteredErrors = errors.stream()
+        List<Failure> filteredFailures = failures.stream()
                 .filter(error -> !hasException(error, exceptionType))
                 .collect(Collectors.toList());
-        return withErrors(filteredErrors);
+        return withFailures(filteredFailures);
     }
 
-    public <E extends Exception> List<PipelineError> getErrorsByException(Class<E> exceptionType) {
-        return getErrorsByType(TransformPipelineError.class)
+    public <E extends Exception> List<Failure> getFailuresByException(Class<E> exceptionType) {
+        return getFailuresByType(TransformFailure.class)
                 .stream()
                 .filter(error -> exceptionType.isInstance(error.getException()))
                 .collect(Collectors.toList());
     }
 
-    private <E extends PipelineError> List<E> getErrorsByType(Class<E> errorType) {
-        return errors.stream()
-                .filter(errorType::isInstance)
-                .map(errorType::cast)
+    private <E extends Failure> List<E> getFailuresByType(Class<E> failureType) {
+        return failures.stream()
+                .filter(failureType::isInstance)
+                .map(failureType::cast)
                 .collect(Collectors.toList());
     }
 
-    private <E> boolean hasException(PipelineError error, Class<E> exceptionType) {
-        if (error instanceof TransformPipelineError) {
-            Exception exception = ((TransformPipelineError) error).getException();
+    private <E> boolean hasException(Failure failure, Class<E> exceptionType) {
+        if (failure instanceof TransformFailure) {
+            Exception exception = ((TransformFailure) failure).getException();
             return exceptionType.isInstance(exception);
         }
         return false;
@@ -145,7 +145,7 @@ public class PipelineResult<T> implements Result<T> {
                 ", outputContext=" + outputContext +
                 ", inputCount=" + inputCount +
                 ", outputCount=" + outputCount +
-                ", errors=" + errors +
+                ", failures=" + failures +
                 '}';
     }
 }

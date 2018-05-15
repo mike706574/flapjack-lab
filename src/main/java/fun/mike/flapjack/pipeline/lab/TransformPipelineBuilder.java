@@ -2,6 +2,7 @@ package fun.mike.flapjack.pipeline.lab;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -25,6 +26,11 @@ public class TransformPipelineBuilder {
     public ListPipeline toList() {
         OutputContext<List<Record>> outputContext = new ListOutputContext();
         return new ListPipeline(inputContext, transform, outputContext);
+    }
+
+    public SetPipeline toSet() {
+        OutputContext<Set<Record>> outputContext = new SetOutputContext();
+        return new SetPipeline(inputContext, transform, outputContext);
     }
 
     public <T> GenericPipeline<T> toContext(OutputContext<T> outputContext) {

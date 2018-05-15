@@ -34,7 +34,7 @@ public class ProcessOutputContext<T> implements OutputContext<List<T>> {
         }
 
         @Override
-        public Optional<PipelineError> put(int number, String line, Record value) {
+        public Optional<Failure> put(int number, String line, Record value) {
             values.add(processor.apply(value));
             return Optional.empty();
         }

@@ -63,9 +63,9 @@ public class ListToFilePipelineTest {
         assertTrue(result.isOk());
         assertEquals(6, result.getInputCount());
         assertEquals(3, result.getOutputCount());
-        assertEquals(0, result.getErrorCount());
-        assertEquals(0, result.getErrors().size());
-        assertTrue(result.getErrors().isEmpty());
+        assertEquals(0, result.getFailureCount());
+        assertEquals(0, result.getFailures().size());
+        assertTrue(result.getFailures().isEmpty());
 
         assertEquals(IO.slurp(base + "expected-animals.dat"),
                      IO.slurp(base + "animals.dat"));

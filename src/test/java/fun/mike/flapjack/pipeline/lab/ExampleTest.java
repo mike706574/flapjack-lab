@@ -32,11 +32,11 @@ public class ExampleTest {
         System.out.println(result);
 
         System.out.println(PipelineExplainer.explainResult(result));
-        // Check for errors
+        // Check for failures
         result.isOk();
         // => true
 
-        result.getErrorCount();
+        result.getFailureCount();
         // => 0
 
         // See how many animals went in

@@ -21,7 +21,13 @@ public class OutputContextExplainer implements OutputContextVisitor {
         explanation = String.join("\n",
                                   "Writing to a flat file.",
                                   "File path: " + path,
-                                  FormatExplainer.explain(format));
+                                  "Format: " + formatSummary(outputContext));
+    }
+
+    private String formatSummary(FlatFileOutputContext outputContext) {
+        Format format = outputContext.getFormat();
+        boolean logFormat = outputContext.logFormat();
+        return logFormat ? FormatExplainer.explain(format) : format.getId();
     }
 
     @Override

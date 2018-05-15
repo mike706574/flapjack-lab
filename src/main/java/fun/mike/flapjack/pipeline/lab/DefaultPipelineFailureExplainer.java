@@ -7,74 +7,74 @@ import java.util.stream.Collectors;
 import fun.mike.flapjack.alpha.Problem;
 import fun.mike.record.alpha.Record;
 
-public class DefaultPipelineErrorExplainer implements PipelineErrorVisitor {
+public class DefaultPipelineFailureExplainer implements FailureVisitor {
     private final List<String> explanations;
 
-    public DefaultPipelineErrorExplainer() {
+    public DefaultPipelineFailureExplainer() {
         this.explanations = new LinkedList<>();
     }
 
-    public static String explainParse(ParsePipelineError error) {
+    public static String explainParse(ParseFailure failure) {
         return "Record #" +
-                error.getNumber() +
+                failure.getNumber() +
                 ": Failed to parse record\nLine: |" +
-                error.getLine() +
+                failure.getLine() +
                 "|\nRecord: " +
-                error.getRecord() +
+                failure.getRecord() +
                 "\n" +
-                problemList(error.getProblems());
+                problemList(failure.getProblems());
     }
 
-    public static String explainSerialization(SerializationPipelineError error) {
-        Details details = getDetails(error);
+    public static String explainSerialization(SerializationFailure failure) {
+        Details details = getDetails(failure);
 
         return "Record #" +
                 details.number +
                 ": Failed to serialize record\nLine: |" +
                 details.line +
                 "|\nRecord: " +
-                error.getRecord() +
+                failure.getRecord() +
                 "\n" +
-                problemList(error.getProblems());
+                problemList(failure.getProblems());
     }
 
-    public static String explainTransform(TransformPipelineError error) {
-        Details details = getDetails(error);
+    public static String explainTransform(TransformFailure failure) {
+        Details details = getDetails(failure);
 
         return "Record #" +
                 details.number +
                 ": Exception thrown during transform\nLine: |" +
                 details.line +
                 "|\nRecord: " +
-                error.getRecord() +
+                failure.getRecord() +
                 "\nOperation: " +
-                error.getOperationInfo() +
+                failure.getOperationInfo() +
                 "\n" +
-                Exceptions.stackTrace(error.getException());
+                Exceptions.stackTrace(failure.getException());
     }
 
-    public static String explainOutput(OutputPipelineError error) {
-        Details details = getDetails(error);
+    public static String explainOutput(OutputFailure failure) {
+        Details details = getDetails(failure);
         return "Record #" +
                 details.number +
                 ": Exception thrown during output process\nLine: |" +
                 details.line +
                 "|\nRecord: " +
-                error.getRecord() +
+                failure.getRecord() +
                 "\n" +
-                Exceptions.stackTrace(error.getException());
+                Exceptions.stackTrace(failure.getException());
     }
 
-    private static Details getDetails(PipelineError error) {
-        Record record = error.getRecord();
+    private static Details getDetails(Failure failure) {
+        Record record = failure.getRecord();
 
         if (record == null) {
-            return new Details(error.getNumber(), error.getLine());
+            return new Details(failure.getNumber(), failure.getLine());
         }
 
-        Record metadata = error.getRecord().getMetadata();
-        int number = metadata.optionalInteger("number").orElse(error.getNumber());
-        String line = metadata.optionalString("line").orElse(error.getLine());
+        Record metadata = failure.getRecord().getMetadata();
+        int number = metadata.optionalInteger("number").orElse(failure.getNumber());
+        String line = metadata.optionalString("line").orElse(failure.getLine());
         return new Details(number, line);
     }
 
@@ -94,23 +94,23 @@ public class DefaultPipelineErrorExplainer implements PipelineErrorVisitor {
     }
 
     @Override
-    public void visit(SerializationPipelineError error) {
-        add(explainSerialization(error));
+    public void visit(SerializationFailure failure) {
+        add(explainSerialization(failure));
     }
 
     @Override
-    public void visit(ParsePipelineError error) {
-        add(explainParse(error));
+    public void visit(ParseFailure failure) {
+        add(explainParse(failure));
     }
 
     @Override
-    public void visit(TransformPipelineError error) {
-        add(explainTransform(error));
+    public void visit(TransformFailure failure) {
+        add(explainTransform(failure));
     }
 
     @Override
-    public void visit(OutputPipelineError error) {
-        add(explainOutput(error));
+    public void visit(OutputFailure failure) {
+        add(explainOutput(failure));
     }
 
     private static final class Details {

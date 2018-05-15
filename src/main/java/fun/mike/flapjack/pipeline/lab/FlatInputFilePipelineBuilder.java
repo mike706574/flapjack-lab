@@ -7,13 +7,15 @@ import fun.mike.flapjack.alpha.UpdateSkipLastVisitor;
 public class FlatInputFilePipelineBuilder extends InputPipelineBuilder {
     private final String inputPath;
     private Format inputFormat;
+    private boolean logFormat;
     private boolean logLines;
 
     public FlatInputFilePipelineBuilder(String inputPath, Format format) {
         super();
         this.inputPath = inputPath;
         this.inputFormat = format;
-        this.logLines = true;
+        this.logFormat = false;
+        this.logLines = false;
     }
 
     // Options
@@ -27,13 +29,18 @@ public class FlatInputFilePipelineBuilder extends InputPipelineBuilder {
         return this;
     }
 
-    public FlatInputFilePipelineBuilder disableLineLogging() {
-        this.logLines = false;
+    public FlatInputFilePipelineBuilder logLines() {
+        this.logLines = true;
+        return this;
+    }
+
+    public FlatInputFilePipelineBuilder logFormat() {
+        this.logFormat = true;
         return this;
     }
 
     @Override
     InputContext buildInputContext() {
-        return new FlatFileInputContext(inputPath, inputFormat, logLines);
+        return new FlatFileInputContext(inputPath, inputFormat, logFormat, logLines);
     }
 }

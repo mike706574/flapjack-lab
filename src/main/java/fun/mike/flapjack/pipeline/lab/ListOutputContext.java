@@ -25,7 +25,7 @@ public class ListOutputContext implements OutputContext<List<Record>> {
         }
 
         @Override
-        public Optional<PipelineError> put(int number, String line, Record value) {
+        public Optional<Failure> put(int number, String line, Record value) {
             records.add(value);
             return Optional.empty();
         }

@@ -30,7 +30,7 @@ public class ForEachOutputContext implements OutputContext<Nothing> {
         }
 
         @Override
-        public Optional<PipelineError> put(int number, String line, Record value) {
+        public Optional<Failure> put(int number, String line, Record value) {
             consumer.accept(value);
             return Optional.empty();
         }

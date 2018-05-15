@@ -2,14 +2,14 @@ package fun.mike.flapjack.pipeline.lab;
 
 import fun.mike.record.alpha.Record;
 
-public class TransformPipelineError implements PipelineError {
+public class TransformFailure implements Failure {
     private final int number;
     private final String line;
     private final Record record;
     private final OperationInfo operationInfo;
     private final Exception exception;
 
-    public TransformPipelineError(int number, String line, Record record, OperationInfo operationInfo, Exception exception) {
+    public TransformFailure(int number, String line, Record record, OperationInfo operationInfo, Exception exception) {
         this.number = number;
         this.line = line;
         this.record = record;
@@ -17,12 +17,12 @@ public class TransformPipelineError implements PipelineError {
         this.exception = exception;
     }
 
-    public static TransformPipelineError of(int number, String line, Record record, OperationInfo operationInfo, Exception exception) {
-        return new TransformPipelineError(number, line, record, operationInfo, exception);
+    public static TransformFailure of(int number, String line, Record record, OperationInfo operationInfo, Exception exception) {
+        return new TransformFailure(number, line, record, operationInfo, exception);
     }
 
-    public static TransformPipelineError fromResult(int number, String line, TransformResult result) {
-        return new TransformPipelineError(number, line, result.getRecord(), result.getOperationInfo(), result.getException());
+    public static TransformFailure fromResult(int number, String line, TransformResult result) {
+        return new TransformFailure(number, line, result.getRecord(), result.getOperationInfo(), result.getException());
     }
 
     public Exception getException() {
@@ -49,7 +49,7 @@ public class TransformPipelineError implements PipelineError {
     }
 
     @Override
-    public void accept(PipelineErrorVisitor visitor) {
+    public void accept(FailureVisitor visitor) {
         visitor.visit(this);
     }
 }

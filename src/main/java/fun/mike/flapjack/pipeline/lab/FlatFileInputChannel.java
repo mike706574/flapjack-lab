@@ -76,12 +76,10 @@ public class FlatFileInputChannel implements InputChannel {
         ParseResult parseResult = format.parse(line);
 
         if (parseResult.hasProblems()) {
-            return InputResult.error(line, ParsePipelineError.fromResult(number, line, parseResult));
+            return InputResult.failure(line, ParseFailure.fromResult(number, line, parseResult));
         }
 
-        System.out.println("mdata" + parseResult.getValue().getMetadata());
         parseResult.getValue().setMetadataProperty("number", number);
-        System.out.println("mdata" + parseResult.getValue().getMetadata());
 
         return InputResult.ok(parseResult.getValue(), line);
     }

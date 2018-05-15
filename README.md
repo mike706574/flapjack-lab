@@ -53,11 +53,11 @@ FlatFilePipeline pipeline = Pipeline.fromFile("animals.csv", inputFormat)
 // Run it
 FlatFileResult result = pipeline.run();
 
-// Check for errors
+// Check for failures
 result.isOk();
 // => true
 
-result.getErrorCount();
+result.getFailureCount();
 // => 0
 
 // See how many animals went in

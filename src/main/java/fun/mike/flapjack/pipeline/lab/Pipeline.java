@@ -49,10 +49,10 @@ public interface Pipeline<V> {
         int inputCount = 0;
         int outputCount = 0;
 
-        List<PipelineError> errors = new LinkedList<>();
-        int inputErrorCount = 0;
-        int transformErrorCount = 0;
-        int outputErrorCount = 0;
+        List<Failure> failures = new LinkedList<>();
+        int inputFailureCount = 0;
+        int transformFailureCount = 0;
+        int outputFailureCount = 0;
 
         long start = System.nanoTime();
 
@@ -74,21 +74,21 @@ public interface Pipeline<V> {
                     if (transformResult.isOk()) {
                         Record value = transformResult.getRecord();
 
-                        Optional<PipelineError> outputError = outputChannel.put(inputCount, inputLine, value);
+                        Optional<Failure> outputFailure = outputChannel.put(inputCount, inputLine, value);
 
-                        if (outputError.isPresent()) {
-                            outputErrorCount++;
-                            errors.add(outputError.get());
+                        if (outputFailure.isPresent()) {
+                            outputFailureCount++;
+                            failures.add(outputFailure.get());
                         } else {
                             outputCount++;
                         }
-                    } else if (transformResult.hasError()) {
-                        transformErrorCount++;
-                        errors.add(TransformPipelineError.fromResult(inputCount, inputLine, transformResult));
+                    } else if (transformResult.hasFailure()) {
+                        transformFailureCount++;
+                        failures.add(TransformFailure.fromResult(inputCount, inputLine, transformResult));
                     }
                 } else {
-                    inputErrorCount++;
-                    errors.add(inputValue.getError());
+                    inputFailureCount++;
+                    failures.add(inputValue.getFailure());
                 }
             }
 
@@ -101,26 +101,26 @@ public interface Pipeline<V> {
                                     s));
 
 
-            int errorCount = errors.size();
+            int failureCount = failures.size();
 
             T value = outputChannel.getValue();
 
-            PipelineResult<T> result = PipelineResult.of(value, inputContext, outputContext, inputCount, outputCount, errors);
+            PipelineResult<T> result = PipelineResult.of(value, inputContext, outputContext, inputCount, outputCount, failures);
 
             log.debug("Input count: " + inputCount);
             log.debug("Output count: " + outputCount);
 
             if (result.isNotOk()) {
-                log.debug("Input errors: " + inputErrorCount);
-                log.debug("Transform errors: " + transformErrorCount);
-                log.debug("Output errors: " + outputErrorCount);
+                log.debug("Input failures: " + inputFailureCount);
+                log.debug("Transform failures: " + transformFailureCount);
+                log.debug("Output failures: " + outputFailureCount);
             }
 
             if (result.isOk()) {
-                log.debug("Pipeline completed successfully with no errors.");
+                log.debug("Pipeline completed successfully with no failures.");
             } else {
-                String noun = errorCount == 1 ? "error" : "errors";
-                log.debug(String.format("Pipeline completed with %d %s.", errorCount, noun));
+                String noun = failureCount == 1 ? "failure" : "failures";
+                log.debug(String.format("Pipeline completed with %d %s.", failureCount, noun));
             }
 
             return result;

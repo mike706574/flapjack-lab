@@ -7,6 +7,6 @@ import fun.mike.record.alpha.Record;
 
 public class GroupResult<G> extends PipelineResult<Map<G, List<Record>>> {
     public GroupResult(PipelineResult<Map<G, List<Record>>> result) {
-        super(result.getValue(), result.getInputContext(), result.getOutputContext(), result.getInputCount(), result.getOutputCount(), result.getErrors());
+        super(result.getValue(), result.getInputContext(), result.getOutputContext(), result.getInputCount(), result.getOutputCount(), result.getFailures());
     }
 }

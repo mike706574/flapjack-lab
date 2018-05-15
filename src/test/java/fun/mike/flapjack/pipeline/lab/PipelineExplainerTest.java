@@ -14,24 +14,24 @@ import org.junit.Test;
 public class PipelineExplainerTest {
     @Test
     public void foo() {
-        PipelineError parseError =
-                ParsePipelineError.of(1,
-                                      "ABCDEFG",
-                                      null,
-                                      Collections.singletonList(new MissingValueProblem("a", "string")));
+        Failure parseFailure =
+                ParseFailure.of(1,
+                                "ABCDEFG",
+                                null,
+                                Collections.singletonList(new MissingValueProblem("a", "string")));
 
-        PipelineError serializationError =
-                SerializationPipelineError.of(2,
-                                              "ABCDEFG",
-                                              null,
-                                              Collections.singletonList(new MissingValueProblem("b", "integer")));
+        Failure serializationFailure =
+                SerializationFailure.of(2,
+                                        "ABCDEFG",
+                                        null,
+                                        Collections.singletonList(new MissingValueProblem("b", "integer")));
 
-        PipelineError transformError =
-                TransformPipelineError.of(3,
-                                          "BEWFWF",
-                                          null,
-                                          new OperationInfo(1, "map-vals", "Mapping values", "map"),
-                                          new RuntimeException("coo coo"));
+        Failure transformFailure =
+                TransformFailure.of(3,
+                                    "BEWFWF",
+                                    null,
+                                    new OperationInfo(1, "map-vals", "Mapping values", "map"),
+                                    new RuntimeException("coo coo"));
 
 
         Format inputFormat = DelimitedFormat.unframed("delimited-animals",
@@ -47,8 +47,8 @@ public class PipelineExplainerTest {
                                      Arrays.asList(Field.string("name", 10),
                                                    Field.string("size", 10)));
 
-        InputContext inputContext = new FlatFileInputContext("in.csv", inputFormat, true);
-        OutputContext<Nothing> outputContext = new FlatFileOutputContext("out.dat", outputFormat);
+        InputContext inputContext = new FlatFileInputContext("in.csv", inputFormat, true, true);
+        OutputContext<Nothing> outputContext = new FlatFileOutputContext("out.dat", outputFormat, true);
 
         PipelineResult<Nothing> x =
                 PipelineResult.of(Nothing.value(),
@@ -56,7 +56,7 @@ public class PipelineExplainerTest {
                                   outputContext,
                                   5,
                                   2,
-                                  Arrays.asList(parseError, serializationError, transformError));
+                                  Arrays.asList(parseFailure, serializationFailure, transformFailure));
 
         System.out.println(PipelineExplainer.explainResult(x));
 

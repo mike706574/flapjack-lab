@@ -2,6 +2,7 @@ package fun.mike.flapjack.pipeline.lab;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import fun.mike.flapjack.alpha.DelimitedFormat;
@@ -13,22 +14,40 @@ import fun.mike.record.alpha.Record;
 public class FlatFileOutputContext implements OutputContext<Nothing> {
     private final String path;
     private final Format format;
+    private final boolean logFormat;
 
-    public FlatFileOutputContext(String path, Format format) {
+    public FlatFileOutputContext(String path, Format format, boolean logFormat) {
         this.path = path;
         this.format = format;
+        this.logFormat = logFormat;
     }
 
     public FlatFileOutputContext of(String path, Format format) {
-        return new FlatFileOutputContext(path, format);
+        return new FlatFileOutputContext(path, format, logFormat);
     }
 
     @Override
     public String toString() {
-        return "OutputFile{" +
-                "path='" + getPath() + '\'' +
-                ", format=" + getFormat() +
+        return "FlatFileOutputContext{" +
+                "path='" + path + '\'' +
+                ", format=" + format +
+                ", logFormat=" + logFormat +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FlatFileOutputContext that = (FlatFileOutputContext) o;
+        return logFormat == that.logFormat &&
+                Objects.equals(path, that.path) &&
+                Objects.equals(format, that.format);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(path, format, logFormat);
     }
 
     public String getPath() {
@@ -37,6 +56,10 @@ public class FlatFileOutputContext implements OutputContext<Nothing> {
 
     public Format getFormat() {
         return format;
+    }
+
+    public boolean logFormat() {
+        return logFormat;
     }
 
     @Override
@@ -53,7 +76,7 @@ public class FlatFileOutputContext implements OutputContext<Nothing> {
         private final Spitter spitter;
         private final Format format;
 
-        private final List<PipelineError> errors;
+        private final List<Failure> failures;
 
         public FlatFileOutputChannel(String path, Format format) {
             this.format = format;
@@ -65,11 +88,11 @@ public class FlatFileOutputContext implements OutputContext<Nothing> {
                 spitter.spit(HeaderBuilder.build((DelimitedFormat) format));
             }
 
-            this.errors = new LinkedList<>();
+            this.failures = new LinkedList<>();
         }
 
         @Override
-        public Optional<PipelineError> put(int number, String line, Record value) {
+        public Optional<Failure> put(int number, String line, Record value) {
             SerializationResult serializationResult = format.serialize(value);
 
             if (serializationResult.isOk()) {
@@ -78,11 +101,11 @@ public class FlatFileOutputContext implements OutputContext<Nothing> {
                 return Optional.empty();
             }
 
-            return Optional.of(SerializationPipelineError.fromResult(number, line, serializationResult));
+            return Optional.of(SerializationFailure.fromResult(number, line, serializationResult));
         }
 
-        public List<PipelineError> getErrors() {
-            return errors;
+        public List<Failure> getFailures() {
+            return failures;
         }
 
         @Override

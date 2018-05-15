@@ -2,12 +2,12 @@ package fun.mike.flapjack.pipeline.lab;
 
 import fun.mike.record.alpha.Record;
 
-public interface PipelineError {
+public interface Failure {
     int getNumber();
 
     String getLine();
 
     Record getRecord();
 
-    void accept(PipelineErrorVisitor visitor);
+    void accept(FailureVisitor visitor);
 }

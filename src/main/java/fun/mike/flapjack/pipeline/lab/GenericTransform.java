@@ -29,7 +29,7 @@ public class GenericTransform implements Transform {
                 outputRecord = result.get();
                 operationNumber++;
             } catch (Exception ex) {
-                return TransformResult.error(outputRecord, record, compiledOperation.getInfo(), ex);
+                return TransformResult.failure(outputRecord, record, compiledOperation.getInfo(), ex);
             }
         }
         return TransformResult.ok(outputRecord, record);

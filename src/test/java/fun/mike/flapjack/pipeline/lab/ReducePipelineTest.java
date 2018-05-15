@@ -44,7 +44,7 @@ public class ReducePipelineTest {
         assertTrue(result.isOk());
         assertEquals(6, result.getInputCount());
         assertEquals(6, result.getOutputCount());
-        assertEquals(0, result.getErrorCount());
+        assertEquals(0, result.getFailureCount());
 
         Map<String, Integer> tally = result.getValue();
 
@@ -77,8 +77,8 @@ public class ReducePipelineTest {
 
         assertEquals(6, result.getInputCount());
         assertEquals(4, result.getOutputCount());
-        assertEquals(2, result.getErrorCount());
-        assertEquals(2, result.getErrorCount());
+        assertEquals(2, result.getFailureCount());
+        assertEquals(2, result.getFailureCount());
 
         Map<String, Integer> tally = result.getValue();
 

@@ -39,7 +39,7 @@ public class GroupPipelineTest {
         assertTrue(result.isOk());
         assertEquals(6, result.getInputCount());
         assertEquals(6, result.getOutputCount());
-        assertEquals(0, result.getErrorCount());
+        assertEquals(0, result.getFailureCount());
 
         Map<String, List<Record>> values = result.getValue();
 
@@ -97,8 +97,8 @@ public class GroupPipelineTest {
 
         assertEquals(6, result.getInputCount());
         assertEquals(4, result.getOutputCount());
-        assertEquals(2, result.getErrorCount());
-        assertEquals(2, result.getErrorCount());
+        assertEquals(2, result.getFailureCount());
+        assertEquals(2, result.getFailureCount());
 
         Map<String, List<Record>> values = result.getValue();
 

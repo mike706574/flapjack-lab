@@ -2,21 +2,21 @@ package fun.mike.flapjack.pipeline.lab;
 
 import fun.mike.record.alpha.Record;
 
-public class OutputPipelineError implements PipelineError {
+public class OutputFailure implements Failure {
     private final int number;
     private final String line;
     private final Record record;
     private final Exception exception;
 
-    private OutputPipelineError(int number, String line, Record record, Exception exception) {
+    private OutputFailure(int number, String line, Record record, Exception exception) {
         this.number = number;
         this.line = line;
         this.record = record;
         this.exception = exception;
     }
 
-    public static OutputPipelineError build(int number, String line, Record record, Exception exception) {
-        return new OutputPipelineError(number, line, record, exception);
+    public static OutputFailure build(int number, String line, Record record, Exception exception) {
+        return new OutputFailure(number, line, record, exception);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class OutputPipelineError implements PipelineError {
     }
 
     @Override
-    public void accept(PipelineErrorVisitor visitor) {
+    public void accept(FailureVisitor visitor) {
         visitor.visit(this);
     }
 

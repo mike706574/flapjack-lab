@@ -36,12 +36,12 @@ public class ReduceOutputContext<T> implements OutputContext<T> {
         }
 
         @Override
-        public Optional<PipelineError> put(int number, String line, Record value) {
+        public Optional<Failure> put(int number, String line, Record value) {
             try {
                 reducedValue = reducer.apply(reducedValue, value);
                 return Optional.empty();
             } catch (Exception ex) {
-                return Optional.of(OutputPipelineError.build(number, line, value, ex));
+                return Optional.of(OutputFailure.build(number, line, value, ex));
             }
         }
 

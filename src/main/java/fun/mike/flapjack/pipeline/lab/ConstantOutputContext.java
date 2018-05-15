@@ -27,7 +27,7 @@ public class ConstantOutputContext<T> implements OutputContext<T> {
 
     private final class ConstantOutputChannel implements OutputChannel<T> {
         @Override
-        public Optional<PipelineError> put(int number, String line, Record value) {
+        public Optional<Failure> put(int number, String line, Record value) {
             return Optional.empty();
         }
 

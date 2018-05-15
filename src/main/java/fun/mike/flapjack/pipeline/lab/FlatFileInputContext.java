@@ -7,11 +7,13 @@ import fun.mike.flapjack.alpha.Format;
 public class FlatFileInputContext implements InputContext {
     private final String path;
     private final Format format;
+    private final boolean logFormat;
     private final boolean logLines;
 
-    public FlatFileInputContext(String path, Format format, boolean logLines) {
+    public FlatFileInputContext(String path, Format format, boolean logFormat, boolean logLines) {
         this.path = path;
         this.format = format;
+        this.logFormat = logFormat;
         this.logLines = logLines;
     }
 
@@ -20,6 +22,7 @@ public class FlatFileInputContext implements InputContext {
         return "FlatFileInputContext{" +
                 "path='" + path + '\'' +
                 ", format=" + format +
+                ", logFormat=" + logFormat +
                 ", logLines=" + logLines +
                 '}';
     }
@@ -29,15 +32,15 @@ public class FlatFileInputContext implements InputContext {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         FlatFileInputContext that = (FlatFileInputContext) o;
-        return logLines == that.logLines &&
+        return logFormat == that.logFormat &&
+                logLines == that.logLines &&
                 Objects.equals(path, that.path) &&
                 Objects.equals(format, that.format);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(path, format, logLines);
+        return Objects.hash(path, format, logFormat, logLines);
     }
 
     public String getPath() {
@@ -48,6 +51,7 @@ public class FlatFileInputContext implements InputContext {
         return format;
     }
 
+    public boolean logFormat() { return logFormat; }
 
     public boolean logLines() {
         return logLines;
