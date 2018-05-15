@@ -8,6 +8,7 @@ public class PipelineExplainer {
     public static <T> String explainResult(PipelineResult<T> result) {
         int inputCount = result.getInputCount();
         int outputCount = result.getOutputCount();
+        int failureCount = result.getFailureCount();
         String outputDescription = outputCount == 1
                 ? "1 record" :
                 outputCount + " records";
@@ -21,8 +22,8 @@ public class PipelineExplainer {
         }
 
         String inputDescription = inputCount == 1 ?
-                outputCount + "of 1 record" :
-                outputCount + " of " + inputCount + " records";
+                failureCount + "of 1 record" :
+                failureCount + " of " + inputCount + " records";
 
         return String.format("Failed to process %s. %s written to output.\n\nFailures:\n\n%s",
                              inputDescription,
