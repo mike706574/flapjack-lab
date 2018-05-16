@@ -9,5 +9,7 @@ public interface Failure {
 
     Record getRecord();
 
+    String explain();
+
     void accept(FailureVisitor visitor);
 }

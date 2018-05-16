@@ -44,6 +44,13 @@ public class TransformFailure implements Failure {
         return record;
     }
 
+    @Override
+    public String explain() {
+        DefaultFailureExplainer explainer = new DefaultFailureExplainer();
+        explainer.visit(this);
+        return explainer.explain();
+    }
+
     public OperationInfo getOperationInfo() {
         return operationInfo;
     }

@@ -32,7 +32,7 @@ public class PipelineExplainer {
     }
 
     public static <T> String explainFailures(List<Failure> failures) {
-        DefaultPipelineFailureExplainer explainer = new DefaultPipelineFailureExplainer();
+        DefaultFailureExplainer explainer = new DefaultFailureExplainer();
         for (Failure failure : failures) {
             failure.accept(explainer);
         }

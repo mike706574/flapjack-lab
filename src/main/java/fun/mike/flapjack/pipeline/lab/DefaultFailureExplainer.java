@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 import fun.mike.flapjack.alpha.Problem;
 import fun.mike.record.alpha.Record;
 
-public class DefaultPipelineFailureExplainer implements FailureVisitor {
+public class DefaultFailureExplainer implements FailureVisitor {
     private final List<String> explanations;
 
-    public DefaultPipelineFailureExplainer() {
+    public DefaultFailureExplainer() {
         this.explanations = new LinkedList<>();
     }
 

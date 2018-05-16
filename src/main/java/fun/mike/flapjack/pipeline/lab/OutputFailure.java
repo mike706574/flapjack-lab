@@ -39,6 +39,13 @@ public class OutputFailure implements Failure {
         return record;
     }
 
+    @Override
+    public String explain() {
+        DefaultFailureExplainer explainer = new DefaultFailureExplainer();
+        explainer.visit(this);
+        return explainer.explain();
+    }
+
     public Exception getException() {
         return exception;
     }

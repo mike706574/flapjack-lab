@@ -50,4 +50,11 @@ public class SerializationFailure implements Failure {
     public List<Problem> getProblems() {
         return problems;
     }
+
+    @Override
+    public String explain() {
+        DefaultFailureExplainer explainer = new DefaultFailureExplainer();
+        explainer.visit(this);
+        return explainer.explain();
+    }
 }
