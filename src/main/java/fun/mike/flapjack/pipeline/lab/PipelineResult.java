@@ -52,6 +52,8 @@ public class PipelineResult<T> implements Result<T> {
         return !failures.isEmpty();
     }
 
+    public boolean hasFailures() { return !failures.isEmpty(); }
+
     public T getValue() {
         return value;
     }
