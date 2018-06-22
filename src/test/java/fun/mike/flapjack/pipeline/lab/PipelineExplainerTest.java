@@ -47,7 +47,7 @@ public class PipelineExplainerTest {
                                      Arrays.asList(Field.string("name", 10),
                                                    Field.string("size", 10)));
 
-        InputContext inputContext = new FlatFileInputContext("in.csv", inputFormat, true, true);
+        InputContext inputContext = new FlatFileInputContext("in.csv", inputFormat, null,true, true);
         OutputContext<Nothing> outputContext = new FlatFileOutputContext("out.dat", outputFormat, true);
 
         PipelineResult<Nothing> x =
@@ -59,6 +59,5 @@ public class PipelineExplainerTest {
                                   Arrays.asList(parseFailure, serializationFailure, transformFailure));
 
         System.out.println(PipelineExplainer.explainResult(x));
-
     }
 }

@@ -20,15 +20,17 @@ public class FlatFileInputChannel implements InputChannel {
 
     private final String path;
     private final Format format;
+    private final String lineKey;
     private final boolean logLines;
     private final int lineCount;
     private final int limit;
     private int lineIndex;
     private BufferedReader reader;
 
-    public FlatFileInputChannel(String path, Format format, boolean logLines) {
+    public FlatFileInputChannel(String path, Format format, String lineKey, boolean logLines) {
         this.path = path;
         this.format = format;
+        this.lineKey = lineKey;
         this.logLines = logLines;
 
         this.lineIndex = 0;
@@ -77,6 +79,10 @@ public class FlatFileInputChannel implements InputChannel {
 
         if (parseResult.hasProblems()) {
             return InputResult.failure(line, ParseFailure.fromResult(number, line, parseResult));
+        }
+
+        if(lineKey != null) {
+            parseResult.getValue().set(lineKey, line);
         }
 
         parseResult.getValue().setMetadataProperty("number", number);

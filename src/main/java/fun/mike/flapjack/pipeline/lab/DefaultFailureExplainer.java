@@ -61,7 +61,7 @@ public class DefaultFailureExplainer implements FailureVisitor {
                 details.line +
                 "|\nRecord: " +
                 failure.getRecord() +
-                "\n" +
+                "\nFull stack trace:\n" +
                 Exceptions.stackTrace(failure.getException());
     }
 

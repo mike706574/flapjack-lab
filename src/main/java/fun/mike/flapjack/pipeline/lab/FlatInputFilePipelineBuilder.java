@@ -7,6 +7,7 @@ import fun.mike.flapjack.alpha.UpdateSkipLastVisitor;
 public class FlatInputFilePipelineBuilder extends InputPipelineBuilder {
     private final String inputPath;
     private Format inputFormat;
+    private String lineKey;
     private boolean logFormat;
     private boolean logLines;
 
@@ -14,6 +15,7 @@ public class FlatInputFilePipelineBuilder extends InputPipelineBuilder {
         super();
         this.inputPath = inputPath;
         this.inputFormat = format;
+        this.lineKey = null;
         this.logFormat = false;
         this.logLines = false;
     }
@@ -29,6 +31,11 @@ public class FlatInputFilePipelineBuilder extends InputPipelineBuilder {
         return this;
     }
 
+    public FlatInputFilePipelineBuilder includeLineAs(String key) {
+        this.lineKey = key;
+        return this;
+    }
+
     public FlatInputFilePipelineBuilder logLines() {
         this.logLines = true;
         return this;
@@ -41,6 +48,6 @@ public class FlatInputFilePipelineBuilder extends InputPipelineBuilder {
 
     @Override
     InputContext buildInputContext() {
-        return new FlatFileInputContext(inputPath, inputFormat, logFormat, logLines);
+        return new FlatFileInputContext(inputPath, inputFormat, lineKey, logFormat, logLines);
     }
 }

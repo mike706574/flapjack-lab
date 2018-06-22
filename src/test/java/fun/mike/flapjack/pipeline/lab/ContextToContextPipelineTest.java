@@ -61,7 +61,7 @@ public class ContextToContextPipelineTest {
         String inputPath = base + "animals.csv";
         String outputPath = base + "animals.dat";
 
-        InputContext inputContext = new FlatFileInputContext(inputPath, inputFormat, false, false);
+        InputContext inputContext = new FlatFileInputContext(inputPath, inputFormat, null, false, false);
 
         Transform transform = Transform
                 .map(x -> x.updateString("size", String::toUpperCase))
