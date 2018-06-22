@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class ListPipelineTest {
+public class FileToListPipelineTest {
     private static final String base = "src/test/resources/pipeline/";
 
     private static final Format inputFormat =
@@ -30,6 +30,7 @@ public class ListPipelineTest {
         String outputPath = base + "animals.dat";
 
         ListPipeline pipeline = Pipeline.fromFile(inputPath, inputFormat)
+                .includeLineAs("message")
                 .map(x -> x.updateString("size", String::toUpperCase))
                 .filter(x -> x.getString("size").equals("MEDIUM"))
                 .toList();
@@ -40,26 +41,26 @@ public class ListPipelineTest {
         assertEquals(6, result.getInputCount());
         assertEquals(3, result.getOutputCount());
 
-
         List<Record> values = result.orElseThrow();
-
-        System.out.println(values);
 
         assertEquals(3, values.size());
 
         assertEquals(Record.of("name", "dog",
                                "legs", 4,
-                               "size", "MEDIUM"),
+                               "size", "MEDIUM",
+                               "message", "dog,4,medium"),
                      values.get(0));
 
         assertEquals(Record.of("name", "fox",
                                "legs", 4,
-                               "size", "MEDIUM"),
+                               "size", "MEDIUM",
+                               "message", "fox,4,medium"),
                      values.get(1));
 
         assertEquals(Record.of("name", "ostrich",
                                "legs", 2,
-                               "size", "MEDIUM"),
+                               "size", "MEDIUM",
+                               "message", "ostrich,2,medium"),
                      values.get(2));
     }
 
