@@ -29,14 +29,24 @@ public class FileToFilePipelineTest {
                                                    Column.integer("legs"),
                                                    Column.string("size")));
 
-    private static final Format anotherFormat =
+    private static final Format formatWithHeader =
             DelimitedFormat.unframed("delimited-animals-2",
                                      "Another delimited animals format.",
                                      ',',
                                      Arrays.asList(Column.string("name"),
                                                    Column.string("size"),
                                                    Column.integer("legs")))
-        .withHeader();
+                    .withHeader();
+
+    private static final Format optionallyFramedFormatWithHeader =
+            DelimitedFormat.optionallyFramed("delimited-animals-3",
+                                             "Yet another delimited animals format.",
+                                             ',',
+                                             '"',
+                                             Arrays.asList(Column.string("name"),
+                                                           Column.string("size"),
+                                                           Column.integer("legs")))
+                    .withHeader();
 
     private static final Format outputFormat =
             new FixedWidthFormat("delimited-animals",
@@ -48,6 +58,7 @@ public class FileToFilePipelineTest {
     public void setUp() {
         IO.nuke(base + "animals.dat");
         IO.nuke(base + "animals-with-header.csv");
+        IO.nuke(base + "optionally-framed-animals-with-header.csv");
         IO.nuke(base + "bad-animals.dat");
     }
 
@@ -55,6 +66,7 @@ public class FileToFilePipelineTest {
     public void tearDown() {
         IO.nuke(base + "animals.dat");
         IO.nuke(base + "animals-with-header.csv");
+        IO.nuke(base + "optionally-framed-animals-with-header.csv");
         IO.nuke(base + "bad-animals.dat");
     }
 
@@ -117,7 +129,7 @@ public class FileToFilePipelineTest {
         FlatFileResult result = Pipeline.fromFile(inputPath, inputFormat)
                 .map(x -> x.updateString("size", String::toUpperCase))
                 .filter(x -> x.getString("size").equals("MEDIUM"))
-                .toFile(outputPath, anotherFormat)
+                .toFile(outputPath, formatWithHeader)
                 .run();
 
         assertTrue(result.isOk());
@@ -129,6 +141,28 @@ public class FileToFilePipelineTest {
 
         assertEquals(IO.slurp(base + "expected-animals-with-header.csv"),
                      IO.slurp(base + "animals-with-header.csv"));
+    }
+
+    @Test
+    public void optionallyFramedSuccessWithHeader() {
+        String inputPath = base + "animals.csv";
+        String outputPath = base + "optionally-framed-animals-with-header.csv";
+
+        FlatFileResult result = Pipeline.fromFile(inputPath, inputFormat)
+                .map(x -> x.updateString("size", String::toUpperCase))
+                .filter(x -> x.getString("size").equals("MEDIUM"))
+                .toFile(outputPath, optionallyFramedFormatWithHeader)
+                .run();
+
+        assertTrue(result.isOk());
+        assertEquals(6, result.getInputCount());
+        assertEquals(3, result.getOutputCount());
+        assertEquals(0, result.getFailureCount());
+        assertEquals(0, result.getFailures().size());
+        assertTrue(result.getFailures().isEmpty());
+
+        assertEquals(IO.slurp(base + "expected-optionally-framed-animals-with-header.csv"),
+                     IO.slurp(base + "optionally-framed-animals-with-header.csv"));
     }
 
     @Test
