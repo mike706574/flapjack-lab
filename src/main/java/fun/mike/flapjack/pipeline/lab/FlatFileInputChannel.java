@@ -58,7 +58,6 @@ public class FlatFileInputChannel implements InputChannel {
             readLine(reader);
         }
 
-        System.out.println("Line index: " + lineIndex);
 
 
         int number = lineIndex + 1;
