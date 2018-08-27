@@ -24,6 +24,7 @@ public class FlatFileInputChannel implements InputChannel {
     private final boolean logLines;
     private final int lineCount;
     private final int limit;
+    private final int skipFirst;
     private int lineIndex;
     private BufferedReader reader;
 
@@ -38,6 +39,8 @@ public class FlatFileInputChannel implements InputChannel {
         try (Stream<String> stream = IO.streamLines(path)) {
             lineCount = (int) stream.count();
         }
+
+        skipFirst = GetSkipFirstVisitor.visit(format);
         int skipLast = GetSkipLastVisitor.visit(format);
         limit = lineCount - GetSkipLastVisitor.visit(format);
 
@@ -50,26 +53,18 @@ public class FlatFileInputChannel implements InputChannel {
 
     @Override
     public InputResult take() {
-        int skipFirst = GetSkipFirstVisitor.visit(format);
-
         while (lineIndex < skipFirst && lineIndex < lineCount) {
             lineIndex++;
-            try {
-                reader.readLine();
-            } catch (IOException ex) {
-                throw new UncheckedIOException(ex);
-            }
+            readLine(reader);
         }
+
+        System.out.println("Line index: " + lineIndex);
+
 
         int number = lineIndex + 1;
         lineIndex++;
 
-        String line;
-        try {
-            line = reader.readLine();
-        } catch (IOException ex) {
-            throw new UncheckedIOException(ex);
-        }
+        String line = readLine(reader);
 
         if (logLines) {
             log.debug("Processing record #" + number + ": " + line);
@@ -90,8 +85,16 @@ public class FlatFileInputChannel implements InputChannel {
         return InputResult.ok(parseResult.getValue(), line);
     }
 
+    private String readLine(BufferedReader reader) {
+        try {
+            return reader.readLine();
+        } catch (IOException ex) {
+            throw new UncheckedIOException(ex);
+        }
+    }
+
     public boolean hasMore() {
-        return lineIndex < limit;
+        return lineCount > skipFirst && lineIndex < limit;
     }
 
     @Override
